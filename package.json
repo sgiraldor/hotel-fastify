@@ -1,0 +1,28 @@
+{
+  "name": "hotel",
+  "version": "1.0.0",
+  "description": "API REST para sistema de gestion hotelera",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "fastify",
+    "typescript",
+    "hotel",
+    "api"
+  ],
+  "author": "Samuel Giraldo",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "fastify": "^5.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^6.0.0"
+  }
+}
