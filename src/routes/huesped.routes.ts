@@ -11,6 +11,15 @@ interface HuespedBody {
   fechaNacimiento: string;
 }
 
+interface ActualizarHuespedBody {
+  identificacion?: string;
+  nombre?: string;
+  apellido?: string;
+  telefono?: string;
+  tipoDocumento?: string;
+  fechaNacimiento?: string;
+}
+
 export async function huespedRoutes(app: FastifyInstance) {
   const huespedRepository = AppDataSource.getRepository(Huesped);
 
@@ -48,7 +57,6 @@ export async function huespedRoutes(app: FastifyInstance) {
     },
   );
 
-  // Consultar todos los huéspedes
   app.get('/huesped', async (request, reply) => {
     try {
       const huespedes = await huespedRepository.find();
@@ -61,7 +69,6 @@ export async function huespedRoutes(app: FastifyInstance) {
     }
   });
 
-  // Consultar un huésped por ID
   app.get<{ Params: { id: string } }>(
     '/huesped/:id',
     async (request, reply) => {
@@ -84,4 +91,92 @@ export async function huespedRoutes(app: FastifyInstance) {
       }
     },
   );
+
+  app.patch<{
+    Params: { id: string };
+    Body: ActualizarHuespedBody;
+  }>(
+    '/huesped/:id',
+    async (request, reply) => {
+      try {
+        const id = Number(request.params.id);
+
+        const huesped = await huespedRepository.findOneBy({ id });
+
+        if (!huesped) {
+          return reply.code(404).send({
+            message: 'Huésped no encontrado',
+          });
+        }
+
+        const {
+          identificacion,
+          nombre,
+          apellido,
+          telefono,
+          tipoDocumento,
+          fechaNacimiento,
+        } = request.body;
+
+        if (identificacion !== undefined) {
+          huesped.identificacion = identificacion;
+        }
+
+        if (nombre !== undefined) {
+          huesped.nombre = nombre;
+        }
+
+        if (apellido !== undefined) {
+          huesped.apellido = apellido;
+        }
+
+        if (telefono !== undefined) {
+          huesped.telefono = telefono;
+        }
+
+        if (tipoDocumento !== undefined) {
+          huesped.tipoDocumento = tipoDocumento;
+        }
+
+        if (fechaNacimiento !== undefined) {
+          huesped.fechaNacimiento = new Date(fechaNacimiento);
+        }
+
+        const huespedActualizado = await huespedRepository.save(huesped);
+
+        return reply.code(200).send(huespedActualizado);
+      } catch (error) {
+        return reply.code(500).send({
+          message: 'Error al actualizar el huésped',
+        });
+      }
+    },
+  );
+
+    app.delete<{ Params: { id: string } }>(
+    '/huesped/:id',
+    async (request, reply) => {
+        try {
+        const id = Number(request.params.id);
+
+        const huesped = await huespedRepository.findOneBy({ id });
+
+        if (!huesped) {
+            return reply.code(404).send({
+            message: 'Huésped no encontrado',
+            });
+        }
+
+        await huespedRepository.remove(huesped);
+
+        return reply.code(200).send({
+            message: 'Huésped eliminado correctamente',
+        });
+        } catch (error) {
+        return reply.code(500).send({
+            message: 'Error al eliminar el huésped',
+        });
+        }
+    },
+    );
 }
