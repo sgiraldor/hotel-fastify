@@ -29,7 +29,6 @@ export async function checkinRoutes(app: FastifyInstance) {
   const huespedRepository = AppDataSource.getRepository(Huesped);
   const habitacionRepository = AppDataSource.getRepository(Habitacion);
 
-  // Crear check-in
   app.post<{ Body: CheckInBody }>(
     '/checkin',
     async (request, reply) => {
@@ -88,7 +87,6 @@ export async function checkinRoutes(app: FastifyInstance) {
     },
   );
 
-  // Consultar todos los check-ins
   app.get('/checkin', async (request, reply) => {
     try {
       const checkins = await checkinRepository.find({
@@ -108,7 +106,6 @@ export async function checkinRoutes(app: FastifyInstance) {
     }
   });
 
-  // Consultar check-in por ID
   app.get<{ Params: { id: string } }>(
     '/checkin/:id',
     async (request, reply) => {
@@ -140,7 +137,6 @@ export async function checkinRoutes(app: FastifyInstance) {
     },
   );
 
-  // Actualizar check-in
   app.patch<{
     Params: { id: string };
     Body: ActualizarCheckInBody;
@@ -231,6 +227,35 @@ export async function checkinRoutes(app: FastifyInstance) {
 
         return reply.code(500).send({
           message: 'Error al actualizar el check-in',
+        });
+      }
+    },
+  );
+
+  app.delete<{ Params: { id: string } }>(
+    '/checkin/:id',
+    async (request, reply) => {
+      try {
+        const id = Number(request.params.id);
+
+        const checkin = await checkinRepository.findOneBy({ id });
+
+        if (!checkin) {
+          return reply.code(404).send({
+            message: 'Check-in no encontrado',
+          });
+        }
+
+        await checkinRepository.remove(checkin);
+
+        return reply.code(200).send({
+          message: 'Check-in eliminado correctamente',
+        });
+      } catch (error) {
+        console.error('ERROR AL ELIMINAR CHECKIN:', error);
+
+        return reply.code(500).send({
+          message: 'Error al eliminar el check-in',
         });
       }
     },
