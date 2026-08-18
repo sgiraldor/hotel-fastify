@@ -76,4 +76,24 @@ export async function checkinRoutes(app: FastifyInstance) {
       }
     },
   );
+
+
+  app.get('/checkin', async (request, reply) => {
+    try {
+      const checkins = await checkinRepository.find({
+        relations: {
+          huesped: true,
+          habitacion: true,
+        },
+      });
+
+      return reply.code(200).send(checkins);
+    } catch (error) {
+      console.error('ERROR AL CONSULTAR CHECKINS:', error);
+
+      return reply.code(500).send({
+        message: 'Error al consultar los check-ins',
+      });
+    }
+  });
 }
