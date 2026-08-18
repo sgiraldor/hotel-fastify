@@ -14,6 +14,7 @@ interface HuespedBody {
 export async function huespedRoutes(app: FastifyInstance) {
   const huespedRepository = AppDataSource.getRepository(Huesped);
 
+  // Crear un huésped
   app.post<{ Body: HuespedBody }>(
     '/huesped',
     async (request, reply) => {
@@ -46,4 +47,17 @@ export async function huespedRoutes(app: FastifyInstance) {
       }
     },
   );
+
+  // Consultar todos los huéspedes
+  app.get('/huesped', async (request, reply) => {
+    try {
+      const huespedes = await huespedRepository.find();
+
+      return reply.code(200).send(huespedes);
+    } catch (error) {
+      return reply.code(500).send({
+        message: 'Error al consultar los huéspedes',
+      });
+    }
+  });
 }
