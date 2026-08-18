@@ -96,4 +96,36 @@ export async function checkinRoutes(app: FastifyInstance) {
       });
     }
   });
+
+  // Consultar check-in por ID
+    app.get<{ Params: { id: string } }>(
+    '/checkin/:id',
+    async (request, reply) => {
+        try {
+        const id = Number(request.params.id);
+
+        const checkin = await checkinRepository.findOne({
+            where: { id },
+            relations: {
+            huesped: true,
+            habitacion: true,
+            },
+        });
+
+        if (!checkin) {
+            return reply.code(404).send({
+            message: 'Check-in no encontrado',
+            });
+        }
+
+        return reply.code(200).send(checkin);
+        } catch (error) {
+        console.error('ERROR AL CONSULTAR CHECKIN:', error);
+
+        return reply.code(500).send({
+            message: 'Error al consultar el check-in',
+        });
+        }
+    },
+    );
 }
