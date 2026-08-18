@@ -14,11 +14,22 @@ interface CheckInBody {
   estadoPago: string;
 }
 
+interface ActualizarCheckInBody {
+  huespedId?: number;
+  habitacionId?: number;
+  fechaIngreso?: string;
+  fechaSalida?: string;
+  pagoTotalHabitacion?: number;
+  pagoRealizado?: number;
+  estadoPago?: string;
+}
+
 export async function checkinRoutes(app: FastifyInstance) {
   const checkinRepository = AppDataSource.getRepository(CheckIn);
   const huespedRepository = AppDataSource.getRepository(Huesped);
   const habitacionRepository = AppDataSource.getRepository(Habitacion);
 
+  // Crear check-in
   app.post<{ Body: CheckInBody }>(
     '/checkin',
     async (request, reply) => {
@@ -77,7 +88,7 @@ export async function checkinRoutes(app: FastifyInstance) {
     },
   );
 
-
+  // Consultar todos los check-ins
   app.get('/checkin', async (request, reply) => {
     try {
       const checkins = await checkinRepository.find({
@@ -98,34 +109,130 @@ export async function checkinRoutes(app: FastifyInstance) {
   });
 
   // Consultar check-in por ID
-    app.get<{ Params: { id: string } }>(
+  app.get<{ Params: { id: string } }>(
     '/checkin/:id',
     async (request, reply) => {
-        try {
+      try {
         const id = Number(request.params.id);
 
         const checkin = await checkinRepository.findOne({
-            where: { id },
-            relations: {
+          where: { id },
+          relations: {
             huesped: true,
             habitacion: true,
-            },
+          },
         });
 
         if (!checkin) {
-            return reply.code(404).send({
+          return reply.code(404).send({
             message: 'Check-in no encontrado',
-            });
+          });
         }
 
         return reply.code(200).send(checkin);
-        } catch (error) {
+      } catch (error) {
         console.error('ERROR AL CONSULTAR CHECKIN:', error);
 
         return reply.code(500).send({
-            message: 'Error al consultar el check-in',
+          message: 'Error al consultar el check-in',
         });
-        }
+      }
     },
-    );
+  );
+
+  // Actualizar check-in
+  app.patch<{
+    Params: { id: string };
+    Body: ActualizarCheckInBody;
+  }>(
+    '/checkin/:id',
+    async (request, reply) => {
+      try {
+        const id = Number(request.params.id);
+
+        const checkin = await checkinRepository.findOne({
+          where: { id },
+          relations: {
+            huesped: true,
+            habitacion: true,
+          },
+        });
+
+        if (!checkin) {
+          return reply.code(404).send({
+            message: 'Check-in no encontrado',
+          });
+        }
+
+        const {
+          huespedId,
+          habitacionId,
+          fechaIngreso,
+          fechaSalida,
+          pagoTotalHabitacion,
+          pagoRealizado,
+          estadoPago,
+        } = request.body;
+
+        if (huespedId !== undefined) {
+          const huesped = await huespedRepository.findOneBy({
+            id: huespedId,
+          });
+
+          if (!huesped) {
+            return reply.code(404).send({
+              message: 'Huésped no encontrado',
+            });
+          }
+
+          checkin.huesped = huesped;
+        }
+
+        if (habitacionId !== undefined) {
+          const habitacion = await habitacionRepository.findOneBy({
+            id: habitacionId,
+          });
+
+          if (!habitacion) {
+            return reply.code(404).send({
+              message: 'Habitación no encontrada',
+            });
+          }
+
+          checkin.habitacion = habitacion;
+        }
+
+        if (fechaIngreso !== undefined) {
+          checkin.fechaIngreso = new Date(fechaIngreso);
+        }
+
+        if (fechaSalida !== undefined) {
+          checkin.fechaSalida = new Date(fechaSalida);
+        }
+
+        if (pagoTotalHabitacion !== undefined) {
+          checkin.pagoTotalHabitacion = pagoTotalHabitacion;
+        }
+
+        if (pagoRealizado !== undefined) {
+          checkin.pagoRealizado = pagoRealizado;
+        }
+
+        if (estadoPago !== undefined) {
+          checkin.estadoPago = estadoPago;
+        }
+
+        const checkinActualizado =
+          await checkinRepository.save(checkin);
+
+        return reply.code(200).send(checkinActualizado);
+      } catch (error) {
+        console.error('ERROR AL ACTUALIZAR CHECKIN:', error);
+
+        return reply.code(500).send({
+          message: 'Error al actualizar el check-in',
+        });
+      }
+    },
+  );
 }
