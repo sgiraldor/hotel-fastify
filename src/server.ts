@@ -3,11 +3,13 @@ import fastify from 'fastify';
 import { AppDataSource } from './config/database';
 import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
+import { checkinRoutes } from './routes/checkin.routes';
 
 const app = fastify();
 
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
+app.register(checkinRoutes);
 
 app.get('/', async () => {
   return { message: 'Hotel funcionando' };
