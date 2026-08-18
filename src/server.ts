@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import fastify from 'fastify';
 import { AppDataSource } from './config/database';
 const app = fastify();
@@ -5,7 +6,7 @@ const app = fastify();
 app.get('/', async () => {
   return { message: 'Hotel funcionando' };
 });
-
+ 
 const start = async () => {
   try {
     await AppDataSource.initialize();
