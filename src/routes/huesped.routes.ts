@@ -60,4 +60,28 @@ export async function huespedRoutes(app: FastifyInstance) {
       });
     }
   });
+
+  // Consultar un huésped por ID
+  app.get<{ Params: { id: string } }>(
+    '/huesped/:id',
+    async (request, reply) => {
+      try {
+        const id = Number(request.params.id);
+
+        const huesped = await huespedRepository.findOneBy({ id });
+
+        if (!huesped) {
+          return reply.code(404).send({
+            message: 'Huésped no encontrado',
+          });
+        }
+
+        return reply.code(200).send(huesped);
+      } catch (error) {
+        return reply.code(500).send({
+          message: 'Error al consultar el huésped',
+        });
+      }
+    },
+  );
 }
