@@ -200,4 +200,42 @@ describe('Pruebas de integracion de huesped', () => {
     await app.close();
   });
 
+  it('debe devolver 500 si ocurre un error al consultar los huespedes', async () => {
+  const app = Fastify();
+
+  repositorioMock.find.mockRejectedValue(
+    new Error('Error de base de datos'),
+  );
+
+  await app.register(huespedRoutes);
+
+  const respuesta = await app.inject({
+    method: 'GET',
+    url: '/huesped',
+  });
+
+  expect(respuesta.statusCode).toBe(500);
+
+  await app.close();
+});
+
+it('debe devolver 404 al actualizar un huesped que no existe', async () => {
+  const app = Fastify();
+
+  repositorioMock.findOneBy.mockResolvedValue(null);
+
+  await app.register(huespedRoutes);
+
+  const respuesta = await app.inject({
+    method: 'PATCH',
+    url: '/huesped/999',
+    payload: {
+      nombre: 'Samuel',
+    },
+  });
+
+  expect(respuesta.statusCode).toBe(404);
+
+  await app.close();
+});
 });

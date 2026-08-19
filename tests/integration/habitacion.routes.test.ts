@@ -101,7 +101,26 @@ describe('Pruebas de integracion de habitacion', () => {
     await app.close();
   });
 
-    it('debe consultar una habitacion por id', async () => {
+  it('debe devolver 500 si ocurre un error al consultar habitaciones', async () => {
+    const app = Fastify();
+
+    repositorioMock.find.mockRejectedValue(
+      new Error('Error de base de datos'),
+    );
+
+    await app.register(habitacionRoutes);
+
+    const respuesta = await app.inject({
+      method: 'GET',
+      url: '/habitacion',
+    });
+
+    expect(respuesta.statusCode).toBe(500);
+
+    await app.close();
+  });
+
+  it('debe consultar una habitacion por id', async () => {
     const app = Fastify();
 
     repositorioMock.findOneBy.mockResolvedValue({
@@ -121,7 +140,7 @@ describe('Pruebas de integracion de habitacion', () => {
     await app.close();
   });
 
-    it('debe devolver 404 si la habitacion no existe', async () => {
+  it('debe devolver 404 si la habitacion no existe', async () => {
     const app = Fastify();
 
     repositorioMock.findOneBy.mockResolvedValue(null);
@@ -138,7 +157,7 @@ describe('Pruebas de integracion de habitacion', () => {
     await app.close();
   });
 
-    it('debe eliminar una habitacion', async () => {
+  it('debe eliminar una habitacion', async () => {
     const app = Fastify();
 
     const habitacion = {
@@ -161,36 +180,73 @@ describe('Pruebas de integracion de habitacion', () => {
     await app.close();
   });
 
-    it('debe actualizar una habitacion correctamente', async () => {
-  const app = Fastify();
+  it('debe devolver 404 al eliminar una habitacion que no existe', async () => {
+    const app = Fastify();
 
-  const habitacion = {
-    id: 1,
-    numeroHabitacion: '106',
-    precioHabitacion: 220000,
-    estadoHabitacion: 'DISPONIBLE',
-    tipoHabitacion: 'DOBLE',
-  };
+    repositorioMock.findOneBy.mockResolvedValue(null);
 
-  repositorioMock.findOneBy.mockResolvedValue(habitacion);
-  repositorioMock.save.mockResolvedValue(habitacion);
+    await app.register(habitacionRoutes);
 
-  await app.register(habitacionRoutes);
+    const respuesta = await app.inject({
+      method: 'DELETE',
+      url: '/habitacion/999',
+    });
 
-  const respuesta = await app.inject({
-    method: 'PATCH',
-    url: '/habitacion/1',
-    payload: {
-    numeroHabitacion: '107',
-    precioHabitacion: 250000,
-    estadoHabitacion: 'OCUPADA',
-    tipoHabitacion: 'SUITE',
-    },
+    expect(respuesta.statusCode).toBe(404);
+
+    await app.close();
   });
 
-  expect(respuesta.statusCode).toBe(200);
+  it('debe actualizar una habitacion correctamente', async () => {
+    const app = Fastify();
 
-  await app.close();
-});
+    const habitacion = {
+      id: 1,
+      numeroHabitacion: '106',
+      precioHabitacion: 220000,
+      estadoHabitacion: 'DISPONIBLE',
+      tipoHabitacion: 'DOBLE',
+    };
+
+    repositorioMock.findOneBy.mockResolvedValue(habitacion);
+    repositorioMock.save.mockResolvedValue(habitacion);
+
+    await app.register(habitacionRoutes);
+
+    const respuesta = await app.inject({
+      method: 'PATCH',
+      url: '/habitacion/1',
+      payload: {
+        numeroHabitacion: '107',
+        precioHabitacion: 250000,
+        estadoHabitacion: 'OCUPADA',
+        tipoHabitacion: 'SUITE',
+      },
+    });
+
+    expect(respuesta.statusCode).toBe(200);
+
+    await app.close();
+  });
+
+  it('debe devolver 404 al actualizar una habitacion que no existe', async () => {
+    const app = Fastify();
+
+    repositorioMock.findOneBy.mockResolvedValue(null);
+
+    await app.register(habitacionRoutes);
+
+    const respuesta = await app.inject({
+      method: 'PATCH',
+      url: '/habitacion/999',
+      payload: {
+        numeroHabitacion: '107',
+      },
+    });
+
+    expect(respuesta.statusCode).toBe(404);
+
+    await app.close();
+  });
 
 });
