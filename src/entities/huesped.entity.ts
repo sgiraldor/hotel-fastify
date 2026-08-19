@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 @Index(['tipoDocumento', 'identificacion'], { unique: true })
 
-@Entity('Huesped')
+@Entity('huesped')
 export class Huesped {
     @PrimaryGeneratedColumn()
     id!: number;
