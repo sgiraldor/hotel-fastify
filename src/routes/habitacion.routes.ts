@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { AppDataSource } from '../config/database';
 import { Habitacion } from '../entities/habitacion.entity';
+import { validarHabitacion } from '../utils/habitacion.utils';
 
 interface HabitacionBody {
   numeroHabitacion: string;
@@ -30,7 +31,18 @@ export async function habitacionRoutes(app: FastifyInstance) {
           estadoHabitacion,
           tipoHabitacion,
         } = request.body;
+        const datosValidos = validarHabitacion({
+          numeroHabitacion,
+          precioHabitacion,
+          estadoHabitacion,
+          tipoHabitacion,
+        });
 
+        if (!datosValidos){
+          return reply.code(400).send({
+            message: "los datos de la habitacion estan ioncompletos"
+          });
+        }
         const nuevaHabitacion = habitacionRepository.create({
           numeroHabitacion,
           precioHabitacion,
