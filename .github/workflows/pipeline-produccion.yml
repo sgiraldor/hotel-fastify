@@ -29,5 +29,5 @@ jobs:
       - name: Ejecutar pruebas
         run: npm test
 
-      - name: Ejecutar cobertura
-        run: npm run test:coverage
+      - name: Ejecutar cobertura con Quality Gate de Produccion
+        run: npx vitest run --coverage --coverage.thresholds.statements=85 --coverage.thresholds.lines=85 --coverage.thresholds.functions=85
