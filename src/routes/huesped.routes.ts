@@ -46,9 +46,10 @@ export async function huespedRoutes(app: FastifyInstance) {
           tipoDocumento,
           fechaNacimiento,
         });
-        if (!datosValidos){
+
+        if (!datosValidos) {
           return reply.code(400).send({
-            message: "faltan datos del huesped"
+            message: 'faltan datos del huesped',
           });
         }
 
@@ -65,6 +66,8 @@ export async function huespedRoutes(app: FastifyInstance) {
 
         return reply.code(201).send(huespedGuardado);
       } catch (error) {
+        console.error(error);
+
         return reply.code(500).send({
           message: 'Error al crear el huésped',
         });
@@ -72,18 +75,22 @@ export async function huespedRoutes(app: FastifyInstance) {
     },
   );
 
+  // Consultar todos los huéspedes
   app.get('/huesped', async (request, reply) => {
     try {
       const huespedes = await huespedRepository.find();
 
       return reply.code(200).send(huespedes);
     } catch (error) {
+      console.error(error);
+
       return reply.code(500).send({
         message: 'Error al consultar los huéspedes',
       });
     }
   });
 
+  // Consultar huésped por ID
   app.get<{ Params: { id: string } }>(
     '/huesped/:id',
     async (request, reply) => {
@@ -100,6 +107,8 @@ export async function huespedRoutes(app: FastifyInstance) {
 
         return reply.code(200).send(huesped);
       } catch (error) {
+        console.error(error);
+
         return reply.code(500).send({
           message: 'Error al consultar el huésped',
         });
@@ -107,6 +116,7 @@ export async function huespedRoutes(app: FastifyInstance) {
     },
   );
 
+  // Actualizar huésped
   app.patch<{
     Params: { id: string };
     Body: ActualizarHuespedBody;
@@ -161,6 +171,8 @@ export async function huespedRoutes(app: FastifyInstance) {
 
         return reply.code(200).send(huespedActualizado);
       } catch (error) {
+        console.error(error);
+
         return reply.code(500).send({
           message: 'Error al actualizar el huésped',
         });
@@ -168,30 +180,33 @@ export async function huespedRoutes(app: FastifyInstance) {
     },
   );
 
-    app.delete<{ Params: { id: string } }>(
+  // Eliminar huésped
+  app.delete<{ Params: { id: string } }>(
     '/huesped/:id',
     async (request, reply) => {
-        try {
+      try {
         const id = Number(request.params.id);
 
         const huesped = await huespedRepository.findOneBy({ id });
 
         if (!huesped) {
-            return reply.code(404).send({
+          return reply.code(404).send({
             message: 'Huésped no encontrado',
-            });
+          });
         }
 
         await huespedRepository.remove(huesped);
 
         return reply.code(200).send({
-            message: 'Huésped eliminado correctamente',
+          message: 'Huésped eliminado correctamente',
         });
-        } catch (error) {
+      } catch (error) {
+        console.error(error);
+
         return reply.code(500).send({
-            message: 'Error al eliminar el huésped',
+          message: 'Error al eliminar el huésped',
         });
-        }
+      }
     },
-    );
+  );
 }
