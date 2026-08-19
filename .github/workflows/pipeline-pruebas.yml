@@ -33,3 +33,12 @@ jobs:
 
       - name: Ejecutar cobertura
         run: npm run test:coverage
+
+      - name: Instalar Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Desplegar ambiente de pruebas
+        if: github.event_name == 'push'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PRUEBAS }}
+        run: railway up --service hotel-fastify --environment pruebas --project b53fb89c-8c01-48a7-b35d-4010dfa2579f --ci
