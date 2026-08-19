@@ -17,12 +17,19 @@ app.get('/', async () => {
 
 const start = async () => {
   try {
-    
+
     await AppDataSource.initialize();
     console.log('Base de datos conectada');
 
-    await app.listen({ port: 3000 });
-    console.log('Servidor ejecutándose en http://localhost:3000');
+    const port = Number(process.env.PORT) || 3000;
+
+    await app.listen({
+      port,
+      host: '0.0.0.0'
+    });
+
+    console.log(`Servidor ejecutándose en el puerto ${port}`);
+
   } catch (error) {
     app.log.error(error);
     process.exit(1);
