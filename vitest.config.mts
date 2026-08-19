@@ -11,6 +11,13 @@ export default defineConfig({
         'src/entities/**',
       ],
       reporter: ['text', 'html'],
+
+      thresholds: {
+        statements: 60,
+        branches: 60,
+        functions: 60,
+        lines: 60,
+      },
     },
   },
 });
