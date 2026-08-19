@@ -287,6 +287,58 @@ describe('Pruebas de integración de checkin', () => {
     expect(respuesta.statusCode).toBe(404);
 
     await app.close();
+    });
+
+  it('no debe crear un checkin si la habitacion no existe', async () => {
+  const app = Fastify();
+
+  const huesped = {
+    id: 1,
+    nombre: 'Samuel',
+  };
+
+  huespedRepositoryMock.findOneBy.mockResolvedValue(huesped);
+  habitacionRepositoryMock.findOneBy.mockResolvedValue(null);
+
+  await app.register(checkinRoutes);
+
+  const respuesta = await app.inject({
+    method: 'POST',
+    url: '/checkin',
+    payload: {
+      huespedId: 1,
+      habitacionId: 999,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 440000,
+      pagoRealizado: 220000,
+      estadoPago: 'PENDIENTE',
+    },
   });
+
+  expect(respuesta.statusCode).toBe(404);
+
+  await app.close();
+});
+
+    it('no debe actualizar un checkin que no existe', async () => {
+  const app = Fastify();
+
+  checkinRepositoryMock.findOne.mockResolvedValue(null);
+
+  await app.register(checkinRoutes);
+
+  const respuesta = await app.inject({
+    method: 'PATCH',
+    url: '/checkin/999',
+    payload: {
+      estadoPago: 'PAGADO',
+    },
+  });
+
+  expect(respuesta.statusCode).toBe(404);
+
+  await app.close();
+});
 
 });
