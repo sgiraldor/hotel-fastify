@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { AppDataSource } from '../config/database';
 import { Huesped } from '../entities/huesped.entity';
+import { validarHuesped } from '../utils/huesped.utils';
 
 interface HuespedBody {
   identificacion: string;
@@ -36,6 +37,20 @@ export async function huespedRoutes(app: FastifyInstance) {
           tipoDocumento,
           fechaNacimiento,
         } = request.body;
+
+        const datosValidos = validarHuesped({
+          identificacion,
+          nombre,
+          apellido,
+          telefono,
+          tipoDocumento,
+          fechaNacimiento,
+        });
+        if (!datosValidos){
+          return reply.code(400).send({
+            message: "faltan datos del huesped"
+          });
+        }
 
         const nuevoHuesped = huespedRepository.create({
           identificacion,
