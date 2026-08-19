@@ -3,6 +3,7 @@ import { AppDataSource } from '../config/database';
 import { CheckIn } from '../entities/checkin.entity';
 import { Huesped } from '../entities/huesped.entity';
 import { Habitacion } from '../entities/habitacion.entity';
+import { validarCheckIn } from '../utils/checkin.utils';
 
 interface CheckInBody {
   huespedId: number;
@@ -42,6 +43,22 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoRealizado,
           estadoPago,
         } = request.body;
+
+        const datosValidos = validarCheckIn({
+          huespedId,
+          habitacionId,
+          fechaIngreso,
+          fechaSalida,
+          pagoTotalHabitacion,
+          pagoRealizado,
+          estadoPago,          
+        });
+
+        if (!datosValidos){
+          return reply.code(400).send({
+            message: "los datos del chekin estan incompletos"
+          });
+        }
 
         const huesped = await huespedRepository.findOneBy({
           id: huespedId,
