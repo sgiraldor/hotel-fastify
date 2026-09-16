@@ -6,6 +6,7 @@ import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
 import { huespedV2Routes } from './routes/v2/huesped-v2.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
+import { checkinV2Routes } from './routes/v2/checkin-v2.routes';
 
 const app = fastify();
 
@@ -15,6 +16,7 @@ app.register(checkinRoutes);
 
 app.register(huespedV2Routes);
 app.register(habitacionV2Routes);
+app.register(checkinV2Routes);
 
 app.get('/', async () => {
   return { message: 'Hotel funcionando' };
