@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { AppDataSource } from '../config/database';
-import { Huesped } from '../entities/huesped.entity';
 import { validarHuesped } from '../utils/huesped.utils';
+import { HuespedService } from '../services/huesped.service';
 
 interface HuespedBody {
   identificacion: string;
@@ -22,7 +21,7 @@ interface ActualizarHuespedBody {
 }
 
 export async function huespedRoutes(app: FastifyInstance) {
-  const huespedRepository = AppDataSource.getRepository(Huesped);
+  const huespedService = new HuespedService();
 
   // Crear un huésped
   app.post<{ Body: HuespedBody }>(
@@ -53,16 +52,14 @@ export async function huespedRoutes(app: FastifyInstance) {
           });
         }
 
-        const nuevoHuesped = huespedRepository.create({
+        const huespedGuardado = await huespedService.crear({
           identificacion,
           nombre,
           apellido,
           telefono,
           tipoDocumento,
-          fechaNacimiento: new Date(fechaNacimiento),
+          fechaNacimiento,
         });
-
-        const huespedGuardado = await huespedRepository.save(nuevoHuesped);
 
         return reply.code(201).send(huespedGuardado);
       } catch (error) {
@@ -78,7 +75,7 @@ export async function huespedRoutes(app: FastifyInstance) {
   // Consultar todos los huéspedes
   app.get('/huesped', async (request, reply) => {
     try {
-      const huespedes = await huespedRepository.find();
+      const huespedes = await huespedService.obtenerTodos();
 
       return reply.code(200).send(huespedes);
     } catch (error) {
@@ -97,7 +94,7 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const huesped = await huespedRepository.findOneBy({ id });
+        const huesped = await huespedService.obtenerPorId(id);
 
         if (!huesped) {
           return reply.code(404).send({
@@ -126,48 +123,16 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const huesped = await huespedRepository.findOneBy({ id });
+        const huespedActualizado = await huespedService.actualizar(
+          id,
+          request.body,
+        );
 
-        if (!huesped) {
+        if (!huespedActualizado) {
           return reply.code(404).send({
             message: 'Huésped no encontrado',
           });
         }
-
-        const {
-          identificacion,
-          nombre,
-          apellido,
-          telefono,
-          tipoDocumento,
-          fechaNacimiento,
-        } = request.body;
-
-        if (identificacion !== undefined) {
-          huesped.identificacion = identificacion;
-        }
-
-        if (nombre !== undefined) {
-          huesped.nombre = nombre;
-        }
-
-        if (apellido !== undefined) {
-          huesped.apellido = apellido;
-        }
-
-        if (telefono !== undefined) {
-          huesped.telefono = telefono;
-        }
-
-        if (tipoDocumento !== undefined) {
-          huesped.tipoDocumento = tipoDocumento;
-        }
-
-        if (fechaNacimiento !== undefined) {
-          huesped.fechaNacimiento = new Date(fechaNacimiento);
-        }
-
-        const huespedActualizado = await huespedRepository.save(huesped);
 
         return reply.code(200).send(huespedActualizado);
       } catch (error) {
@@ -187,15 +152,13 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const huesped = await huespedRepository.findOneBy({ id });
+        const eliminado = await huespedService.eliminar(id);
 
-        if (!huesped) {
+        if (!eliminado) {
           return reply.code(404).send({
             message: 'Huésped no encontrado',
           });
         }
-
-        await huespedRepository.remove(huesped);
 
         return reply.code(200).send({
           message: 'Huésped eliminado correctamente',
