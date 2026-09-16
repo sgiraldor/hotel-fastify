@@ -1,14 +1,28 @@
-# Proyecto Hotel
+# 🏨 Hotel API V2 - Arquitectura Multicloud
 
-Este proyecto consiste en una API REST para manejar información básica de un hotel.
+Este proyecto corresponde a la evolución de **Hotel API V1** hacia una arquitectura **multicloud**, desarrollada para el Seguimiento #2 del Énfasis DevOps 2026-2.
 
-La aplicación permite registrar huéspedes, habitaciones y check-ins. También permite consultar, actualizar y eliminar la información guardada.
+La primera versión del proyecto consistía en una API REST para administrar huéspedes, habitaciones y check-ins de un hotel.
 
-El proyecto fue realizado usando Fastify, TypeScript y MySQL.
+Para la segunda entrega, el proyecto evoluciona hacia una arquitectura distribuida entre **Oracle Cloud Infrastructure (OCI), Microsoft Azure y Google Cloud Platform (GCP)**, utilizando Kubernetes, integración entre APIs, mensajería, orquestación y observabilidad distribuida.
 
-## Tecnologías usadas
+> **Versión actual en desarrollo: Hotel API V2**
 
-Para realizar el proyecto se utilizaron las siguientes tecnologías:
+La primera entrega se conserva mediante el tag:
+
+```text
+v1.0.0
+```
+
+La rama `main` contiene actualmente el desarrollo correspondiente a la **V2**.
+
+---
+
+## 📌 Versiones del proyecto
+
+### V1 - Primera entrega
+
+La primera versión del proyecto utilizó:
 
 - Node.js
 - TypeScript
@@ -22,9 +36,97 @@ Para realizar el proyecto se utilizaron las siguientes tecnologías:
 - Railway
 - Git y GitHub
 
-## Entidades del proyecto
+La V1 implementó una API REST para las entidades:
 
-El proyecto tiene 3 entidades principales:
+- Huesped
+- Habitacion
+- CheckIn
+
+También incluyó pruebas, cobertura de código, pipelines de CI/CD y despliegues separados de pruebas y producción.
+
+Esta versión se encuentra identificada con:
+
+```text
+v1.0.0
+```
+
+---
+
+### V2 - Segunda entrega
+
+La V2 transforma el proyecto hacia una arquitectura:
+
+```text
+Multicloud + Kubernetes + Microservicios + Mensajería + Observabilidad
+```
+
+En esta nueva entrega se utilizará únicamente un **ambiente de producción**.
+
+Los pipelines de GitHub Actions de la primera entrega fueron desactivados y se conservan únicamente como evidencia histórica.
+
+---
+
+# ☁️ Arquitectura Multicloud
+
+La solución está distribuida entre tres integrantes y tres proveedores de nube.
+
+| Integrante | Nube | Entidades |
+|---|---|---|
+| Samuel Giraldo | Oracle Cloud Infrastructure (OCI) | Huesped, Habitacion, CheckIn |
+| Daniel | Microsoft Azure | Pelicula, Sala, Reserva |
+| Jarrison | Google Cloud Platform (GCP) | Cancha, Jugador, Torneo |
+
+Cada integrante es responsable de desplegar su API y administrar únicamente las entidades que le corresponden.
+
+Las APIs deberán comunicarse entre sí mediante HTTP cuando necesiten información perteneciente a otra nube.
+
+La lógica y las entidades de los demás integrantes no deberán duplicarse localmente.
+
+---
+
+# 👨‍💻 Componente Oracle Cloud - Samuel Giraldo
+
+Este repositorio corresponde principalmente al componente de **Hotel API V2**, cuya nube asignada es:
+
+```text
+Oracle Cloud Infrastructure - OCI
+```
+
+Las entidades propias son:
+
+```text
+Huesped
+Habitacion
+CheckIn
+```
+
+Además del desarrollo de la API V2, las responsabilidades asignadas para esta entrega son:
+
+- Desplegar la API en Oracle Cloud.
+- Crear y utilizar un clúster de Kubernetes.
+- Utilizar ORM para la persistencia de datos.
+- Implementar el MS Orquestador.
+- Implementar la Cola / Tópico.
+- Integrar la API con las APIs de Azure y GCP.
+- Permitir consultas que incluyan información de otras APIs.
+- Propagar un `trace-id` entre los servicios.
+- Participar en la implementación de observabilidad distribuida.
+- Manejar procesamiento asíncrono.
+- Contemplar el manejo y reproceso de fallos.
+
+---
+
+# 🔗 API V2
+
+Los nuevos endpoints correspondientes a la segunda entrega utilizarán el prefijo:
+
+```text
+/api/v2
+```
+
+Esto permite diferenciar claramente la nueva arquitectura de los endpoints desarrollados durante la primera entrega.
+
+Las entidades propias de Hotel API son:
 
 ### Huesped
 
@@ -32,58 +134,453 @@ Guarda la información de las personas que llegan al hotel.
 
 ### Habitacion
 
-Guarda la información de las habitaciones disponibles en el hotel.
+Guarda la información de las habitaciones del hotel.
 
 ### CheckIn
 
-Permite relacionar un huésped con una habitación y guardar la información de su estadía.
+Relaciona un huésped con una habitación y almacena información correspondiente a su estadía y pago.
 
-## Requisitos para ejecutar el proyecto
+---
 
-Antes de ejecutar el proyecto se debe tener instalado:
+# 🌎 Integración entre APIs
+
+Una de las características principales de la V2 será la reutilización de información perteneciente a otras APIs.
+
+Hotel API no deberá copiar las entidades pertenecientes a Daniel o Jarrison dentro de su propia base de datos.
+
+Cuando sea necesario obtener esta información se realizará una comunicación mediante HTTP con la API correspondiente.
+
+La arquitectura general contempla:
+
+```text
+Cliente / Postman
+        |
+        v
+API Gateway / DNS
+        |
+        v
+MS Orquestador
+     /     \
+    /       \
+   v         v
+Cola       APIs V2
+/Tópico    Multicloud
+             |
+     -------------------
+     |        |        |
+     v        v        v
+    OCI     Azure     GCP
+```
+
+Las llamadas entre las APIs permitirán reutilizar entidades sin duplicar su lógica.
+
+---
+
+# ☸️ Kubernetes
+
+Para la segunda entrega, cada API deberá ejecutarse utilizando un **clúster de Kubernetes**.
+
+Para Hotel API, el clúster estará ubicado en:
+
+```text
+Oracle Cloud Infrastructure
+```
+
+La arquitectura de despliegue deberá contemplar los recursos necesarios de Kubernetes para ejecutar y exponer la aplicación en producción.
+
+La V2 deja atrás el modelo de despliegue principal utilizado en la primera entrega con Docker y Railway.
+
+Docker se conserva dentro del repositorio como parte de la documentación e historial de la V1.
+
+---
+
+# 🗄️ Base de datos y ORM
+
+El proyecto utiliza **TypeORM** como ORM.
+
+El ORM permite administrar la comunicación entre la aplicación y la base de datos mediante las entidades definidas en TypeScript.
+
+Las entidades propias de Hotel API son:
+
+```text
+Huesped
+Habitacion
+CheckIn
+```
+
+Cada API será responsable únicamente de la persistencia de sus propias entidades.
+
+La información perteneciente a otras APIs será obtenida mediante comunicación HTTP.
+
+---
+
+# 🧩 MS Orquestador
+
+Una de las responsabilidades principales de este componente dentro de la segunda entrega será la implementación de un:
+
+```text
+MS Orquestador
+```
+
+El orquestador tendrá como objetivo coordinar los diferentes pasos de un flujo que involucre múltiples servicios.
+
+De forma general, el flujo esperado será:
+
+```text
+Cliente
+   |
+   v
+API Gateway
+   |
+   v
+MS Orquestador
+   |
+   +----> Hotel API - OCI
+   |
+   +----> API Azure
+   |
+   +----> API GCP
+   |
+   +----> Cola / Tópico
+```
+
+El orquestador también deberá contribuir a mantener la trazabilidad de las solicitudes mediante un:
+
+```text
+trace-id
+```
+
+Este identificador permitirá relacionar una petición mientras atraviesa diferentes servicios y proveedores de nube.
+
+---
+
+# 📨 Cola / Tópico
+
+La arquitectura V2 incorporará un mecanismo de mensajería mediante una:
+
+```text
+Cola / Tópico
+```
+
+Este componente será responsabilidad de Samuel dentro de la arquitectura general.
+
+Su propósito será permitir el procesamiento de pasos asíncronos del flujo.
+
+La solución deberá contemplar aspectos como:
+
+- Envío de mensajes.
+- Consumo de mensajes.
+- Procesamiento asíncrono.
+- Identificación del flujo mediante `trace-id`.
+- Manejo de errores.
+- Reproceso de mensajes fallidos.
+
+La implementación específica se irá documentando conforme avance el desarrollo.
+
+---
+
+# ⚡ Caché distribuida
+
+Dentro de la arquitectura multicloud también se utilizará una **caché distribuida**.
+
+Este componente corresponde al integrante encargado de la nube Azure.
+
+Su objetivo será permitir el almacenamiento temporal de información utilizada entre servicios, utilizando estrategias como:
+
+```text
+TTL
+```
+
+e invalidación de datos cuando sea necesario.
+
+Hotel API podrá consumir este componente dentro de los flujos definidos por la arquitectura.
+
+---
+
+# 📦 Object Storage
+
+La arquitectura también contempla un servicio de:
+
+```text
+Object Storage
+```
+
+Este componente corresponde al integrante encargado de Google Cloud Platform.
+
+Su función será permitir el almacenamiento de objetos o archivos asociados a los mensajes y flujos distribuidos.
+
+---
+
+# 📊 Observabilidad
+
+La V2 deberá implementar una capa transversal de observabilidad que permita supervisar los componentes desplegados en las tres nubes.
+
+La arquitectura contempla una herramienta SaaS de observabilidad.
+
+Entre las alternativas planteadas se encuentran:
+
+```text
+Grafana Cloud
+Datadog
+New Relic
+Elastic
+```
+
+La herramienta definitiva será seleccionada durante la implementación.
+
+---
+
+## Métricas RED
+
+Se deberán recopilar métricas por endpoint relacionadas con:
+
+- Peticiones.
+- Errores.
+- Latencia.
+- p50.
+- p95.
+- Caché.
+- Cola.
+
+Esto permitirá conocer el comportamiento de los diferentes servicios.
+
+---
+
+## Logs centralizados
+
+Los logs de los servicios desplegados en las diferentes nubes deberán poder consultarse de manera centralizada.
+
+Los logs deberán estar relacionados mediante el:
+
+```text
+trace-id
+```
+
+Esto permitirá seguir una misma petición a través de varios servicios.
+
+---
+
+## Trazas distribuidas
+
+La arquitectura contempla la utilización de:
+
+```text
+OpenTelemetry
+```
+
+para implementar trazas distribuidas.
+
+El objetivo será poder observar el recorrido extremo a extremo de una petición o mensaje.
+
+Por ejemplo:
+
+```text
+Cliente
+   |
+   v
+Orquestador
+   |
+   v
+Hotel API
+   |
+   v
+API externa
+   |
+   v
+Cola
+```
+
+Todo el recorrido podrá relacionarse mediante el mismo `trace-id`.
+
+---
+
+## Alertas y dashboard
+
+La solución deberá contar con un tablero unificado que permita visualizar el comportamiento general de los servicios.
+
+También se deberán configurar alertas que permitan identificar situaciones como:
+
+- Errores.
+- Latencias elevadas.
+- Fallos en servicios.
+- Problemas durante el procesamiento de mensajes.
+
+---
+
+# 🚀 Ambiente de producción
+
+Para esta segunda entrega se utilizará únicamente:
+
+```text
+Producción
+```
+
+Ya no se manejarán los dos ambientes utilizados durante la primera entrega.
+
+La infraestructura de la V2 estará distribuida entre:
+
+```text
+Oracle Cloud Infrastructure
+Microsoft Azure
+Google Cloud Platform
+```
+
+---
+
+# 🚫 Pipelines desactivados
+
+Durante la primera entrega se utilizaron dos pipelines de GitHub Actions:
+
+```text
+Pipeline de Pruebas
+Pipeline de Producción
+```
+
+Para la segunda entrega estos pipelines fueron desactivados según los nuevos requerimientos del proyecto.
+
+Los archivos fueron trasladados a:
+
+```text
+.github/workflows-disabled/
+```
+
+De esta manera GitHub Actions deja de ejecutarlos automáticamente, pero se conserva su configuración como evidencia de la primera entrega.
+
+---
+
+# 📁 Estructura actual del proyecto
+
+De forma general, el repositorio mantiene una estructura similar a:
+
+```text
+hotel-fastify/
+│
+├── .github/
+│   └── workflows-disabled/
+│
+├── docker/
+│
+├── src/
+│   ├── config/
+│   ├── entities/
+│   ├── routes/
+│   └── utils/
+│
+├── tests/
+│   └── integration/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── tsconfig.json
+├── vitest.config.mts
+└── README.md
+```
+
+Esta estructura será ampliada durante el desarrollo de la V2 para incorporar los componentes correspondientes a Kubernetes, orquestación, mensajería e integración multicloud.
+
+---
+
+# 💻 Tecnologías
+
+## Tecnologías base
+
+- Node.js
+- TypeScript
+- Fastify
+- TypeORM
+- Git
+- GitHub
+
+## Primera entrega
+
+- MySQL
+- Vitest
+- Docker
+- Docker Compose
+- GitHub Actions
+- Railway
+
+## Segunda entrega
+
+La arquitectura V2 incorpora:
+
+- Oracle Cloud Infrastructure
+- Kubernetes
+- Integración HTTP entre APIs
+- Microservicios
+- MS Orquestador
+- Cola / Tópico
+- Caché distribuida
+- Object Storage
+- OpenTelemetry
+- Observabilidad SaaS
+
+---
+
+# 🧪 Pruebas
+
+El proyecto cuenta con pruebas desarrolladas con:
+
+```text
+Vitest
+```
+
+Para ejecutar las pruebas:
+
+```bash
+npm test
+```
+
+Para ejecutar las pruebas junto con la cobertura:
+
+```bash
+npm run test:coverage
+```
+
+Las pruebas y cobertura desarrolladas durante la primera entrega se conservan dentro del proyecto.
+
+---
+
+# 🖥️ Ejecución local
+
+Para trabajar con el proyecto localmente se debe tener instalado:
 
 - Node.js
 - npm
 - Git
 
-Si se quiere ejecutar usando contenedores también se debe tener:
-
-- Docker Desktop
-- Docker Compose
-
-## Clonar el proyecto
-
-Primero se debe clonar el repositorio desde GitHub:
+Primero se clona el repositorio:
 
 ```bash
 git clone https://github.com/sgiraldor/hotel-fastify.git
 ```
 
-Después entrar a la carpeta del proyecto:
+Luego se ingresa a la carpeta:
 
 ```bash
 cd hotel-fastify
 ```
 
-## Instalar las dependencias
-
-Para instalar las dependencias del proyecto se ejecuta:
+Se instalan las dependencias:
 
 ```bash
 npm install
 ```
 
-## Variables de entorno
+---
 
-Para trabajar de forma local se debe crear un archivo llamado:
+# 🔐 Variables de entorno
+
+La aplicación utiliza variables de entorno para almacenar configuraciones que no deben escribirse directamente dentro del código.
+
+Para desarrollo local se utiliza un archivo:
 
 ```text
 .env
 ```
 
-En este archivo se colocan los datos necesarios para conectarse a MySQL.
-
-Ejemplo:
+Ejemplo de la configuración utilizada por la V1:
 
 ```env
 DB_HOST=localhost
@@ -93,35 +590,49 @@ DB_PASSWORD=contraseña
 DB_NAME=hotel
 ```
 
-Los valores pueden cambiar dependiendo de la configuración de MySQL que tenga cada persona.
+Las variables necesarias para la V2 se irán incorporando conforme se implementen las conexiones con los diferentes servicios.
 
-## Ejecutar el proyecto
+Los secretos y credenciales reales no deben almacenarse directamente en el repositorio.
 
-Para iniciar el proyecto en modo desarrollo se utiliza:
+---
+
+# ▶️ Ejecutar la API
+
+Para iniciar el proyecto localmente en modo desarrollo:
 
 ```bash
 npm run dev
 ```
 
-La aplicación se ejecuta normalmente en:
+La aplicación normalmente estará disponible en:
 
 ```text
 http://localhost:3000
 ```
 
-Para verificar que la API está funcionando se puede hacer una petición GET a:
+Para comprobar que el servidor está funcionando se puede realizar:
 
 ```text
-/
+GET /
 ```
 
-La respuesta debe ser parecida a:
+La respuesta esperada es similar a:
 
 ```json
 {
   "message": "Hotel funcionando"
 }
 ```
+
+---
+
+# 📚 API V1 - Documentación histórica
+
+Las siguientes rutas corresponden a la primera entrega del proyecto.
+
+Se conservan dentro del README como documentación de la evolución de Hotel API.
+
+---
 
 ## Rutas de Huesped
 
@@ -137,7 +648,7 @@ Consultar todos los huéspedes:
 GET /huesped
 ```
 
-Consultar un huésped por su id:
+Consultar un huésped por ID:
 
 ```text
 GET /huesped/:id
@@ -155,6 +666,8 @@ Eliminar un huésped:
 DELETE /huesped/:id
 ```
 
+---
+
 ## Rutas de Habitacion
 
 Crear una habitación:
@@ -169,7 +682,7 @@ Consultar todas las habitaciones:
 GET /habitacion
 ```
 
-Consultar una habitación por su id:
+Consultar una habitación por ID:
 
 ```text
 GET /habitacion/:id
@@ -187,6 +700,8 @@ Eliminar una habitación:
 DELETE /habitacion/:id
 ```
 
+---
+
 ## Rutas de CheckIn
 
 Crear un check-in:
@@ -201,7 +716,7 @@ Consultar los check-ins:
 GET /checkin
 ```
 
-Consultar un check-in por su id:
+Consultar un check-in por ID:
 
 ```text
 GET /checkin/:id
@@ -219,198 +734,165 @@ Eliminar un check-in:
 DELETE /checkin/:id
 ```
 
-## Pruebas
+---
 
-El proyecto tiene pruebas unitarias y pruebas de integración realizadas con Vitest.
+# 🐳 Docker - V1
 
-Para ejecutar las pruebas se utiliza:
+Durante la primera entrega el proyecto podía ejecutarse utilizando Docker.
 
-```bash
-npm test
-```
+Docker se utilizó para levantar la API y MySQL mediante contenedores.
 
-Para ejecutar las pruebas y mirar la cobertura se utiliza:
-
-```bash
-npm run test:coverage
-```
-
-Actualmente el proyecto tiene más del 85% de cobertura general.
-
-## Docker
-
-El proyecto también se puede ejecutar usando Docker.
-
-Se utiliza Docker para levantar la API y la base de datos MySQL en contenedores.
-
-Para construir y levantar los contenedores se utiliza:
+Para construir los contenedores se utilizaba:
 
 ```bash
 docker compose up --build
 ```
 
-Para mirar los contenedores que están funcionando:
+Para consultar los contenedores:
 
 ```bash
 docker compose ps
 ```
 
-Se deben mostrar los servicios de la API y MySQL.
-
-Por ejemplo:
-
-```text
-hotel-api
-hotel-mysql
-```
-
-La API queda disponible en:
-
-```text
-http://localhost:3000
-```
-
-Para detener los contenedores se utiliza:
+Y para detenerlos:
 
 ```bash
 docker compose down
 ```
 
-## Base de datos
+> Esta configuración pertenece a la V1. La infraestructura objetivo de la V2 utiliza Kubernetes.
 
-El proyecto utiliza MySQL como base de datos.
+---
 
-Las tablas principales son:
+# ⚙️ GitHub Actions - V1
 
-```text
-huesped
-habitacion
-checkin
-```
+La primera entrega utilizó GitHub Actions para ejecutar automáticamente pipelines.
 
-Estas tablas permiten guardar la información utilizada por la API.
-
-## GitHub Actions
-
-El proyecto utiliza GitHub Actions para ejecutar los pipelines automáticamente.
-
-Se crearon dos pipelines:
+Se crearon:
 
 ```text
 Pipeline de Pruebas
-Pipeline de Produccion
+Pipeline de Producción
 ```
 
-Cada pipeline tiene su propio ambiente.
-
-## Pipeline de Pruebas
-
-El pipeline de pruebas se ejecuta cuando se realiza un push a la rama main.
-
-Este pipeline realiza los siguientes pasos:
-
-1. Descarga el código del repositorio.
-2. Configura Node.js.
-3. Instala las dependencias.
-4. Compila el proyecto.
-5. Ejecuta las pruebas.
-6. Ejecuta la cobertura.
-7. Si todo funciona correctamente, realiza el despliegue al ambiente de pruebas.
-
-El ambiente de pruebas debe tener mínimo 60% de cobertura.
-
-Si alguna prueba falla, el pipeline se detiene y no realiza el despliegue.
-
-## Pipeline de Produccion
-
-El pipeline de producción también realiza varias verificaciones antes de desplegar la aplicación.
-
-Los pasos principales son:
+Los pipelines realizaban tareas como:
 
 1. Descargar el código.
 2. Configurar Node.js.
-3. Instalar las dependencias.
+3. Instalar dependencias.
 4. Compilar el proyecto.
-5. Ejecutar las pruebas.
-6. Revisar la cobertura.
-7. Desplegar la aplicación en producción.
+5. Ejecutar pruebas.
+6. Revisar cobertura.
+7. Realizar el despliegue.
 
-Para producción se configuró un Quality Gate de mínimo 85% de cobertura.
+En la V2 estos pipelines se encuentran desactivados.
 
-Si no se alcanza ese porcentaje o alguna prueba falla, el pipeline se detiene y no se realiza el despliegue.
-
-## Ambientes
-
-El proyecto tiene dos ambientes separados:
-
-### Ambiente de pruebas
-
-Se utiliza para probar los cambios antes de considerarlos listos para producción.
-
-### Ambiente de producción
-
-Es el ambiente donde se encuentra la versión final de la aplicación.
-
-Los dos ambientes tienen configuración independiente en Railway.
-
-## Railway
-
-Railway se utilizó para desplegar la aplicación y las bases de datos MySQL.
-
-La aplicación de producción se encuentra en:
+Su configuración histórica se conserva en:
 
 ```text
-https://hotel-production-4bd4.up.railway.app
+.github/workflows-disabled/
 ```
 
-Para comprobar que está funcionando se puede entrar a esa dirección y debe aparecer:
+---
 
-```json
-{
-  "message": "Hotel funcionando"
-}
-```
+# 🚂 Railway - V1
 
-Los despliegues se realizan desde los pipelines usando Railway CLI.
+Durante la primera entrega Railway fue utilizado para desplegar la aplicación y las bases de datos MySQL.
 
-Los tokens necesarios para realizar los despliegues están guardados como Secrets en GitHub y no directamente dentro del código.
+La aplicación V1 fue desplegada en Railway y los despliegues se realizaban utilizando los pipelines configurados con GitHub Actions.
 
-## Estructura del proyecto
+Los tokens necesarios para los despliegues se almacenaban como Secrets y no directamente dentro del código.
 
-De forma general el proyecto está organizado así:
+> Railway corresponde a la arquitectura de la V1 y no será el proveedor principal de despliegue de Hotel API V2.
+
+---
+
+# 🏷️ Historial de versiones
+
+## v1.0.0
+
+Primera entrega de Hotel API.
+
+Incluye:
+
+- API REST.
+- Huesped.
+- Habitacion.
+- CheckIn.
+- Fastify.
+- TypeORM.
+- MySQL.
+- Pruebas.
+- Coverage.
+- Docker.
+- GitHub Actions.
+- Railway.
+- Ambientes de pruebas y producción.
+
+---
+
+## v2.0.0 - En desarrollo
+
+Segunda entrega del proyecto.
+
+La versión V2 incorporará progresivamente:
+
+- API `/api/v2`.
+- Oracle Cloud Infrastructure.
+- Kubernetes.
+- Integración multicloud.
+- Consumo de entidades externas.
+- MS Orquestador.
+- Cola / Tópico.
+- Caché distribuida.
+- Object Storage.
+- `trace-id`.
+- OpenTelemetry.
+- Métricas.
+- Logs centralizados.
+- Trazas distribuidas.
+- Alertas.
+- Dashboard de observabilidad.
+
+---
+
+# 🎯 Objetivo de la V2
+
+El objetivo de esta nueva versión es evolucionar Hotel API desde una API desplegada de manera tradicional hacia una solución distribuida capaz de comunicarse con servicios desplegados en diferentes proveedores de nube.
+
+La arquitectura final deberá integrar:
 
 ```text
-hotel-fastify/
-│
-├── .github/
-│   └── workflows/
-│
-├── docker/
-│
-├── src/
-│   ├── config/
-│   ├── entities/
-│   ├── routes/
-│   └── utils/
-│
-├── tests/
-│   └── integration/
-│
-├── Dockerfile
-├── docker-compose.yml
-├── package.json
-├── tsconfig.json
-└── README.md
+                 Cliente / Postman
+                         |
+                         v
+                 API Gateway / DNS
+                         |
+                         v
+                  MS Orquestador
+                    /        \
+                   /          \
+                  v            v
+           Cola / Tópico    APIs V2
+                              |
+                    ---------------------
+                    |         |         |
+                    v         v         v
+                   OCI      Azure      GCP
+                    |         |         |
+                    ---------------------
+                              |
+                              v
+                     Observabilidad
+                  Métricas - Logs - Traces
 ```
 
-## Resumen
+De esta forma, el proyecto permitirá demostrar conceptos de arquitectura multicloud, Kubernetes, integración de servicios, mensajería, reutilización de APIs y observabilidad distribuida.
 
-Con este proyecto se realizó una API REST para un hotel utilizando Fastify y MySQL.
+---
 
-También se agregaron pruebas automáticas, cobertura de código, Docker y dos pipelines de CI/CD.
+# 👨‍💻 Autor
 
-Los pipelines permiten comprobar que el proyecto funciona antes de realizar los despliegues en los ambientes de pruebas y producción.
+**Samuel Giraldo**
 
-## Autor
-
-Samuel Giraldo
+Énfasis DevOps 2026-2
