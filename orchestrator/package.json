@@ -1,13 +1,16 @@
 {
   "name": "orchestrator",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Microservicio orquestador para integrar las APIs del proyecto",
+  "main": "dist/server.js",
   "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Samuel Giraldo",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
