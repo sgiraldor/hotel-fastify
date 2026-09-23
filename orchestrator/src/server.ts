@@ -1,12 +1,14 @@
 import fastify from 'fastify';
 import dotenv from 'dotenv';
-
+import { hotelRoutes } from './routes/hotel.routes';
 
 dotenv.config();
 
 const app = fastify({
     logger: true,
 });
+
+app.register(hotelRoutes);
 
 
 app.get('/', async () =>{
