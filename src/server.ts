@@ -7,9 +7,11 @@ import { checkinRoutes } from './routes/checkin.routes';
 import { huespedV2Routes } from './routes/v2/huesped-v2.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
 import { checkinV2Routes } from './routes/v2/checkin-v2.routes';
+import { traceIdHook } from './plugins/trace-id.plugin';
 
 const app = fastify();
 
+app.addHook('onRequest', traceIdHook);
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
