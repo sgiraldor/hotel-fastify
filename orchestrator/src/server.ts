@@ -2,7 +2,7 @@ import fastify from 'fastify';
 import 'dotenv/config';
 import { hotelRoutes } from './routes/hotel.routes';
 import { sportsRoutes } from './routes/sports.routes';
-
+import { cineRoutes } from './routes/cine.routes';
 
 
 const app = fastify({
@@ -11,6 +11,7 @@ const app = fastify({
 
 app.register(hotelRoutes);
 app.register(sportsRoutes);
+app.register(cineRoutes);
 
 
 app.get('/', async () =>{
