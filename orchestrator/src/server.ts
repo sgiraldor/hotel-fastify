@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { hotelRoutes } from './routes/hotel.routes';
 import { sportsRoutes } from './routes/sports.routes';
 import { cineRoutes } from './routes/cine.routes';
-
+import { orchestratorRoutes } from './routes/orchestrator.routes';
 
 const app = fastify({
     logger: true,
@@ -12,7 +12,7 @@ const app = fastify({
 app.register(hotelRoutes);
 app.register(sportsRoutes);
 app.register(cineRoutes);
-
+app.register(orchestratorRoutes);
 
 app.get('/', async () =>{
     return{

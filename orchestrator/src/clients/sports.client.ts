@@ -20,3 +20,23 @@ export async function obtenerJugadorPorId(
 
     return response.json();
 }
+
+export async function obtenerTorneos(
+    traceId: string
+) {
+    const url = `${apiConfig.gcp.baseUrl}/api/v2/torneos`;
+
+    const response = await fetch(url, {
+        headers: {
+            'x-trace-id': traceId,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Error consultando torneos en Sports API: ${response.status}`
+        );
+    }
+
+    return response.json();
+}
