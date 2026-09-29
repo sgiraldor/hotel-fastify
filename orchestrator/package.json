@@ -15,7 +15,9 @@
   "type": "commonjs",
   "dependencies": {
     "dotenv": "^18.0.3",
-    "fastify": "^5.12.5"
+    "fastify": "^5.12.5",
+    "oci-common": "^2.142.1",
+    "oci-queue": "^2.142.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

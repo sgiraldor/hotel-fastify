@@ -13,6 +13,8 @@ import {
   obtenerPeliculas,
 } from '../clients/cine.client';
 
+import { publicarMensaje } from '../clients/queue.client';
+
 
 // ----------------------------------------------------
 // FLUJO ORIGINAL POR ID
@@ -57,6 +59,26 @@ function seleccionarAleatorio<T>(elementos: T[]): T {
 
 
 // ----------------------------------------------------
+// PUBLICAR RESULTADO EN OCI QUEUE
+// ----------------------------------------------------
+
+async function publicarResultadoEnCola(
+  origen: 'hotel' | 'sports' | 'cine',
+  resultado: unknown,
+  traceId: string
+) {
+
+  await publicarMensaje({
+    traceId,
+    tipo: 'flujo-orquestado',
+    origen,
+    data: resultado,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+
+// ----------------------------------------------------
 // FLUJO DINAMICO
 // ----------------------------------------------------
 
@@ -82,13 +104,21 @@ export async function ejecutarFlujoDinamico(
     const torneoAleatorio = seleccionarAleatorio(torneos);
     const peliculaAleatoria = seleccionarAleatorio(peliculas);
 
-    return {
+    const resultado = {
       traceId,
       origen,
       habitacion: data,
       torneo: torneoAleatorio,
       pelicula: peliculaAleatoria,
     };
+
+    await publicarResultadoEnCola(
+      origen,
+      resultado,
+      traceId
+    );
+
+    return resultado;
   }
 
 
@@ -108,13 +138,21 @@ export async function ejecutarFlujoDinamico(
     const habitacionAleatoria = seleccionarAleatorio(habitaciones);
     const peliculaAleatoria = seleccionarAleatorio(peliculas);
 
-    return {
+    const resultado = {
       traceId,
       origen,
       habitacion: habitacionAleatoria,
       torneo: data,
       pelicula: peliculaAleatoria,
     };
+
+    await publicarResultadoEnCola(
+      origen,
+      resultado,
+      traceId
+    );
+
+    return resultado;
   }
 
 
@@ -134,13 +172,21 @@ export async function ejecutarFlujoDinamico(
     const habitacionAleatoria = seleccionarAleatorio(habitaciones);
     const torneoAleatorio = seleccionarAleatorio(torneos);
 
-    return {
+    const resultado = {
       traceId,
       origen,
       habitacion: habitacionAleatoria,
       torneo: torneoAleatorio,
       pelicula: data,
     };
+
+    await publicarResultadoEnCola(
+      origen,
+      resultado,
+      traceId
+    );
+
+    return resultado;
   }
 
 

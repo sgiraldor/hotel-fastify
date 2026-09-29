@@ -4,6 +4,7 @@ import { hotelRoutes } from './routes/hotel.routes';
 import { sportsRoutes } from './routes/sports.routes';
 import { cineRoutes } from './routes/cine.routes';
 import { orchestratorRoutes } from './routes/orchestrator.routes';
+import { queueRoutes } from './routes/queue.routes';
 
 const app = fastify({
     logger: true,
@@ -13,6 +14,7 @@ app.register(hotelRoutes);
 app.register(sportsRoutes);
 app.register(cineRoutes);
 app.register(orchestratorRoutes);
+app.register(queueRoutes);
 
 app.get('/', async () =>{
     return{
