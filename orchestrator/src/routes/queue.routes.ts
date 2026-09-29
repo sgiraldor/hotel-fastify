@@ -1,8 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { randomUUID } from 'crypto';
 import { publicarMensaje } from '../clients/queue.client';
+import { consumirMensajes } from '../services/queue-consumer.service';
 
 export async function queueRoutes(app: FastifyInstance) {
+
+  // --------------------------------------------------
+  // PUBLICAR MENSAJE DE PRUEBA
+  // --------------------------------------------------
 
   app.post('/api/v2/queue/test', async (request, reply) => {
 
@@ -41,8 +46,51 @@ export async function queueRoutes(app: FastifyInstance) {
         traceId,
       });
 
+      reply.header('x-trace-id', traceId);
+
       return reply.code(500).send({
         message: 'Error enviando mensaje a OCI Queue',
+        traceId,
+      });
+    }
+  });
+
+
+  // --------------------------------------------------
+  // CONSUMIR MENSAJES DE LA COLA
+  // --------------------------------------------------
+
+  app.post('/api/v2/queue/consume', async (request, reply) => {
+
+    const incomingTraceId = request.headers['x-trace-id'];
+
+    const traceId =
+      typeof incomingTraceId === 'string'
+        ? incomingTraceId
+        : randomUUID();
+
+    try {
+
+      const resultado = await consumirMensajes();
+
+      reply.header('x-trace-id', traceId);
+
+      return reply.code(200).send({
+        traceId,
+        ...resultado,
+      });
+
+    } catch (error) {
+
+      app.log.error({
+        error,
+        traceId,
+      });
+
+      reply.header('x-trace-id', traceId);
+
+      return reply.code(500).send({
+        message: 'Error consumiendo mensajes de OCI Queue',
         traceId,
       });
     }
