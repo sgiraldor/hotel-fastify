@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-orchestrator
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: hotel-orchestrator
+
+  template:
+    metadata:
+      labels:
+        app: hotel-orchestrator
+
+    spec:
+      serviceAccountName: orchestrator-sa
+
+      imagePullSecrets:
+        - name: ocirsecret
+
+      containers:
+        - name: hotel-orchestrator
+          image: bog.ocir.io/axtqtuusylqm/hotel-orchestrator:1.3
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 4000
+
+          envFrom:
+            - configMapRef:
+                name: orchestrator-config
+
+          env:
+            - name: OCI_QUEUE_OCID
+              valueFrom:
+                secretKeyRef:
+                  name: orchestrator-secrets
+                  key: OCI_QUEUE_OCID
+
+          volumeMounts:
+            - name: oci-auth
+              mountPath: /root/.oci
+              readOnly: true
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+
+      volumes:
+        - name: oci-auth
+          secret:
+            secretName: orchestrator-oci-auth
