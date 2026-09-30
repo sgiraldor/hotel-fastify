@@ -23,8 +23,7 @@ spec:
       containers:
         - name: hotel-orchestrator
           image: bog.ocir.io/axtqtuusylqm/hotel-orchestrator:1.5
-          imagePullPolicy: IfNotPresent
-
+          imagePullPolicy: Always
           ports:
             - containerPort: 4000
 
