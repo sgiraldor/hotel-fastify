@@ -1,18 +1,58 @@
 import * as common from 'oci-common';
 import * as queue from 'oci-queue';
 
-const configFile =
-  process.env.OCI_CONFIG_FILE ||
-  `${process.env.USERPROFILE}\\.oci\\config`;
+// ----------------------------------------------------
+// AUTENTICACION OCI
+// ----------------------------------------------------
 
-const profile =
-  process.env.OCI_CONFIG_PROFILE || 'DEFAULT';
+function crearProveedorAutenticacion() {
 
-const provider =
-  new common.ConfigFileAuthenticationDetailsProvider(
+  // El modo de autenticacion se controla explicitamente
+  // mediante la variable OCI_AUTH_MODE.
+  //
+  // config   -> archivo config + llave privada
+  // workload -> OKE Workload Identity
+  //
+  // Por defecto usamos config.
+  const authMode =
+    process.env.OCI_AUTH_MODE || 'config';
+
+  if (authMode === 'workload') {
+
+    console.log(
+      'OCI Auth: usando OKE Workload Identity'
+    );
+
+    return common
+      .OkeWorkloadIdentityAuthenticationDetailsProvider
+      .builder(
+        '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt',
+        '/var/run/secrets/kubernetes.io/serviceaccount/token'
+      );
+  }
+
+  // --------------------------------------------------
+  // AUTENTICACION POR ARCHIVO DE CONFIGURACION
+  // --------------------------------------------------
+
+  const configFile =
+    process.env.OCI_CONFIG_FILE ||
+    `${process.env.USERPROFILE}\\.oci\\config`;
+
+  const profile =
+    process.env.OCI_CONFIG_PROFILE || 'DEFAULT';
+
+  console.log(
+    'OCI Auth: usando archivo de configuracion'
+  );
+
+  return new common.ConfigFileAuthenticationDetailsProvider(
     configFile,
     profile
   );
+}
+
+const provider = crearProveedorAutenticacion();
 
 const client = new queue.QueueClient({
   authenticationDetailsProvider: provider,
