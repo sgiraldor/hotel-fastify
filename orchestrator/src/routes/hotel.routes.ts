@@ -1,10 +1,14 @@
 import { FastifyInstance } from 'fastify';
 import { obtenerHuespedPorId } from '../clients/hotel.client';
+import { traceIdDeLaPeticion } from '../plugins/trace-id.plugin';
 
 export async function hotelRoutes(app: FastifyInstance) {
   app.get<{ Params: { id: string } }>(
     '/api/v2/hotel/huesped/:id',
     async (request, reply) => {
+      const traceId = traceIdDeLaPeticion(request);
+      reply.header('x-trace-id', traceId);
+
       try {
         const id = Number(request.params.id);
 
@@ -14,7 +18,7 @@ export async function hotelRoutes(app: FastifyInstance) {
           });
         }
 
-        const huesped = await obtenerHuespedPorId(id);
+        const huesped = await obtenerHuespedPorId(id, traceId);
 
         return reply.code(200).send(huesped);
       } catch (error) {

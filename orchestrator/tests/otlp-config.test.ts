@@ -1,0 +1,54 @@
+import { afterEach, describe, expect, it } from 'vitest';
+import {
+  exportacionDeMetricasConfigurada,
+  exportacionDeTrazasConfigurada,
+} from '../src/observability/otlp-config';
+
+const variables = [
+  'OTEL_TRACES_EXPORTER',
+  'OTEL_METRICS_EXPORTER',
+  'OTEL_EXPORTER_OTLP_ENDPOINT',
+  'OTEL_EXPORTER_OTLP_TRACES_ENDPOINT',
+  'OTEL_EXPORTER_OTLP_METRICS_ENDPOINT',
+];
+
+const respaldo = new Map<string, string | undefined>();
+
+describe('configuracion OTLP', () => {
+  afterEach(() => {
+    for (const variable of variables) {
+      const valor = respaldo.get(variable);
+      if (valor === undefined) {
+        delete process.env[variable];
+      } else {
+        process.env[variable] = valor;
+      }
+    }
+    respaldo.clear();
+  });
+
+  function limpiar() {
+    for (const variable of variables) {
+      respaldo.set(variable, process.env[variable]);
+      delete process.env[variable];
+    }
+  }
+
+  it('no exporta cuando no hay endpoint', () => {
+    limpiar();
+    expect(exportacionDeTrazasConfigurada()).toBe(false);
+    expect(exportacionDeMetricasConfigurada()).toBe(false);
+  });
+
+  it('exporta cuando el endpoint estandar esta definido y none lo apaga', () => {
+    limpiar();
+    process.env.OTEL_EXPORTER_OTLP_ENDPOINT = 'https://otlp.example';
+    expect(exportacionDeTrazasConfigurada()).toBe(true);
+    expect(exportacionDeMetricasConfigurada()).toBe(true);
+
+    process.env.OTEL_TRACES_EXPORTER = 'none';
+    process.env.OTEL_METRICS_EXPORTER = 'none';
+    expect(exportacionDeTrazasConfigurada()).toBe(false);
+    expect(exportacionDeMetricasConfigurada()).toBe(false);
+  });
+});

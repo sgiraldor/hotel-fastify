@@ -1,9 +1,9 @@
 import { FastifyInstance } from 'fastify';
-import { randomUUID } from 'crypto';
 import {
   ejecutarFlujoOrquestado,
   ejecutarFlujoDinamico,
 } from '../services/orchestrator.service';
+import { traceIdDeLaPeticion } from '../plugins/trace-id.plugin';
 
 interface FlujoDinamicoBody {
   origen: 'hotel' | 'sports' | 'cine';
@@ -27,12 +27,7 @@ export async function orchestratorRoutes(app: FastifyInstance) {
           peliculaId: string;
         };
 
-      const incomingTraceId = request.headers['x-trace-id'];
-
-      const traceId =
-        typeof incomingTraceId === 'string'
-          ? incomingTraceId
-          : randomUUID();
+      const traceId = traceIdDeLaPeticion(request);
 
       try {
 
@@ -74,12 +69,7 @@ export async function orchestratorRoutes(app: FastifyInstance) {
     '/api/v2/orchestrator/dinamico',
     async (request, reply) => {
 
-      const incomingTraceId = request.headers['x-trace-id'];
-
-      const traceId =
-        typeof incomingTraceId === 'string'
-          ? incomingTraceId
-          : randomUUID();
+      const traceId = traceIdDeLaPeticion(request);
 
       try {
 

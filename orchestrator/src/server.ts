@@ -1,14 +1,26 @@
-import fastify from 'fastify';
 import 'dotenv/config';
+import './observability/otel';
+import fastify from 'fastify';
 import { hotelRoutes } from './routes/hotel.routes';
 import { sportsRoutes } from './routes/sports.routes';
 import { cineRoutes } from './routes/cine.routes';
 import { orchestratorRoutes } from './routes/orchestrator.routes';
 import { queueRoutes } from './routes/queue.routes';
+import { camposDeCorrelacion } from './observability/log-context';
+import { registrarMetricasHttp } from './observability/http-metrics';
+import { iniciarGaugePendiente } from './observability/queue-metrics';
 
 const app = fastify({
-    logger: true,
+    logger: {
+        level: 'info',
+        mixin() {
+            return camposDeCorrelacion();
+        },
+    },
 });
+
+registrarMetricasHttp(app, 'hotel-orchestrator');
+iniciarGaugePendiente();
 
 app.register(hotelRoutes);
 app.register(sportsRoutes);

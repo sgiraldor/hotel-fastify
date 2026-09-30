@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import { randomUUID } from 'crypto';
 import { publicarMensaje } from '../clients/queue.client';
 import { consumirMensajes } from '../services/queue-consumer.service';
+import { traceIdDeLaPeticion } from '../plugins/trace-id.plugin';
 
 export async function queueRoutes(app: FastifyInstance) {
 
@@ -11,12 +11,7 @@ export async function queueRoutes(app: FastifyInstance) {
 
   app.post('/api/v2/queue/test', async (request, reply) => {
 
-    const incomingTraceId = request.headers['x-trace-id'];
-
-    const traceId =
-      typeof incomingTraceId === 'string'
-        ? incomingTraceId
-        : randomUUID();
+    const traceId = traceIdDeLaPeticion(request);
 
     try {
 
@@ -62,12 +57,7 @@ export async function queueRoutes(app: FastifyInstance) {
 
   app.post('/api/v2/queue/consume', async (request, reply) => {
 
-    const incomingTraceId = request.headers['x-trace-id'];
-
-    const traceId =
-      typeof incomingTraceId === 'string'
-        ? incomingTraceId
-        : randomUUID();
+    const traceId = traceIdDeLaPeticion(request);
 
     try {
 

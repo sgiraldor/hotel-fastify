@@ -1,3 +1,4 @@
+import './observability/otel';
 import 'reflect-metadata';
 import fastify from 'fastify';
 import { AppDataSource } from './config/database';
@@ -8,10 +9,20 @@ import { huespedV2Routes } from './routes/v2/huesped-v2.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
 import { checkinV2Routes } from './routes/v2/checkin-v2.routes';
 import { traceIdHook } from './plugins/trace-id.plugin';
+import { camposDeCorrelacion } from './observability/log-context';
+import { registrarMetricasHttp } from './observability/http-metrics';
 
-const app = fastify();
+const app = fastify({
+  logger: {
+    level: 'info',
+    mixin() {
+      return camposDeCorrelacion();
+    },
+  },
+});
 
 app.addHook('onRequest', traceIdHook);
+registrarMetricasHttp(app, 'hotel-api');
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);

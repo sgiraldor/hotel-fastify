@@ -1,5 +1,12 @@
 import * as common from 'oci-common';
 import * as queue from 'oci-queue';
+import {
+  context,
+  propagation,
+  SpanKind,
+  SpanStatusCode,
+  trace,
+} from '@opentelemetry/api';
 
 // ----------------------------------------------------
 // AUTENTICACION OCI
@@ -73,6 +80,7 @@ export interface QueueMessage {
   origen: string;
   data: unknown;
   timestamp: string;
+  otel?: Record<string, string>;
 }
 
 
@@ -92,20 +100,54 @@ export async function publicarMensaje(
     );
   }
 
-  const request: queue.requests.PutMessagesRequest = {
-    queueId,
-    putMessagesDetails: {
-      messages: [
-        {
-          content: JSON.stringify(mensaje),
-        },
-      ],
+  // MessageMetadata.customProperties existe en oci-queue 2.142,
+  // pero channelId es obligatorio. Publicar un channelId cambiaria
+  // el canal del mensaje. El contexto W3C viaja en el JSON, en
+  // otel, sin quitar los campos funcionales. propagation.inject
+  // escribe traceparent y tracestate; no se arma el header a mano.
+  return trace.getTracer('hotel-orchestrator').startActiveSpan(
+    'publish oci-queue',
+    {
+      kind: SpanKind.PRODUCER,
+      attributes: {
+        'messaging.system': 'oci_queue',
+        'messaging.operation.type': 'publish',
+        'messaging.destination.name': 'oci-queue',
+      },
     },
-  };
+    async (span) => {
+      try {
+        const carrier: Record<string, string> = {};
+        propagation.inject(context.active(), carrier);
 
-  const response = await client.putMessages(request);
+        const request: queue.requests.PutMessagesRequest = {
+          queueId,
+          putMessagesDetails: {
+            messages: [
+              {
+                content: JSON.stringify({
+                  ...mensaje,
+                  otel: carrier,
+                }),
+              },
+            ],
+          },
+        };
 
-  return response;
+        const response = await client.putMessages(request);
+        span.setStatus({ code: SpanStatusCode.OK });
+        return response;
+      } catch (error) {
+        if (error instanceof Error) {
+          span.recordException(error);
+        }
+        span.setStatus({ code: SpanStatusCode.ERROR });
+        throw error;
+      } finally {
+        span.end();
+      }
+    },
+  );
 }
 
 
@@ -165,4 +207,39 @@ export async function eliminarMensaje(
   };
 
   await client.deleteMessage(request);
+}
+
+
+// ----------------------------------------------------
+// MENSAJES PENDIENTES SEGUN OCI GetStats
+// visibleMessages + inFlightMessages.
+// null si no hay OCID o la API no responde: no se inventa 0.
+// ----------------------------------------------------
+
+export async function consultarMensajesPendientes(): Promise<number | null> {
+  const queueId = process.env.OCI_QUEUE_OCID;
+
+  if (!queueId) {
+    return null;
+  }
+
+  try {
+    const response = await client.getStats({ queueId });
+    const stats = response.queueStats?.queue;
+
+    if (
+      !stats ||
+      typeof stats.visibleMessages !== 'number' ||
+      typeof stats.inFlightMessages !== 'number'
+    ) {
+      return null;
+    }
+
+    return stats.visibleMessages + stats.inFlightMessages;
+  } catch {
+    console.error(
+      'No se pudo leer GetStats de OCI Queue',
+    );
+    return null;
+  }
 }

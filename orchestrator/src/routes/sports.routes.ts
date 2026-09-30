@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { randomUUID } from 'crypto';
 import { obtenerJugadorPorId } from '../clients/sports.client';
+import { traceIdDeLaPeticion } from '../plugins/trace-id.plugin';
 
 export async function sportsRoutes(app: FastifyInstance) {
 
@@ -8,12 +8,7 @@ export async function sportsRoutes(app: FastifyInstance) {
 
         const { id } = request.params as { id: string };
 
-        const incomingTraceId = request.headers['x-trace-id'];
-
-        const traceId =
-            typeof incomingTraceId === 'string'
-                ? incomingTraceId
-                : randomUUID();
+        const traceId = traceIdDeLaPeticion(request);
 
         try {
             const jugador = await obtenerJugadorPorId(

@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { randomUUID } from 'crypto';
 import { obtenerPeliculaPorId } from '../clients/cine.client';
+import { traceIdDeLaPeticion } from '../plugins/trace-id.plugin';
 
 export async function cineRoutes(app: FastifyInstance) {
 
@@ -12,12 +12,7 @@ export async function cineRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
 
 
-        const incomingTraceId = request.headers['x-trace-id'];
-
-        const traceId =
-            typeof incomingTraceId === 'string'
-                ? incomingTraceId
-                : randomUUID();
+        const traceId = traceIdDeLaPeticion(request);
 
 
         console.log({
