@@ -16,6 +16,7 @@ import {
 } from '../clients/cine.client';
 
 import { publicarMensaje } from '../clients/queue.client';
+import { saveArtifact } from '../clients/storage.client';
 
 
 // ----------------------------------------------------
@@ -95,6 +96,11 @@ export async function ejecutarFlujoDinamico(
   traceId: string
 ) {
 
+
+  // --------------------------------------------------
+  // ORIGEN HOTEL
+  // --------------------------------------------------
+
   if (origen === 'hotel') {
 
     const [torneos, peliculas] = await Promise.all([
@@ -102,8 +108,10 @@ export async function ejecutarFlujoDinamico(
       obtenerPeliculas(traceId),
     ]);
 
+
     const torneoAleatorio = seleccionarAleatorio(torneos);
     const peliculaAleatoria = seleccionarAleatorio(peliculas);
+
 
     const resultado = {
       traceId,
@@ -113,15 +121,25 @@ export async function ejecutarFlujoDinamico(
       pelicula: peliculaAleatoria,
     };
 
+
+    await saveArtifact(resultado);
+
+
     await publicarResultadoEnCola(
       origen,
       resultado,
       traceId
     );
 
+
     return resultado;
   }
 
+
+
+  // --------------------------------------------------
+  // ORIGEN SPORTS
+  // --------------------------------------------------
 
   if (origen === 'sports') {
 
@@ -130,8 +148,10 @@ export async function ejecutarFlujoDinamico(
       obtenerPeliculas(traceId),
     ]);
 
+
     const habitacionAleatoria = seleccionarAleatorio(habitaciones);
     const peliculaAleatoria = seleccionarAleatorio(peliculas);
+
 
     const resultado = {
       traceId,
@@ -141,15 +161,25 @@ export async function ejecutarFlujoDinamico(
       pelicula: peliculaAleatoria,
     };
 
+
+    await saveArtifact(resultado);
+
+
     await publicarResultadoEnCola(
       origen,
       resultado,
       traceId
     );
 
+
     return resultado;
   }
 
+
+
+  // --------------------------------------------------
+  // ORIGEN CINE
+  // --------------------------------------------------
 
   if (origen === 'cine') {
 
@@ -158,8 +188,10 @@ export async function ejecutarFlujoDinamico(
       obtenerTorneos(traceId),
     ]);
 
+
     const habitacionAleatoria = seleccionarAleatorio(habitaciones);
     const torneoAleatorio = seleccionarAleatorio(torneos);
+
 
     const resultado = {
       traceId,
@@ -169,11 +201,16 @@ export async function ejecutarFlujoDinamico(
       pelicula: data,
     };
 
+
+    await saveArtifact(resultado);
+
+
     await publicarResultadoEnCola(
       origen,
       resultado,
       traceId
     );
+
 
     return resultado;
   }
