@@ -10,4 +10,8 @@ export const apiConfig = {
   gcp: {
     baseUrl: process.env.GCP_API_URL || '',
   },
+
+  cache: {
+    baseUrl: process.env.CACHE_API_URL || '',
+  },
 }; 
