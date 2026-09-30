@@ -1,3 +1,5 @@
+import { FastifyBaseLogger } from 'fastify';
+
 import {
   obtenerHabitacionPorId,
   obtenerHabitaciones,
@@ -24,13 +26,18 @@ export async function ejecutarFlujoOrquestado(
   habitacionId: number,
   jugadorId: number,
   peliculaId: number,
-  traceId: string
+  traceId: string,
+  log: FastifyBaseLogger
 ) {
 
   const [habitacion, jugador, pelicula] = await Promise.all([
     obtenerHabitacionPorId(habitacionId, traceId),
     obtenerJugadorPorId(jugadorId, traceId),
-    obtenerPeliculaPorId(peliculaId, traceId),
+    obtenerPeliculaPorId(
+      peliculaId,
+      traceId,
+      log
+    ),
   ]);
 
   return {
@@ -88,12 +95,6 @@ export async function ejecutarFlujoDinamico(
   traceId: string
 ) {
 
-  // --------------------------------------------------
-  // SI EL ORIGEN ES HOTEL
-  // Conservamos la habitacion recibida.
-  // Buscamos torneo y pelicula aleatorios.
-  // --------------------------------------------------
-
   if (origen === 'hotel') {
 
     const [torneos, peliculas] = await Promise.all([
@@ -122,12 +123,6 @@ export async function ejecutarFlujoDinamico(
   }
 
 
-  // --------------------------------------------------
-  // SI EL ORIGEN ES SPORTS
-  // Conservamos el torneo recibido.
-  // Buscamos habitacion y pelicula aleatorias.
-  // --------------------------------------------------
-
   if (origen === 'sports') {
 
     const [habitaciones, peliculas] = await Promise.all([
@@ -155,12 +150,6 @@ export async function ejecutarFlujoDinamico(
     return resultado;
   }
 
-
-  // --------------------------------------------------
-  // SI EL ORIGEN ES CINE
-  // Conservamos la pelicula recibida.
-  // Buscamos habitacion y torneo aleatorios.
-  // --------------------------------------------------
 
   if (origen === 'cine') {
 

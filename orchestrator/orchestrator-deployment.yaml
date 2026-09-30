@@ -22,7 +22,7 @@ spec:
 
       containers:
         - name: hotel-orchestrator
-          image: bog.ocir.io/axtqtuusylqm/hotel-orchestrator:1.3
+          image: bog.ocir.io/axtqtuusylqm/hotel-orchestrator:1.4
           imagePullPolicy: IfNotPresent
 
           ports:

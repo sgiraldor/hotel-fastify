@@ -1,3 +1,4 @@
+import { FastifyBaseLogger } from 'fastify';
 import { apiConfig } from '../config/apis.config';
 import {
   obtenerCache,
@@ -11,10 +12,19 @@ import {
 
 export async function obtenerPeliculaPorId(
   id: number,
-  traceId: string
+  traceId: string,
+  log: FastifyBaseLogger
 ) {
 
   const cacheKey = `pelicula:${id}`;
+
+
+  log.info({
+    evento: 'consulta_cache',
+    key: cacheKey,
+    traceId,
+  });
+
 
 
   // -----------------------------
@@ -27,11 +37,33 @@ export async function obtenerPeliculaPorId(
   );
 
 
+  log.info({
+    evento: 'respuesta_cache',
+    hit: cache.hit,
+    traceId,
+  });
+
+
+
   if (cache.hit) {
+
+    log.info({
+      evento: 'cache_hit',
+      key: cacheKey,
+      traceId,
+    });
 
     return cache.data.value;
 
   }
+
+
+
+  log.info({
+    evento: 'cache_miss',
+    key: cacheKey,
+    traceId,
+  });
 
 
 
@@ -42,6 +74,14 @@ export async function obtenerPeliculaPorId(
 
   const url =
     `${apiConfig.azure.baseUrl}/peliculas/${id}`;
+
+
+  log.info({
+    evento: 'consultando_cine_api',
+    url,
+    traceId,
+  });
+
 
 
   const response = await fetch(url, {
@@ -63,7 +103,15 @@ export async function obtenerPeliculaPorId(
   }
 
 
+
   const pelicula = await response.json();
+
+
+
+  log.info({
+    evento: 'respuesta_cine_api',
+    traceId,
+  });
 
 
 
@@ -71,12 +119,30 @@ export async function obtenerPeliculaPorId(
   // 3. GUARDAR EN CACHE
   // -----------------------------
 
+  log.info({
+    evento: 'guardando_cache',
+    key: cacheKey,
+    ttl: 300,
+    traceId,
+  });
+
+
+
   await guardarCache(
     cacheKey,
     pelicula,
     traceId,
     300
   );
+
+
+
+  log.info({
+    evento: 'cache_guardado',
+    key: cacheKey,
+    traceId,
+  });
+
 
 
   return pelicula;

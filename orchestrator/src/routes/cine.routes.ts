@@ -34,7 +34,8 @@ export async function cineRoutes(app: FastifyInstance) {
 
             const pelicula = await obtenerPeliculaPorId(
                 Number(id),
-                traceId
+                traceId,
+                app.log
             );
 
 

@@ -40,7 +40,8 @@ export async function orchestratorRoutes(app: FastifyInstance) {
           Number(habitacionId),
           Number(jugadorId),
           Number(peliculaId),
-          traceId
+          traceId,
+          app.log
         );
 
         reply.header('x-trace-id', traceId);
