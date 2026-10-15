@@ -10,3 +10,5 @@ coverage/
 *.tfvars
 *.tfvars.json
 hotel-key.pem
+hotel-github-actions.pem
+hotel-github-actions.pem

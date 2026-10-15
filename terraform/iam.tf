@@ -72,3 +72,21 @@ resource "aws_iam_role_policy" "sqs" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "rds_secret" {
+  name = "${var.project_name}-rds-secret-policy"
+  role = aws_iam_role.ec2.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = aws_db_instance.hotel.master_user_secret[0].secret_arn
+      }
+    ]
+  })
+}

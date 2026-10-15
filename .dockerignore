@@ -1,5 +1,14 @@
-node_modules
+﻿node_modules
 dist
 .git
 .env
 npm-debug.log
+
+# Proyecto e infraestructura que no forman parte de la imagen
+orchestrator
+terraform
+tests
+.github
+docker-compose.yml
+hotel-api-hpa.yaml
+*.pem

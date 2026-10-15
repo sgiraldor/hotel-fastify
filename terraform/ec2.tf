@@ -1,7 +1,7 @@
 ﻿resource "aws_instance" "hotel" {
   ami                    = "ami-0e250e82bbf29831b"
   instance_type          = var.ec2_instance_type
-  key_name               = "hotel-key"
+  key_name               = "hotel-github-actions"
   subnet_id              = aws_subnet.public_a.id
   vpc_security_group_ids = [aws_security_group.ec2.id]
 
