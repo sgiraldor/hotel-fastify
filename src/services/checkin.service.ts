@@ -2,6 +2,7 @@ import { AppDataSource } from '../config/database';
 import { CheckIn } from '../entities/checkin.entity';
 import { Huesped } from '../entities/huesped.entity';
 import { Habitacion } from '../entities/habitacion.entity';
+import { enviarMensajeSQS } from './sqs.service';
 
 interface CrearCheckInData {
   huespedId: number;
@@ -60,6 +61,16 @@ export class CheckInService {
     });
 
     const checkin = await this.checkinRepository.save(nuevoCheckIn);
+
+    await enviarMensajeSQS({
+      evento: 'CHECKIN_CREADO',
+      checkinId: checkin.id,
+      huespedId: datos.huespedId,
+      habitacionId: datos.habitacionId,
+      fechaIngreso: datos.fechaIngreso,
+      fechaSalida: datos.fechaSalida,
+      estadoPago: datos.estadoPago,
+    });
 
     return {
       checkin,
