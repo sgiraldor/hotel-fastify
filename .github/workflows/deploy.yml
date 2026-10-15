@@ -14,6 +14,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t samuel1424/hotel-api:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push samuel1424/hotel-api:latest
+
       - name: Configure SSH
         shell: bash
         run: |
@@ -22,14 +36,50 @@ jobs:
           chmod 600 ~/.ssh/hotel-github-actions.pem
           ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Test SSH connection
+      - name: Deploy to EC2
+        shell: bash
         run: |
           ssh -i ~/.ssh/hotel-github-actions.pem \
             "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "echo 'SSH hacia EC2 funcionando'"
+            "docker pull samuel1424/hotel-api:latest"
 
-      - name: Verify Docker
-        run: |
           ssh -i ~/.ssh/hotel-github-actions.pem \
             "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "docker --version && sudo systemctl is-active docker"
+            "docker rm -f hotel-api 2>/dev/null || true"
+
+          ssh -i ~/.ssh/hotel-github-actions.pem \
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
+            "aws secretsmanager get-secret-value \
+              --region us-east-2 \
+              --secret-id 'arn:aws:secretsmanager:us-east-2:837465732903:secret:rds!db-201e3e39-ea9d-451a-8b50-9b90e4f2e11c-gzdhmX' \
+              --query SecretString \
+              --output text \
+              --no-cli-pager > /tmp/hotel-rds-secret.json"
+
+          ssh -i ~/.ssh/hotel-github-actions.pem \
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
+            "DB_PASSWORD=\$(python3 -c 'import json; print(json.load(open(\"/tmp/hotel-rds-secret.json\"))[\"password\"])') && \
+             docker run -d \
+              --name hotel-api \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              -e DB_HOST='hotel-mysql.c9eceiu2yutv.us-east-2.rds.amazonaws.com' \
+              -e DB_PORT='3306' \
+              -e DB_USER='hoteladmin' \
+              -e DB_PASSWORD=\"\$DB_PASSWORD\" \
+              -e DB_NAME='hotel_db' \
+              -e AWS_REGION='us-east-2' \
+              -e SQS_QUEUE_URL='https://sqs.us-east-2.amazonaws.com/837465732903/hotel-queue' \
+              -e OTEL_TRACES_EXPORTER='none' \
+              -e OTEL_METRICS_EXPORTER='none' \
+              samuel1424/hotel-api:latest"
+
+          ssh -i ~/.ssh/hotel-github-actions.pem \
+            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
+            "rm -f /tmp/hotel-rds-secret.json"
+
+      - name: Verify API
+        shell: bash
+        run: |
+          sleep 10
+          curl --fail http://${{ secrets.EC2_HOST }}:3000/
