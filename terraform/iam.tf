@@ -86,6 +86,13 @@ resource "aws_iam_role_policy" "rds_secret" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = aws_db_instance.hotel.master_user_secret[0].secret_arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances"
+        ]
+        Resource = "*"
       }
     ]
   })

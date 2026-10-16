@@ -41,45 +41,90 @@ jobs:
         run: |
           ssh -i ~/.ssh/hotel-github-actions.pem \
             "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "docker pull samuel1424/hotel-api:latest"
+            'bash -s' <<'REMOTE'
+          set -e
 
-          ssh -i ~/.ssh/hotel-github-actions.pem \
-            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "docker rm -f hotel-api 2>/dev/null || true"
+          REGION="us-east-2"
+          DB_IDENTIFIER="hotel-mysql"
 
-          ssh -i ~/.ssh/hotel-github-actions.pem \
-            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "aws secretsmanager get-secret-value \
-              --region us-east-2 \
-              --secret-id 'arn:aws:secretsmanager:us-east-2:837465732903:secret:rds!db-201e3e39-ea9d-451a-8b50-9b90e4f2e11c-gzdhmX' \
-              --query SecretString \
-              --output text \
-              --no-cli-pager > /tmp/hotel-rds-secret.json"
+          echo "Consultando información actual de RDS..."
 
-          ssh -i ~/.ssh/hotel-github-actions.pem \
-            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "DB_PASSWORD=\$(python3 -c 'import json; print(json.load(open(\"/tmp/hotel-rds-secret.json\"))[\"password\"])') && \
-             docker run -d \
-              --name hotel-api \
-              --restart unless-stopped \
-              -p 3000:3000 \
-              -e DB_HOST='hotel-mysql.c9eceiu2yutv.us-east-2.rds.amazonaws.com' \
-              -e DB_PORT='3306' \
-              -e DB_USER='hoteladmin' \
-              -e DB_PASSWORD=\"\$DB_PASSWORD\" \
-              -e DB_NAME='hotel_db' \
-              -e AWS_REGION='us-east-2' \
-              -e SQS_QUEUE_URL='https://sqs.us-east-2.amazonaws.com/837465732903/hotel-queue' \
-              -e OTEL_TRACES_EXPORTER='none' \
-              -e OTEL_METRICS_EXPORTER='none' \
-              samuel1424/hotel-api:latest"
+          RDS_INFO=$(aws rds describe-db-instances \
+            --region "$REGION" \
+            --db-instance-identifier "$DB_IDENTIFIER" \
+            --output json)
 
-          ssh -i ~/.ssh/hotel-github-actions.pem \
-            "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
-            "rm -f /tmp/hotel-rds-secret.json"
+          DB_HOST=$(echo "$RDS_INFO" | python3 -c 'import json,sys; print(json.load(sys.stdin)["DBInstances"][0]["Endpoint"]["Address"])')
+          DB_USER=$(echo "$RDS_INFO" | python3 -c 'import json,sys; print(json.load(sys.stdin)["DBInstances"][0]["MasterUsername"])')
+          DB_NAME=$(echo "$RDS_INFO" | python3 -c 'import json,sys; print(json.load(sys.stdin)["DBInstances"][0]["DBName"])')
+          RDS_SECRET_ARN=$(echo "$RDS_INFO" | python3 -c 'import json,sys; print(json.load(sys.stdin)["DBInstances"][0]["MasterUserSecret"]["SecretArn"])')
+
+          echo "RDS encontrado: $DB_HOST"
+          echo "Usuario de RDS: $DB_USER"
+          echo "Base de datos: $DB_NAME"
+
+          echo "Obteniendo credenciales actuales de Secrets Manager..."
+
+          aws secretsmanager get-secret-value \
+            --region "$REGION" \
+            --secret-id "$RDS_SECRET_ARN" \
+            --query SecretString \
+            --output text \
+            --no-cli-pager > /tmp/hotel-rds-secret.json
+
+          DB_PASSWORD=$(python3 -c 'import json; print(json.load(open("/tmp/hotel-rds-secret.json"))["password"])')
+
+          echo "Obteniendo URL actual de SQS..."
+
+          SQS_QUEUE_URL=$(aws sqs get-queue-url \
+            --region "$REGION" \
+            --queue-name hotel-queue \
+            --query QueueUrl \
+            --output text)
+
+          echo "SQS encontrado: $SQS_QUEUE_URL"
+
+          echo "Descargando imagen actual de Docker Hub..."
+
+          docker pull samuel1424/hotel-api:latest
+
+          echo "Deteniendo contenedor anterior si existe..."
+
+          docker rm -f hotel-api 2>/dev/null || true
+
+          echo "Iniciando nuevo contenedor..."
+
+          docker run -d \
+            --name hotel-api \
+            --restart unless-stopped \
+            -p 3000:3000 \
+            -e DB_HOST="$DB_HOST" \
+            -e DB_PORT="3306" \
+            -e DB_USER="$DB_USER" \
+            -e DB_PASSWORD="$DB_PASSWORD" \
+            -e DB_NAME="$DB_NAME" \
+            -e AWS_REGION="$REGION" \
+            -e SQS_QUEUE_URL="$SQS_QUEUE_URL" \
+            -e OTEL_TRACES_EXPORTER="none" \
+            -e OTEL_METRICS_EXPORTER="none" \
+            samuel1424/hotel-api:latest
+
+          echo "Esperando que el contenedor inicie..."
+
+          sleep 10
+
+          echo "Estado del contenedor:"
+          docker ps --filter "name=hotel-api"
+
+          echo "Eliminando archivo temporal con las credenciales..."
+
+          rm -f /tmp/hotel-rds-secret.json
+
+          echo "Despliegue en EC2 completado correctamente."
+          REMOTE
 
       - name: Verify API
         shell: bash
         run: |
-          sleep 10
+          sleep 5
           curl --fail http://${{ secrets.EC2_HOST }}:3000/
