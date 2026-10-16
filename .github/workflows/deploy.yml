@@ -48,7 +48,9 @@ jobs:
           REGION="us-east-2"
           DB_IDENTIFIER="hotel-mysql"
 
-          echo "Consultando información actual de RDS..."
+          echo "========================================"
+          echo "CONSULTANDO INFORMACIÓN DE RDS"
+          echo "========================================"
 
           RDS_INFO=$(aws rds describe-db-instances \
             --region "$REGION" \
@@ -64,7 +66,9 @@ jobs:
           echo "Usuario de RDS: $DB_USER"
           echo "Base de datos: $DB_NAME"
 
-          echo "Obteniendo credenciales actuales de Secrets Manager..."
+          echo "========================================"
+          echo "OBTENIENDO CREDENCIALES"
+          echo "========================================"
 
           aws secretsmanager get-secret-value \
             --region "$REGION" \
@@ -75,7 +79,9 @@ jobs:
 
           DB_PASSWORD=$(python3 -c 'import json; print(json.load(open("/tmp/hotel-rds-secret.json"))["password"])')
 
-          echo "Obteniendo URL actual de SQS..."
+          echo "========================================"
+          echo "OBTENIENDO URL DE SQS"
+          echo "========================================"
 
           SQS_QUEUE_URL=$(aws sqs get-queue-url \
             --region "$REGION" \
@@ -85,15 +91,21 @@ jobs:
 
           echo "SQS encontrado: $SQS_QUEUE_URL"
 
-          echo "Descargando imagen actual de Docker Hub..."
+          echo "========================================"
+          echo "DESCARGANDO IMAGEN"
+          echo "========================================"
 
           docker pull samuel1424/hotel-api:latest
 
-          echo "Deteniendo contenedor anterior si existe..."
+          echo "========================================"
+          echo "DETENIENDO CONTENEDOR ANTERIOR"
+          echo "========================================"
 
           docker rm -f hotel-api 2>/dev/null || true
 
-          echo "Iniciando nuevo contenedor..."
+          echo "========================================"
+          echo "INICIANDO CONTENEDOR"
+          echo "========================================"
 
           docker run -d \
             --name hotel-api \
@@ -110,25 +122,43 @@ jobs:
             -e OTEL_METRICS_EXPORTER="none" \
             samuel1424/hotel-api:latest
 
-          echo "Esperando que el contenedor inicie..."
+          echo "========================================"
+          echo "ESPERANDO INICIO DE LA API"
+          echo "========================================"
 
           sleep 10
 
-          echo "Estado del contenedor:"
+          echo "========================================"
+          echo "ESTADO DEL CONTENEDOR"
+          echo "========================================"
+
           docker ps -a --filter "name=hotel-api"
 
-          echo "Información del contenedor:"
           docker inspect hotel-api \
             --format 'Status={{.State.Status}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}}'
 
-          echo "Últimos logs del contenedor:"
+          echo "========================================"
+          echo "PRUEBA INTERNA DE LA API"
+          echo "========================================"
+
+          curl --fail http://localhost:3000/ || true
+
+          echo ""
+          echo "========================================"
+          echo "LOGS DEL CONTENEDOR"
+          echo "========================================"
+
           docker logs hotel-api --tail 100 || true
 
-          echo "Eliminando archivo temporal con las credenciales..."
+          echo "========================================"
+          echo "ELIMINANDO CREDENCIALES TEMPORALES"
+          echo "========================================"
 
           rm -f /tmp/hotel-rds-secret.json
 
-          echo "Despliegue en EC2 completado correctamente."
+          echo "========================================"
+          echo "DESPLIEGUE COMPLETADO"
+          echo "========================================"
 
           REMOTE
 
@@ -136,4 +166,12 @@ jobs:
         shell: bash
         run: |
           sleep 5
+
+          echo "========================================"
+          echo "VERIFICACIÓN EXTERNA DE LA API"
+          echo "========================================"
+
           curl --fail http://${{ secrets.EC2_HOST }}:3000/
+
+          echo ""
+          echo "API funcionando correctamente."
