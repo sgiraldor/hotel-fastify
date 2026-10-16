@@ -1,5 +1,5 @@
-﻿resource "aws_db_subnet_group" "hotel" {
-  name       = "${var.project_name}-db-subnet-group"
+resource "aws_db_subnet_group" "hotel" {
+  name = "${var.project_name}-db-subnet-group"
   subnet_ids = [
     aws_subnet.private_a.id,
     aws_subnet.private_b.id
@@ -32,10 +32,10 @@ resource "aws_db_instance" "hotel" {
     aws_security_group.rds.id
   ]
 
-  publicly_accessible    = false
-  multi_az               = false
-  skip_final_snapshot    = true
-  deletion_protection    = false
+  publicly_accessible = false
+  multi_az            = false
+  skip_final_snapshot = true
+  deletion_protection = false
 
   backup_retention_period = 0
 

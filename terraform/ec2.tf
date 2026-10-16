@@ -1,4 +1,4 @@
-﻿resource "aws_instance" "hotel" {
+resource "aws_instance" "hotel" {
   ami                    = "ami-0e250e82bbf29831b"
   instance_type          = var.ec2_instance_type
   key_name               = "hotel-github-actions"

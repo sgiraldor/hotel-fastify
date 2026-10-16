@@ -1,4 +1,4 @@
-﻿resource "aws_elasticache_subnet_group" "hotel" {
+resource "aws_elasticache_subnet_group" "hotel" {
   name = "${var.project_name}-redis-subnet-group"
 
   subnet_ids = [
@@ -26,7 +26,7 @@ resource "aws_elasticache_replication_group" "hotel" {
   security_group_ids = [aws_security_group.redis.id]
 
   automatic_failover_enabled = false
-  multi_az_enabled            = false
+  multi_az_enabled           = false
 
   tags = {
     Name        = "${var.project_name}-redis"

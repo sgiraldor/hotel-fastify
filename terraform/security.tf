@@ -1,4 +1,4 @@
-﻿resource "aws_security_group" "ec2" {
+resource "aws_security_group" "ec2" {
   name        = "${var.project_name}-ec2-sg"
   description = "Security group para la API Hotel"
   vpc_id      = aws_vpc.hotel.id

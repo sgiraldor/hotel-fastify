@@ -1,4 +1,4 @@
-﻿resource "aws_vpc" "hotel" {
+resource "aws_vpc" "hotel" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "hotel" {
   vpc_id = aws_vpc.hotel.id
 
   tags = {
-    Name        = "${var.project_name}-igw"
+    Name = "${var.project_name}-igw"
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_a" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.project_name}-public-a"
+    Name = "${var.project_name}-public-a"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_subnet" "public_b" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.project_name}-public-b"
+    Name = "${var.project_name}-public-b"
   }
 }
 

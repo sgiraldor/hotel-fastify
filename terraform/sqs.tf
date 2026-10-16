@@ -1,4 +1,4 @@
-﻿resource "aws_sqs_queue" "hotel" {
+resource "aws_sqs_queue" "hotel" {
   name = "${var.project_name}-queue"
 
   visibility_timeout_seconds = 30
