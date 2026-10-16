@@ -14,5 +14,5 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Huesped, Habitacion, CheckIn],
-    synchronize: false,
+    synchronize: true,
 });
