@@ -65,7 +65,8 @@ resource "aws_iam_role_policy" "sqs" {
           "sqs:SendMessage",
           "sqs:ReceiveMessage",
           "sqs:DeleteMessage",
-          "sqs:GetQueueAttributes"
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl"
         ]
         Resource = aws_sqs_queue.hotel.arn
       }
