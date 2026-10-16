@@ -42,6 +42,7 @@ jobs:
           ssh -i ~/.ssh/hotel-github-actions.pem \
             "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" \
             'bash -s' <<'REMOTE'
+
           set -e
 
           REGION="us-east-2"
@@ -114,13 +115,21 @@ jobs:
           sleep 10
 
           echo "Estado del contenedor:"
-          docker ps --filter "name=hotel-api"
+          docker ps -a --filter "name=hotel-api"
+
+          echo "Información del contenedor:"
+          docker inspect hotel-api \
+            --format 'Status={{.State.Status}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}}'
+
+          echo "Últimos logs del contenedor:"
+          docker logs hotel-api --tail 100 || true
 
           echo "Eliminando archivo temporal con las credenciales..."
 
           rm -f /tmp/hotel-rds-secret.json
 
           echo "Despliegue en EC2 completado correctamente."
+
           REMOTE
 
       - name: Verify API
