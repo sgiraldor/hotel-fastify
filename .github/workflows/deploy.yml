@@ -138,17 +138,33 @@ jobs:
             --format 'Status={{.State.Status}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}}'
 
           echo "========================================"
-          echo "PRUEBA INTERNA DE LA API"
+          echo "PRUEBA GET /"
           echo "========================================"
 
           curl --fail http://localhost:3000/ || true
 
           echo ""
           echo "========================================"
-          echo "LOGS DEL CONTENEDOR"
+          echo "PRUEBA POST /huesped"
           echo "========================================"
 
-          docker logs hotel-api --tail 100 || true
+          curl -i -X POST http://localhost:3000/huesped \
+            -H "Content-Type: application/json" \
+            -d '{
+              "identificacion": "9999999999",
+              "nombre": "Prueba",
+              "apellido": "Postman",
+              "telefono": "3001234567",
+              "tipoDocumento": "CC",
+              "fechaNacimiento": "2000-01-15"
+            }' || true
+
+          echo ""
+          echo "========================================"
+          echo "LOGS DESPUÉS DEL POST"
+          echo "========================================"
+
+          docker logs hotel-api --tail 200 || true
 
           echo "========================================"
           echo "ELIMINANDO CREDENCIALES TEMPORALES"
