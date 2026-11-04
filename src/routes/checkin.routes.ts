@@ -13,6 +13,7 @@ interface CheckInBody {
   pagoTotalHabitacion: number;
   pagoRealizado: number;
   estadoPago: string;
+  estado: string;
 }
 
 interface ActualizarCheckInBody {
@@ -23,6 +24,7 @@ interface ActualizarCheckInBody {
   pagoTotalHabitacion?: number;
   pagoRealizado?: number;
   estadoPago?: string;
+  estado?: string;
 }
 
 export async function checkinRoutes(app: FastifyInstance) {
@@ -42,6 +44,7 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         } = request.body;
 
         const datosValidos = validarCheckIn({
@@ -51,12 +54,13 @@ export async function checkinRoutes(app: FastifyInstance) {
           fechaSalida,
           pagoTotalHabitacion,
           pagoRealizado,
-          estadoPago,          
+          estadoPago,
+          estado,
         });
 
-        if (!datosValidos){
+        if (!datosValidos) {
           return reply.code(400).send({
-            message: "los datos del chekin estan incompletos"
+            message: 'los datos del chekin estan incompletos',
           });
         }
 
@@ -88,6 +92,7 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         });
 
         const checkInGuardado =
@@ -185,6 +190,7 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         } = request.body;
 
         if (huespedId !== undefined) {
@@ -233,6 +239,10 @@ export async function checkinRoutes(app: FastifyInstance) {
 
         if (estadoPago !== undefined) {
           checkin.estadoPago = estadoPago;
+        }
+
+        if (estado !== undefined) {
+          checkin.estado = estado;
         }
 
         const checkinActualizado =

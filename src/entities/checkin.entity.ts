@@ -36,4 +36,7 @@ export class CheckIn {
 
   @Column({ type: 'varchar' })
   estadoPago!: string;
+
+  @Column({ type: 'varchar' })
+  estado!: string;
 }

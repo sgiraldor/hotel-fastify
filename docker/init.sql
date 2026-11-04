@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS checkin (
     pagoTotalHabitacion DECIMAL(10,2) NOT NULL,
     pagoRealizado DECIMAL(10,2) NOT NULL,
     estadoPago VARCHAR(255) NOT NULL,
+    estado VARCHAR(255) NOT NULL,
 
     CONSTRAINT fk_checkin_huesped
         FOREIGN KEY (huespedId)
