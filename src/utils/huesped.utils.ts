@@ -3,6 +3,7 @@ export interface DatosHuesped {
   nombre: string;
   apellido: string;
   telefono: string;
+  email: string;
   tipoDocumento: string;
   fechaNacimiento: string;
 }
@@ -13,6 +14,7 @@ export function validarHuesped(datos: DatosHuesped): boolean {
       datos.nombre &&
       datos.apellido &&
       datos.telefono &&
+      datos.email &&
       datos.tipoDocumento &&
       datos.fechaNacimiento,
   );

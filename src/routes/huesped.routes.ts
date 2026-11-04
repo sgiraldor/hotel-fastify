@@ -8,6 +8,7 @@ interface HuespedBody {
   nombre: string;
   apellido: string;
   telefono: string;
+  email: string;
   tipoDocumento: string;
   fechaNacimiento: string;
 }
@@ -17,6 +18,7 @@ interface ActualizarHuespedBody {
   nombre?: string;
   apellido?: string;
   telefono?: string;
+  email?: string;
   tipoDocumento?: string;
   fechaNacimiento?: string;
 }
@@ -34,6 +36,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento,
         } = request.body;
@@ -43,6 +46,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento,
         });
@@ -58,6 +62,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento: new Date(fechaNacimiento),
         });
@@ -139,6 +144,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento,
         } = request.body;
@@ -157,6 +163,10 @@ export async function huespedRoutes(app: FastifyInstance) {
 
         if (telefono !== undefined) {
           huesped.telefono = telefono;
+        }
+
+        if (email !== undefined) {
+          huesped.email = email;
         }
 
         if (tipoDocumento !== undefined) {

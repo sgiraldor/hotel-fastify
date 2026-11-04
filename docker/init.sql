@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS huesped (
     nombre VARCHAR(255) NOT NULL,
     apellido VARCHAR(255) NOT NULL,
     telefono VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     tipoDocumento VARCHAR(255) NOT NULL,
     fechaNacimiento DATE NOT NULL,
     UNIQUE KEY uq_huesped_documento (tipoDocumento, identificacion)
