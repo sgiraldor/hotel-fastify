@@ -5,7 +5,9 @@ import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
 
-const app = fastify();
+const app = fastify({
+  logger: true
+});
 
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
@@ -17,7 +19,6 @@ app.get('/', async () => {
 
 const start = async () => {
   try {
-
     await AppDataSource.initialize();
     console.log('Base de datos conectada');
 
@@ -31,6 +32,7 @@ const start = async () => {
     console.log(`Servidor ejecutándose en el puerto ${port}`);
 
   } catch (error) {
+    console.error('ERROR AL INICIAR LA API:', error);
     app.log.error(error);
     process.exit(1);
   }
