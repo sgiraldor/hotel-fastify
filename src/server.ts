@@ -6,7 +6,7 @@ import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
 
 const app = fastify({
-  logger: true
+  logger: true,
 });
 
 app.register(huespedRoutes);
@@ -14,7 +14,11 @@ app.register(habitacionRoutes);
 app.register(checkinRoutes);
 
 app.get('/', async () => {
-  return { message: 'Hotel funcionando' };
+  return {
+    message: 'Hotel funcionando',
+    version: '4.0.0',
+    track: 'canary',
+  };
 });
 
 const start = async () => {
@@ -26,11 +30,10 @@ const start = async () => {
 
     await app.listen({
       port,
-      host: '0.0.0.0'
+      host: '0.0.0.0',
     });
 
     console.log(`Servidor ejecutándose en el puerto ${port}`);
-
   } catch (error) {
     console.error('ERROR AL INICIAR LA API:', error);
     app.log.error(error);
