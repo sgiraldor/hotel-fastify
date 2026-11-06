@@ -4,13 +4,14 @@ import { validarCheckIn } from '../src/utils/checkin.utils';
 describe('Pruebas unitarias para el checkin', () => {
   it('todos los datos estan bein', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-20',
-        fechaSalida: '2026-08-22',
-        pagoTotalHabitacion: 360000,
-        pagoRealizado: 180000,
-        estadoPago: 'PENDIENTE',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 360000,
+      pagoRealizado: 180000,
+      estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(true);
@@ -18,13 +19,14 @@ describe('Pruebas unitarias para el checkin', () => {
 
   it('no esta bien, la slida es anterior a la entrada ', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-22',
-        fechaSalida: '2026-08-20',
-        pagoTotalHabitacion: 360000,
-        pagoRealizado: 180000,
-        estadoPago: 'PENDIENTE',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-22',
+      fechaSalida: '2026-08-20',
+      pagoTotalHabitacion: 360000,
+      pagoRealizado: 180000,
+      estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(false);
@@ -32,13 +34,14 @@ describe('Pruebas unitarias para el checkin', () => {
 
   it('el pago es de 0', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-20',
-        fechaSalida: '2026-08-22',
-        pagoTotalHabitacion: 0,
-        pagoRealizado: 0,
-        estadoPago: 'PENDIENTE',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 0,
+      pagoRealizado: 0,
+      estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(false);
@@ -46,13 +49,14 @@ describe('Pruebas unitarias para el checkin', () => {
 
   it('el pago es negativo', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-20',
-        fechaSalida: '2026-08-22',
-        pagoTotalHabitacion: 360000,
-        pagoRealizado: -50000,
-        estadoPago: 'PENDIENTE',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 360000,
+      pagoRealizado: -50000,
+      estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(false);
@@ -60,13 +64,14 @@ describe('Pruebas unitarias para el checkin', () => {
 
   it('el pago supera el total de la habitacion', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-20',
-        fechaSalida: '2026-08-22',
-        pagoTotalHabitacion: 360000,
-        pagoRealizado: 500000,
-        estadoPago: 'PAGADO',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 360000,
+      pagoRealizado: 500000,
+      estadoPago: 'PAGADO',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(false);
@@ -74,13 +79,14 @@ describe('Pruebas unitarias para el checkin', () => {
 
   it('no tiene estado del pago de la habitacion', () => {
     const resultado = validarCheckIn({
-        huespedId: 1,
-        habitacionId: 1,
-        fechaIngreso: '2026-08-20',
-        fechaSalida: '2026-08-22',
-        pagoTotalHabitacion: 360000,
-        pagoRealizado: 180000,
-        estadoPago: '',
+      huespedId: 1,
+      habitacionId: 1,
+      fechaIngreso: '2026-08-20',
+      fechaSalida: '2026-08-22',
+      pagoTotalHabitacion: 360000,
+      pagoRealizado: 180000,
+      estadoPago: '',
+      estado: 'ACTIVO',
     });
 
     expect(resultado).toBe(false);

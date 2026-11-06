@@ -18,7 +18,6 @@ vi.mock('../../src/config/database', () => ({
 import { huespedRoutes } from '../../src/routes/huesped.routes';
 
 describe('Pruebas de integracion de huesped', () => {
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -36,6 +35,7 @@ describe('Pruebas de integracion de huesped', () => {
         nombre: 'Samuel',
         apellido: 'Giraldo',
         telefono: '3105556677',
+        email: 'samuel@gmail.com',
         tipoDocumento: 'CC',
         fechaNacimiento: '2002-05-14',
       },
@@ -55,6 +55,7 @@ describe('Pruebas de integracion de huesped', () => {
       nombre: 'Samuel',
       apellido: 'Giraldo',
       telefono: '3105556677',
+      email: 'samuel@gmail.com',
       tipoDocumento: 'CC',
       fechaNacimiento: new Date('2002-05-14'),
     };
@@ -72,6 +73,7 @@ describe('Pruebas de integracion de huesped', () => {
         nombre: 'Samuel',
         apellido: 'Giraldo',
         telefono: '3105556677',
+        email: 'samuel@gmail.com',
         tipoDocumento: 'CC',
         fechaNacimiento: '2002-05-14',
       },
@@ -164,7 +166,7 @@ describe('Pruebas de integracion de huesped', () => {
     await app.close();
   });
 
-   it('debe actualizar un huesped correctamente', async () => {
+  it('debe actualizar un huesped correctamente', async () => {
     const app = Fastify();
 
     const huesped = {
@@ -173,6 +175,7 @@ describe('Pruebas de integracion de huesped', () => {
       nombre: 'Samuel',
       apellido: 'Giraldo',
       telefono: '3105556677',
+      email: 'samuel@gmail.com',
       tipoDocumento: 'CC',
       fechaNacimiento: new Date('2002-05-14'),
     };
@@ -190,6 +193,7 @@ describe('Pruebas de integracion de huesped', () => {
         nombre: 'Samuel David',
         apellido: 'Giraldo Roldan',
         telefono: '3001234567',
+        email: 'samuel@gmail.com',
         tipoDocumento: 'CC',
         fechaNacimiento: '2002-05-15',
       },
@@ -201,41 +205,41 @@ describe('Pruebas de integracion de huesped', () => {
   });
 
   it('debe devolver 500 si ocurre un error al consultar los huespedes', async () => {
-  const app = Fastify();
+    const app = Fastify();
 
-  repositorioMock.find.mockRejectedValue(
-    new Error('Error de base de datos'),
-  );
+    repositorioMock.find.mockRejectedValue(
+      new Error('Error de base de datos'),
+    );
 
-  await app.register(huespedRoutes);
+    await app.register(huespedRoutes);
 
-  const respuesta = await app.inject({
-    method: 'GET',
-    url: '/huesped',
+    const respuesta = await app.inject({
+      method: 'GET',
+      url: '/huesped',
+    });
+
+    expect(respuesta.statusCode).toBe(500);
+
+    await app.close();
   });
 
-  expect(respuesta.statusCode).toBe(500);
+  it('debe devolver 404 al actualizar un huesped que no existe', async () => {
+    const app = Fastify();
 
-  await app.close();
-});
+    repositorioMock.findOneBy.mockResolvedValue(null);
 
-it('debe devolver 404 al actualizar un huesped que no existe', async () => {
-  const app = Fastify();
+    await app.register(huespedRoutes);
 
-  repositorioMock.findOneBy.mockResolvedValue(null);
+    const respuesta = await app.inject({
+      method: 'PATCH',
+      url: '/huesped/999',
+      payload: {
+        nombre: 'Samuel',
+      },
+    });
 
-  await app.register(huespedRoutes);
+    expect(respuesta.statusCode).toBe(404);
 
-  const respuesta = await app.inject({
-    method: 'PATCH',
-    url: '/huesped/999',
-    payload: {
-      nombre: 'Samuel',
-    },
+    await app.close();
   });
-
-  expect(respuesta.statusCode).toBe(404);
-
-  await app.close();
-});
 });

@@ -37,7 +37,6 @@ vi.mock('../../src/config/database', () => ({
 import { checkinRoutes } from '../../src/routes/checkin.routes';
 
 describe('Pruebas de integración de checkin', () => {
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -58,6 +57,7 @@ describe('Pruebas de integración de checkin', () => {
         pagoTotalHabitacion: 440000,
         pagoRealizado: 220000,
         estadoPago: 'PENDIENTE',
+        estado: 'ACTIVO',
       },
     });
 
@@ -88,6 +88,7 @@ describe('Pruebas de integración de checkin', () => {
       pagoTotalHabitacion: 440000,
       pagoRealizado: 220000,
       estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     };
 
     huespedRepositoryMock.findOneBy.mockResolvedValue(huesped);
@@ -108,6 +109,7 @@ describe('Pruebas de integración de checkin', () => {
         pagoTotalHabitacion: 440000,
         pagoRealizado: 220000,
         estadoPago: 'PENDIENTE',
+        estado: 'ACTIVO',
       },
     });
 
@@ -123,6 +125,7 @@ describe('Pruebas de integración de checkin', () => {
       {
         id: 1,
         estadoPago: 'PENDIENTE',
+        estado: 'ACTIVO',
       },
     ]);
 
@@ -144,6 +147,7 @@ describe('Pruebas de integración de checkin', () => {
     checkinRepositoryMock.findOne.mockResolvedValue({
       id: 1,
       estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     });
 
     await app.register(checkinRoutes);
@@ -158,7 +162,7 @@ describe('Pruebas de integración de checkin', () => {
     await app.close();
   });
 
-     it('debe devolver 404 si el checkin no existe', async () => {
+  it('debe devolver 404 si el checkin no existe', async () => {
     const app = Fastify();
 
     checkinRepositoryMock.findOne.mockResolvedValue(null);
@@ -175,12 +179,13 @@ describe('Pruebas de integración de checkin', () => {
     await app.close();
   });
 
-    it('debe eliminar un checkin', async () => {
+  it('debe eliminar un checkin', async () => {
     const app = Fastify();
 
     const checkin = {
       id: 1,
       estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     };
 
     checkinRepositoryMock.findOneBy.mockResolvedValue(checkin);
@@ -198,7 +203,7 @@ describe('Pruebas de integración de checkin', () => {
     await app.close();
   });
 
-    it('debe actualizar un checkin correctamente', async () => {
+  it('debe actualizar un checkin correctamente', async () => {
     const app = Fastify();
 
     const huespedActual = {
@@ -230,6 +235,7 @@ describe('Pruebas de integración de checkin', () => {
       pagoTotalHabitacion: 440000,
       pagoRealizado: 220000,
       estadoPago: 'PENDIENTE',
+      estado: 'ACTIVO',
     };
 
     checkinRepositoryMock.findOne.mockResolvedValue(checkin);
@@ -255,6 +261,7 @@ describe('Pruebas de integración de checkin', () => {
         pagoTotalHabitacion: 660000,
         pagoRealizado: 660000,
         estadoPago: 'PAGADO',
+        estado: 'ACTIVO',
       },
     });
 
@@ -263,7 +270,7 @@ describe('Pruebas de integración de checkin', () => {
     await app.close();
   });
 
-    it('no crear un checkin si el huesped no existe', async () => {
+  it('no crear un checkin si el huesped no existe', async () => {
     const app = Fastify();
 
     huespedRepositoryMock.findOneBy.mockResolvedValue(null);
@@ -281,64 +288,66 @@ describe('Pruebas de integración de checkin', () => {
         pagoTotalHabitacion: 440000,
         pagoRealizado: 220000,
         estadoPago: 'PENDIENTE',
+        estado: 'ACTIVO',
       },
     });
 
     expect(respuesta.statusCode).toBe(404);
 
     await app.close();
-    });
+  });
 
   it('no debe crear un checkin si la habitacion no existe', async () => {
-  const app = Fastify();
+    const app = Fastify();
 
-  const huesped = {
-    id: 1,
-    nombre: 'Samuel',
-  };
+    const huesped = {
+      id: 1,
+      nombre: 'Samuel',
+    };
 
-  huespedRepositoryMock.findOneBy.mockResolvedValue(huesped);
-  habitacionRepositoryMock.findOneBy.mockResolvedValue(null);
+    huespedRepositoryMock.findOneBy.mockResolvedValue(huesped);
+    habitacionRepositoryMock.findOneBy.mockResolvedValue(null);
 
-  await app.register(checkinRoutes);
+    await app.register(checkinRoutes);
 
-  const respuesta = await app.inject({
-    method: 'POST',
-    url: '/checkin',
-    payload: {
-      huespedId: 1,
-      habitacionId: 999,
-      fechaIngreso: '2026-08-20',
-      fechaSalida: '2026-08-22',
-      pagoTotalHabitacion: 440000,
-      pagoRealizado: 220000,
-      estadoPago: 'PENDIENTE',
-    },
+    const respuesta = await app.inject({
+      method: 'POST',
+      url: '/checkin',
+      payload: {
+        huespedId: 1,
+        habitacionId: 999,
+        fechaIngreso: '2026-08-20',
+        fechaSalida: '2026-08-22',
+        pagoTotalHabitacion: 440000,
+        pagoRealizado: 220000,
+        estadoPago: 'PENDIENTE',
+        estado: 'ACTIVO',
+      },
+    });
+
+    expect(respuesta.statusCode).toBe(404);
+
+    await app.close();
   });
 
-  expect(respuesta.statusCode).toBe(404);
+  it('no debe actualizar un checkin que no existe', async () => {
+    const app = Fastify();
 
-  await app.close();
-});
+    checkinRepositoryMock.findOne.mockResolvedValue(null);
 
-    it('no debe actualizar un checkin que no existe', async () => {
-  const app = Fastify();
+    await app.register(checkinRoutes);
 
-  checkinRepositoryMock.findOne.mockResolvedValue(null);
+    const respuesta = await app.inject({
+      method: 'PATCH',
+      url: '/checkin/999',
+      payload: {
+        estadoPago: 'PAGADO',
+        estado: 'ACTIVO',
+      },
+    });
 
-  await app.register(checkinRoutes);
+    expect(respuesta.statusCode).toBe(404);
 
-  const respuesta = await app.inject({
-    method: 'PATCH',
-    url: '/checkin/999',
-    payload: {
-      estadoPago: 'PAGADO',
-    },
+    await app.close();
   });
-
-  expect(respuesta.statusCode).toBe(404);
-
-  await app.close();
-});
-
 });
