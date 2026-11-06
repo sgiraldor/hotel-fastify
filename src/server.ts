@@ -4,10 +4,13 @@ import { AppDataSource } from './config/database';
 import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
+import { registrarMetricas } from './observability/metrics';
 
 const app = fastify({
   logger: true,
 });
+
+registrarMetricas(app);
 
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
