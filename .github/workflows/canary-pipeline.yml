@@ -9,7 +9,7 @@ on:
     inputs:
       inject_failure:
         description: "Inyectar falla controlada para probar rollback automatico"
-        required: true
+        required: false
         default: false
         type: boolean
 
