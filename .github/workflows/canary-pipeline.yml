@@ -24,6 +24,10 @@ concurrency:
 env:
   PROJECT_ID: hotel-canary-v4
   REGION: us-east1
+
+  # Cambiar a "false" cuando no se quiera provocar el rollback
+  INJECT_FAILURE: "true"
+
   GAR_REPOSITORY: hotel-repo
   SERVICE: hotel-v4-canary
   SERVICE_ACCOUNT: github-actions-deployer@hotel-canary-v4.iam.gserviceaccount.com
@@ -108,7 +112,9 @@ jobs:
           echo "OBTENIENDO DIGEST"
           echo "========================================="
 
-          DIGEST=$(gcloud artifacts docker images describe "$IMAGE:$IMAGE_TAG" --format="value(image_summary.digest)")
+          DIGEST=$(gcloud artifacts docker images describe \
+            "$IMAGE:$IMAGE_TAG" \
+            --format="value(image_summary.digest)")
 
           if [ -z "$DIGEST" ]; then
             echo "ERROR: No fue posible obtener el digest de la imagen."
@@ -134,12 +140,18 @@ jobs:
           echo "BUSCANDO REVISION ESTABLE"
           echo "========================================="
 
-          TRAFFIC=$(gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="json(status.traffic)")
+          TRAFFIC=$(gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="json(status.traffic)")
 
           echo "Trafico actual:"
           echo "$TRAFFIC" | jq .
 
-          STABLE_REVISION=$(echo "$TRAFFIC" | jq -r '.status.traffic[] | select(.percent == 100) | .revisionName' | head -n 1)
+          STABLE_REVISION=$(echo "$TRAFFIC" | \
+            jq -r '.status.traffic[] | select(.percent == 100) | .revisionName' | \
+            head -n 1)
 
           if [ -z "$STABLE_REVISION" ] || [ "$STABLE_REVISION" = "null" ]; then
             echo "ERROR: No fue posible identificar la revision estable."
@@ -167,11 +179,28 @@ jobs:
           echo "Imagen:"
           echo "$IMAGE_DIGEST"
 
-          gcloud run deploy "${{ env.SERVICE }}" --image="$IMAGE_DIGEST" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --platform=managed --no-traffic --tag=canary --revision-suffix="$REVISION_SUFFIX"
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image="$IMAGE_DIGEST" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --platform=managed \
+            --no-traffic \
+            --tag=canary \
+            --revision-suffix="$REVISION_SUFFIX"
 
-          NEW_REVISION=$(gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="value(status.latestCreatedRevisionName)")
+          NEW_REVISION=$(gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="value(status.latestCreatedRevisionName)")
 
-          CANARY_URL=$(gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="json(status.traffic)" | jq -r '.status.traffic[] | select(.tag == "canary") | .url' | head -n 1)
+          CANARY_URL=$(gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="json(status.traffic)" | \
+            jq -r '.status.traffic[] | select(.tag == "canary") | .url' | \
+            head -n 1)
 
           if [ -z "$NEW_REVISION" ] || [ "$NEW_REVISION" = "null" ]; then
             echo "ERROR: No se pudo obtener la nueva revision."
@@ -199,7 +228,11 @@ jobs:
           echo "VERIFICACION DE REVISION"
           echo "========================================="
 
-          gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
+          gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
 
       # ============================================================
       # 7. SMOKE TEST
@@ -213,7 +246,11 @@ jobs:
           echo "SMOKE TEST INICIAL"
           echo "========================================="
 
-          STATUS=$(curl -sS --max-time 15 -o /tmp/checkin.json -w "%{http_code}" "$CANARY_URL/checkin")
+          STATUS=$(curl -sS \
+            --max-time 15 \
+            -o /tmp/checkin.json \
+            -w "%{http_code}" \
+            "$CANARY_URL/checkin")
 
           echo "HTTP /checkin: $STATUS"
           cat /tmp/checkin.json
@@ -239,7 +276,11 @@ jobs:
           echo "CANARY 5%"
           echo "========================================="
 
-          gcloud run services update-traffic "${{ env.SERVICE }}" "--to-revisions=${STABLE_REVISION}=95,${CANARY_REVISION}=5" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}"
+          gcloud run services update-traffic \
+            "${{ env.SERVICE }}" \
+            "--to-revisions=${STABLE_REVISION}=95,${CANARY_REVISION}=5" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}"
 
       - name: Bake time Canary 5 por ciento
         run: |
@@ -251,7 +292,7 @@ jobs:
       # ============================================================
 
       - name: Inyectar falla controlada
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.inject_failure == true }}
+        if: ${{ env.INJECT_FAILURE == 'true' }}
         env:
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
         run: |
@@ -259,7 +300,13 @@ jobs:
           echo "FAILURE INJECTION"
           echo "========================================="
 
-          STATUS=$(curl -sS --max-time 15 -o /tmp/failure.json -w "%{http_code}" "$CANARY_URL/canary/failure")
+          echo "INJECT_FAILURE=${{ env.INJECT_FAILURE }}"
+
+          STATUS=$(curl -sS \
+            --max-time 15 \
+            -o /tmp/failure.json \
+            -w "%{http_code}" \
+            "$CANARY_URL/canary/failure")
 
           echo "HTTP obtenido: $STATUS"
           cat /tmp/failure.json
@@ -288,7 +335,11 @@ jobs:
           echo "========================================="
 
           for i in {1..10}; do
-            STATUS=$(curl -sS --max-time 15 -o /tmp/checkin.json -w "%{http_code}" "$CANARY_URL/checkin")
+            STATUS=$(curl -sS \
+              --max-time 15 \
+              -o /tmp/checkin.json \
+              -w "%{http_code}" \
+              "$CANARY_URL/checkin")
 
             echo "Prueba $i/10 -> HTTP $STATUS"
 
@@ -298,7 +349,9 @@ jobs:
             fi
           done
 
-          METRICS=$(curl -fsS --max-time 15 "$CANARY_URL/metrics")
+          METRICS=$(curl -fsS \
+            --max-time 15 \
+            "$CANARY_URL/metrics")
 
           echo "Metricas Canary:"
           echo "$METRICS" | jq .
@@ -348,7 +401,11 @@ jobs:
           echo "CANARY 25%"
           echo "========================================="
 
-          gcloud run services update-traffic "${{ env.SERVICE }}" "--to-revisions=${STABLE_REVISION}=75,${CANARY_REVISION}=25" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}"
+          gcloud run services update-traffic \
+            "${{ env.SERVICE }}" \
+            "--to-revisions=${STABLE_REVISION}=75,${CANARY_REVISION}=25" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}"
 
       - name: Bake time Canary 25 por ciento
         run: |
@@ -366,7 +423,11 @@ jobs:
           echo "========================================="
 
           for i in {1..20}; do
-            STATUS=$(curl -sS --max-time 15 -o /tmp/checkin.json -w "%{http_code}" "$CANARY_URL/checkin")
+            STATUS=$(curl -sS \
+              --max-time 15 \
+              -o /tmp/checkin.json \
+              -w "%{http_code}" \
+              "$CANARY_URL/checkin")
 
             echo "Prueba $i/20 -> HTTP $STATUS"
 
@@ -376,7 +437,9 @@ jobs:
             fi
           done
 
-          METRICS=$(curl -fsS --max-time 15 "$CANARY_URL/metrics")
+          METRICS=$(curl -fsS \
+            --max-time 15 \
+            "$CANARY_URL/metrics")
 
           echo "Metricas Canary:"
           echo "$METRICS" | jq .
@@ -421,7 +484,11 @@ jobs:
           echo "CANARY 50%"
           echo "========================================="
 
-          gcloud run services update-traffic "${{ env.SERVICE }}" "--to-revisions=${STABLE_REVISION}=50,${CANARY_REVISION}=50" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}"
+          gcloud run services update-traffic \
+            "${{ env.SERVICE }}" \
+            "--to-revisions=${STABLE_REVISION}=50,${CANARY_REVISION}=50" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}"
 
       - name: Bake time Canary 50 por ciento
         run: |
@@ -439,7 +506,11 @@ jobs:
           echo "========================================="
 
           for i in {1..30}; do
-            STATUS=$(curl -sS --max-time 15 -o /tmp/checkin.json -w "%{http_code}" "$CANARY_URL/checkin")
+            STATUS=$(curl -sS \
+              --max-time 15 \
+              -o /tmp/checkin.json \
+              -w "%{http_code}" \
+              "$CANARY_URL/checkin")
 
             echo "Prueba $i/30 -> HTTP $STATUS"
 
@@ -449,7 +520,9 @@ jobs:
             fi
           done
 
-          METRICS=$(curl -fsS --max-time 15 "$CANARY_URL/metrics")
+          METRICS=$(curl -fsS \
+            --max-time 15 \
+            "$CANARY_URL/metrics")
 
           echo "Metricas Canary:"
           echo "$METRICS" | jq .
@@ -494,7 +567,11 @@ jobs:
           echo "PROMOVIENDO CANARY AL 100%"
           echo "========================================="
 
-          gcloud run services update-traffic "${{ env.SERVICE }}" "--to-revisions=${STABLE_REVISION}=0,${CANARY_REVISION}=100" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}"
+          gcloud run services update-traffic \
+            "${{ env.SERVICE }}" \
+            "--to-revisions=${STABLE_REVISION}=0,${CANARY_REVISION}=100" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}"
 
       # ============================================================
       # 14. BAKE TIME FINAL
@@ -505,6 +582,7 @@ jobs:
           echo "========================================="
           echo "BAKE TIME FINAL"
           echo "========================================="
+
           echo "Observando V4 al 100% durante ${BAKE_TIME_SECONDS} segundos..."
           sleep "${BAKE_TIME_SECONDS}"
 
@@ -523,7 +601,11 @@ jobs:
           echo "========================================="
 
           for i in {1..20}; do
-            STATUS=$(curl -sS --max-time 15 -o /tmp/checkin.json -w "%{http_code}" "$CANARY_URL/checkin")
+            STATUS=$(curl -sS \
+              --max-time 15 \
+              -o /tmp/checkin.json \
+              -w "%{http_code}" \
+              "$CANARY_URL/checkin")
 
             echo "Prueba $i/20 -> HTTP $STATUS"
 
@@ -533,7 +615,9 @@ jobs:
             fi
           done
 
-          METRICS=$(curl -fsS --max-time 15 "$CANARY_URL/metrics")
+          METRICS=$(curl -fsS \
+            --max-time 15 \
+            "$CANARY_URL/metrics")
 
           echo "Metricas finales:"
           echo "$METRICS" | jq .
@@ -578,7 +662,11 @@ jobs:
           echo "TRAFICO FINAL"
           echo "========================================="
 
-          gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
+          gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
 
       # ============================================================
       # 17. ROLLBACK AUTOMATICO
@@ -603,13 +691,21 @@ jobs:
 
           echo "Restaurando 100% del trafico a V1..."
 
-          gcloud run services update-traffic "${{ env.SERVICE }}" "--to-revisions=${STABLE_REVISION}=100,${CANARY_REVISION}=0" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}"
+          gcloud run services update-traffic \
+            "${{ env.SERVICE }}" \
+            "--to-revisions=${STABLE_REVISION}=100,${CANARY_REVISION}=0" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}"
 
           echo "========================================="
           echo "ROLLBACK COMPLETADO"
           echo "TRAFICO RESTAURADO A V1"
           echo "========================================="
 
-          gcloud run services describe "${{ env.SERVICE }}" --region="${{ env.REGION }}" --project="${{ env.PROJECT_ID }}" --format="yaml(status.latestReadyRevisionName,status.traffic)"
+          gcloud run services describe \
+            "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="yaml(status.latestReadyRevisionName,status.traffic)"
 
           exit 1
