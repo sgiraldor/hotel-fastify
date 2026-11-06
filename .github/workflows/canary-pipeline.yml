@@ -58,11 +58,43 @@ jobs:
           docker build -t "$IMAGE:$IMAGE_TAG" .
           docker push "$IMAGE:$IMAGE_TAG"
 
-      - name: Mostrar imagen publicada
+      - name: Obtener digest inmutable de la imagen
+        id: image
         env:
           IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/${{ env.SERVICE }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          gcloud artifacts docker images describe \
+          DIGEST=$(gcloud artifacts docker images describe \
             "$IMAGE:$IMAGE_TAG" \
-            --format="yaml(image_summary)"
+            --format="value(image_summary.digest)")
+
+          IMAGE_DIGEST="$IMAGE@$DIGEST"
+
+          echo "Digest: $DIGEST"
+          echo "Imagen inmutable: $IMAGE_DIGEST"
+
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+          echo "image_digest=$IMAGE_DIGEST" >> "$GITHUB_OUTPUT"
+
+      - name: Desplegar nueva revision Canary sin trafico
+        env:
+          IMAGE_DIGEST: ${{ steps.image.outputs.image_digest }}
+          REVISION_SUFFIX: ${{ github.sha }}
+        run: |
+          echo "Desplegando imagen inmutable:"
+          echo "$IMAGE_DIGEST"
+
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image="$IMAGE_DIGEST" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --platform=managed \
+            --no-traffic \
+            --revision-suffix="$REVISION_SUFFIX"
+
+      - name: Verificar revision Canary
+        run: |
+          gcloud run services describe "${{ env.SERVICE }}" \
+            --region="${{ env.REGION }}" \
+            --project="${{ env.PROJECT_ID }}" \
+            --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
