@@ -6,8 +6,21 @@ let requests4xx = 0;
 let requests5xx = 0;
 
 let totalResponseTime = 0;
+const responseTimes: number[] = [];
 
 const requestStartTimes = new WeakMap<FastifyRequest, bigint>();
+
+function calcularPercentil(valores: number[], percentil: number): number {
+  if (valores.length === 0) {
+    return 0;
+  }
+
+  const ordenados = [...valores].sort((a, b) => a - b);
+
+  const indice = Math.ceil((percentil / 100) * ordenados.length) - 1;
+
+  return ordenados[Math.max(0, indice)];
+}
 
 export function registrarMetricas(app: FastifyInstance) {
   app.addHook('onRequest', async (request) => {
@@ -34,6 +47,7 @@ export function registrarMetricas(app: FastifyInstance) {
         Number(process.hrtime.bigint() - startTime) / 1_000_000;
 
       totalResponseTime += responseTime;
+      responseTimes.push(responseTime);
     }
   });
 
@@ -47,6 +61,15 @@ export function registrarMetricas(app: FastifyInstance) {
       requests_4xx: requests4xx,
       requests_5xx: requests5xx,
       average_response_time_ms: Number(averageResponseTime.toFixed(2)),
+      p50_response_time_ms: Number(
+        calcularPercentil(responseTimes, 50).toFixed(2),
+      ),
+      p95_response_time_ms: Number(
+        calcularPercentil(responseTimes, 95).toFixed(2),
+      ),
+      p99_response_time_ms: Number(
+        calcularPercentil(responseTimes, 99).toFixed(2),
+      ),
     };
   });
 }
