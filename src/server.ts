@@ -16,6 +16,15 @@ app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
 
+// Endpoint de falla controlada exclusivo para pruebas Canary
+app.get('/canary/failure', async (_request, reply) => {
+  return reply.code(500).send({
+    message: 'Falla controlada de Canary',
+    version: '4.0.0',
+    track: 'canary',
+  });
+});
+
 app.get('/', async () => {
   return {
     message: 'Hotel funcionando',

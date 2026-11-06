@@ -1,546 +1,1123 @@
 name: Canary CI/CD
 
+
+
 on:
+
   push:
+
     branches:
+
       - v4-canary
+
   workflow_dispatch:
+    inputs:
+      inject_failure:
+        description: 'Inyectar falla controlada para probar rollback automatico'
+        required: true
+        default: false
+        type: boolean
+
+
 
 permissions:
+
   contents: read
+
   id-token: write
 
+
+
 env:
+
   PROJECT_ID: hotel-canary-v4
+
   REGION: us-east1
+
   GAR_REPOSITORY: hotel-repo
+
   SERVICE: hotel-v4-canary
+
   SERVICE_ACCOUNT: github-actions-deployer@hotel-canary-v4.iam.gserviceaccount.com
+
   WIF_PROVIDER: projects/187902760857/locations/global/workloadIdentityPools/github-actions/providers/github
 
+
+
   # Umbrales para aprobar el Canary
+
   MAX_P95_MS: 500
+
   MAX_P99_MS: 1000
 
+
+
 jobs:
+
   build-and-push:
+
     runs-on: ubuntu-latest
 
+
+
     steps:
+
       - name: Descargar codigo
+
         uses: actions/checkout@v4
 
+
+
       - name: Configurar Node.js
+
         uses: actions/setup-node@v4
+
         with:
+
           node-version: 24
+
           cache: npm
 
+
+
       - name: Instalar dependencias
+
         run: npm ci
 
+
+
       - name: Compilar proyecto
+
         run: npm run build
 
+
+
       - name: Ejecutar pruebas
+
         run: npm test
 
+
+
       - name: Autenticar en Google Cloud
+
         uses: google-github-actions/auth@v2
+
         with:
+
           workload_identity_provider: ${{ env.WIF_PROVIDER }}
+
           service_account: ${{ env.SERVICE_ACCOUNT }}
 
+
+
       - name: Configurar Docker para Artifact Registry
+
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
+
+
       - name: Construir imagen Docker
+
         env:
+
           IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/${{ env.SERVICE }}
+
           IMAGE_TAG: ${{ github.sha }}
+
         run: |
+
           docker build -t "$IMAGE:$IMAGE_TAG" .
+
           docker push "$IMAGE:$IMAGE_TAG"
 
+
+
       - name: Obtener digest inmutable de la imagen
+
         id: image
+
         env:
+
           IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/${{ env.SERVICE }}
+
           IMAGE_TAG: ${{ github.sha }}
+
         run: |
+
           DIGEST=$(gcloud artifacts docker images describe \
+
             "$IMAGE:$IMAGE_TAG" \
+
             --format="value(image_summary.digest)")
 
+
+
           if [ -z "$DIGEST" ]; then
+
             echo "No fue posible obtener el digest de la imagen."
+
             exit 1
+
           fi
+
+
 
           IMAGE_DIGEST="$IMAGE@$DIGEST"
 
+
+
           echo "Digest: $DIGEST"
+
           echo "Imagen inmutable: $IMAGE_DIGEST"
 
+
+
           echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
           echo "image_digest=$IMAGE_DIGEST" >> "$GITHUB_OUTPUT"
 
+
+
       - name: Obtener revision estable actual
+
         id: stable
+
         run: |
+
           echo "========================================="
+
           echo "BUSCANDO REVISION ESTABLE ACTUAL"
+
           echo "========================================="
+
+
 
           TRAFFIC=$(gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="json(status.traffic)")
 
+
+
           echo "Trafico actual:"
+
           echo "$TRAFFIC" | jq .
 
+
+
           STABLE_REVISION=$(echo "$TRAFFIC" | jq -r '
+
             .status.traffic[]
+
             | select(.percent == 100)
+
             | .revisionName
+
           ' | head -n 1)
 
+
+
           if [ -z "$STABLE_REVISION" ] || [ "$STABLE_REVISION" = "null" ]; then
+
             echo "ERROR: No fue posible identificar la revision estable."
+
             exit 1
+
           fi
+
+
 
           echo "Revision estable actual: $STABLE_REVISION"
 
+
+
           echo "revision=$STABLE_REVISION" >> "$GITHUB_OUTPUT"
 
+
+
       - name: Desplegar nueva revision Canary sin trafico
+
         id: deploy
+
         env:
+
           IMAGE_DIGEST: ${{ steps.image.outputs.image_digest }}
+
           REVISION_SUFFIX: ${{ github.sha }}
+
         run: |
+
           echo "========================================="
+
           echo "DESPLIEGUE CANARY"
+
           echo "========================================="
+
+
 
           echo "Imagen:"
+
           echo "$IMAGE_DIGEST"
 
+
+
           gcloud run deploy "${{ env.SERVICE }}" \
+
             --image="$IMAGE_DIGEST" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --platform=managed \
+
             --no-traffic \
+
             --tag=canary \
+
             --revision-suffix="$REVISION_SUFFIX"
 
+
+
           NEW_REVISION=$(gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="value(status.latestCreatedRevisionName)")
 
+
+
           CANARY_URL=$(gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="json(status.traffic)" |
+
             jq -r '
+
               .status.traffic[]
+
               | select(.tag == "canary")
+
               | .url
+
             ' | head -n 1)
 
+
+
           if [ -z "$NEW_REVISION" ] || [ "$NEW_REVISION" = "null" ]; then
+
             echo "ERROR: No se pudo obtener la nueva revision."
+
             exit 1
+
           fi
+
+
 
           if [ -z "$CANARY_URL" ] || [ "$CANARY_URL" = "null" ]; then
+
             echo "ERROR: No se pudo obtener la URL Canary."
+
             exit 1
+
           fi
 
+
+
           echo "Nueva revision: $NEW_REVISION"
+
           echo "URL Canary: $CANARY_URL"
 
+
+
           echo "revision=$NEW_REVISION" >> "$GITHUB_OUTPUT"
+
           echo "canary_url=$CANARY_URL" >> "$GITHUB_OUTPUT"
 
+
+
       - name: Verificar revision Canary
+
         run: |
+
           echo "========================================="
+
           echo "VERIFICACION DE REVISION"
+
           echo "========================================="
+
+
 
           gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
 
+
+
       - name: Smoke test inicial
+
+        env:
+
+          CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
+
+        run: |
+
+          echo "========================================="
+
+          echo "SMOKE TEST INICIAL"
+
+          echo "========================================="
+
+
+
+          STATUS=$(curl -sS \
+
+            --max-time 15 \
+
+            -o /tmp/checkin.json \
+
+            -w "%{http_code}" \
+
+            "$CANARY_URL/checkin")
+
+
+
+          echo "HTTP /checkin: $STATUS"
+
+          cat /tmp/checkin.json
+
+          echo
+
+
+
+          if [ "$STATUS" != "200" ]; then
+
+            echo "ERROR: Smoke test fallido."
+
+            exit 1
+
+          fi
+
+
+
+          echo "Smoke test exitoso."
+
+
+
+      - name: Canary 5 por ciento
+
+        env:
+
+          STABLE_REVISION: ${{ steps.stable.outputs.revision }}
+
+          CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
+
+        run: |
+
+          echo "========================================="
+
+          echo "CANARY 5%"
+
+          echo "========================================="
+
+
+
+          gcloud run services update-traffic "${{ env.SERVICE }}" \
+
+            "--to-revisions=${STABLE_REVISION}=95,${CANARY_REVISION}=5" \
+
+            --region="${{ env.REGION }}" \
+
+            --project="${{ env.PROJECT_ID }}"
+
+
+
+      - name: Inyectar falla controlada
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.inject_failure == true }}
         env:
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
         run: |
           echo "========================================="
-          echo "SMOKE TEST INICIAL"
+          echo "FAILURE INJECTION"
           echo "========================================="
 
           STATUS=$(curl -sS \
             --max-time 15 \
-            -o /tmp/checkin.json \
+            -o /tmp/failure.json \
             -w "%{http_code}" \
-            "$CANARY_URL/checkin")
+            "$CANARY_URL/canary/failure")
 
-          echo "HTTP /checkin: $STATUS"
-          cat /tmp/checkin.json
+          echo "HTTP obtenido: $STATUS"
+          cat /tmp/failure.json
           echo
 
-          if [ "$STATUS" != "200" ]; then
-            echo "ERROR: Smoke test fallido."
+          if [ "$STATUS" != "500" ]; then
+            echo "ERROR: La inyeccion de falla no produjo HTTP 500."
             exit 1
           fi
 
-          echo "Smoke test exitoso."
-
-      - name: Canary 5 por ciento
-        env:
-          STABLE_REVISION: ${{ steps.stable.outputs.revision }}
-          CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
-        run: |
-          echo "========================================="
-          echo "CANARY 5%"
-          echo "========================================="
-
-          gcloud run services update-traffic "${{ env.SERVICE }}" \
-            "--to-revisions=${STABLE_REVISION}=95,${CANARY_REVISION}=5" \
-            --region="${{ env.REGION }}" \
-            --project="${{ env.PROJECT_ID }}"
+          echo "Falla controlada inyectada correctamente."
 
       - name: Validar Canary 5 por ciento
+
         env:
+
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
+
         run: |
+
           set -e
 
-          echo "========================================="
-          echo "VALIDANDO CANARY 5%"
+
+
           echo "========================================="
 
+          echo "VALIDANDO CANARY 5%"
+
+          echo "========================================="
+
+
+
           for i in {1..10}; do
+
             STATUS=$(curl -sS \
+
               --max-time 15 \
+
               -o /tmp/checkin.json \
+
               -w "%{http_code}" \
+
               "$CANARY_URL/checkin")
+
+
 
             echo "Prueba $i/10 -> HTTP $STATUS"
 
+
+
             if [ "$STATUS" != "200" ]; then
+
               echo "ERROR: Smoke test fallido."
+
               exit 1
+
             fi
+
           done
 
+
+
           METRICS=$(curl -fsS \
+
             --max-time 15 \
+
             "$CANARY_URL/metrics")
 
+
+
           echo "Metricas Canary:"
+
           echo "$METRICS" | jq .
 
+
+
           REQUESTS_4XX=$(echo "$METRICS" | jq -r '.requests_4xx')
+
           REQUESTS_5XX=$(echo "$METRICS" | jq -r '.requests_5xx')
+
           P95=$(echo "$METRICS" | jq -r '.p95_response_time_ms')
+
           P99=$(echo "$METRICS" | jq -r '.p99_response_time_ms')
 
+
+
           echo "4xx: $REQUESTS_4XX"
+
           echo "5xx: $REQUESTS_5XX"
+
           echo "P95: $P95 ms"
+
           echo "P99: $P99 ms"
 
+
+
           if [ "$REQUESTS_4XX" -ne 0 ]; then
+
             echo "ERROR: Se detectaron respuestas 4xx."
+
             exit 1
+
           fi
+
+
 
           if [ "$REQUESTS_5XX" -ne 0 ]; then
+
             echo "ERROR: Se detectaron respuestas 5xx."
+
             exit 1
+
           fi
+
+
 
           if ! awk "BEGIN {exit !($P95 <= $MAX_P95_MS)}"; then
+
             echo "ERROR: P95 supera ${MAX_P95_MS} ms."
+
             exit 1
+
           fi
 
+
+
           if ! awk "BEGIN {exit !($P99 <= $MAX_P99_MS)}"; then
+
             echo "ERROR: P99 supera ${MAX_P99_MS} ms."
+
             exit 1
+
           fi
+
+
 
           echo "Canary 5% aprobado."
 
+
+
       - name: Canary 25 por ciento
+
         env:
+
           STABLE_REVISION: ${{ steps.stable.outputs.revision }}
+
           CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
+
         run: |
+
           echo "========================================="
+
           echo "CANARY 25%"
+
           echo "========================================="
+
+
 
           gcloud run services update-traffic "${{ env.SERVICE }}" \
+
             "--to-revisions=${STABLE_REVISION}=75,${CANARY_REVISION}=25" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}"
 
+
+
       - name: Validar Canary 25 por ciento
+
         env:
+
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
+
         run: |
+
           set -e
 
-          echo "========================================="
-          echo "VALIDANDO CANARY 25%"
+
+
           echo "========================================="
 
+          echo "VALIDANDO CANARY 25%"
+
+          echo "========================================="
+
+
+
           for i in {1..20}; do
+
             STATUS=$(curl -sS \
+
               --max-time 15 \
+
               -o /tmp/checkin.json \
+
               -w "%{http_code}" \
+
               "$CANARY_URL/checkin")
+
+
 
             echo "Prueba $i/20 -> HTTP $STATUS"
 
+
+
             if [ "$STATUS" != "200" ]; then
+
               echo "ERROR: Smoke test fallido."
+
               exit 1
+
             fi
+
           done
 
+
+
           METRICS=$(curl -fsS \
+
             --max-time 15 \
+
             "$CANARY_URL/metrics")
 
+
+
           echo "Metricas Canary:"
+
           echo "$METRICS" | jq .
 
+
+
           REQUESTS_4XX=$(echo "$METRICS" | jq -r '.requests_4xx')
+
           REQUESTS_5XX=$(echo "$METRICS" | jq -r '.requests_5xx')
+
           P95=$(echo "$METRICS" | jq -r '.p95_response_time_ms')
+
           P99=$(echo "$METRICS" | jq -r '.p99_response_time_ms')
 
+
+
           echo "4xx: $REQUESTS_4XX"
+
           echo "5xx: $REQUESTS_5XX"
+
           echo "P95: $P95 ms"
+
           echo "P99: $P99 ms"
 
+
+
           if [ "$REQUESTS_4XX" -ne 0 ] || [ "$REQUESTS_5XX" -ne 0 ]; then
+
             echo "ERROR: Se detectaron errores HTTP."
+
             exit 1
+
           fi
+
+
 
           if ! awk "BEGIN {exit !($P95 <= $MAX_P95_MS)}"; then
+
             echo "ERROR: P95 supera ${MAX_P95_MS} ms."
+
             exit 1
+
           fi
 
+
+
           if ! awk "BEGIN {exit !($P99 <= $MAX_P99_MS)}"; then
+
             echo "ERROR: P99 supera ${MAX_P99_MS} ms."
+
             exit 1
+
           fi
+
+
 
           echo "Canary 25% aprobado."
 
+
+
       - name: Canary 50 por ciento
+
         env:
+
           STABLE_REVISION: ${{ steps.stable.outputs.revision }}
+
           CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
+
         run: |
+
           echo "========================================="
+
           echo "CANARY 50%"
+
           echo "========================================="
+
+
 
           gcloud run services update-traffic "${{ env.SERVICE }}" \
+
             "--to-revisions=${STABLE_REVISION}=50,${CANARY_REVISION}=50" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}"
 
+
+
       - name: Validar Canary 50 por ciento
+
         env:
+
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
+
         run: |
+
           set -e
 
-          echo "========================================="
-          echo "VALIDANDO CANARY 50%"
+
+
           echo "========================================="
 
+          echo "VALIDANDO CANARY 50%"
+
+          echo "========================================="
+
+
+
           for i in {1..30}; do
+
             STATUS=$(curl -sS \
+
               --max-time 15 \
+
               -o /tmp/checkin.json \
+
               -w "%{http_code}" \
+
               "$CANARY_URL/checkin")
+
+
 
             echo "Prueba $i/30 -> HTTP $STATUS"
 
+
+
             if [ "$STATUS" != "200" ]; then
+
               echo "ERROR: Smoke test fallido."
+
               exit 1
+
             fi
+
           done
 
+
+
           METRICS=$(curl -fsS \
+
             --max-time 15 \
+
             "$CANARY_URL/metrics")
 
+
+
           echo "Metricas Canary:"
+
           echo "$METRICS" | jq .
 
+
+
           REQUESTS_4XX=$(echo "$METRICS" | jq -r '.requests_4xx')
+
           REQUESTS_5XX=$(echo "$METRICS" | jq -r '.requests_5xx')
+
           P95=$(echo "$METRICS" | jq -r '.p95_response_time_ms')
+
           P99=$(echo "$METRICS" | jq -r '.p99_response_time_ms')
 
+
+
           echo "4xx: $REQUESTS_4XX"
+
           echo "5xx: $REQUESTS_5XX"
+
           echo "P95: $P95 ms"
+
           echo "P99: $P99 ms"
 
+
+
           if [ "$REQUESTS_4XX" -ne 0 ] || [ "$REQUESTS_5XX" -ne 0 ]; then
+
             echo "ERROR: Se detectaron errores HTTP."
+
             exit 1
+
           fi
+
+
 
           if ! awk "BEGIN {exit !($P95 <= $MAX_P95_MS)}"; then
+
             echo "ERROR: P95 supera ${MAX_P95_MS} ms."
+
             exit 1
+
           fi
 
+
+
           if ! awk "BEGIN {exit !($P99 <= $MAX_P99_MS)}"; then
+
             echo "ERROR: P99 supera ${MAX_P99_MS} ms."
+
             exit 1
+
           fi
+
+
 
           echo "Canary 50% aprobado."
 
+
+
       - name: Promover Canary al 100 por ciento
+
         env:
+
           STABLE_REVISION: ${{ steps.stable.outputs.revision }}
+
           CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
+
         run: |
+
           echo "========================================="
+
           echo "PROMOVIENDO CANARY AL 100%"
+
           echo "========================================="
+
+
 
           gcloud run services update-traffic "${{ env.SERVICE }}" \
+
             "--to-revisions=${STABLE_REVISION}=0,${CANARY_REVISION}=100" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}"
 
+
+
       - name: Validacion final
+
         env:
+
           CANARY_URL: ${{ steps.deploy.outputs.canary_url }}
+
         run: |
+
           set -e
 
-          echo "========================================="
-          echo "VALIDACION FINAL DE V4"
+
+
           echo "========================================="
 
+          echo "VALIDACION FINAL DE V4"
+
+          echo "========================================="
+
+
+
           for i in {1..20}; do
+
             STATUS=$(curl -sS \
+
               --max-time 15 \
+
               -o /tmp/checkin.json \
+
               -w "%{http_code}" \
+
               "$CANARY_URL/checkin")
+
+
 
             echo "Prueba $i/20 -> HTTP $STATUS"
 
+
+
             if [ "$STATUS" != "200" ]; then
+
               echo "ERROR: Validacion final fallida."
+
               exit 1
+
             fi
+
           done
 
+
+
           METRICS=$(curl -fsS \
+
             --max-time 15 \
+
             "$CANARY_URL/metrics")
 
+
+
           echo "Metricas finales:"
+
           echo "$METRICS" | jq .
 
+
+
           REQUESTS_4XX=$(echo "$METRICS" | jq -r '.requests_4xx')
+
           REQUESTS_5XX=$(echo "$METRICS" | jq -r '.requests_5xx')
+
           P95=$(echo "$METRICS" | jq -r '.p95_response_time_ms')
+
           P99=$(echo "$METRICS" | jq -r '.p99_response_time_ms')
 
+
+
           echo "4xx: $REQUESTS_4XX"
+
           echo "5xx: $REQUESTS_5XX"
+
           echo "P95: $P95 ms"
+
           echo "P99: $P99 ms"
 
+
+
           if [ "$REQUESTS_4XX" -ne 0 ] || [ "$REQUESTS_5XX" -ne 0 ]; then
+
             echo "ERROR: Se detectaron errores HTTP."
+
             exit 1
+
           fi
+
+
 
           if ! awk "BEGIN {exit !($P95 <= $MAX_P95_MS)}"; then
+
             echo "ERROR: P95 supera ${MAX_P95_MS} ms."
+
             exit 1
+
           fi
+
+
 
           if ! awk "BEGIN {exit !($P99 <= $MAX_P99_MS)}"; then
+
             echo "ERROR: P99 supera ${MAX_P99_MS} ms."
+
             exit 1
+
           fi
 
+
+
           echo "========================================="
+
           echo "CANARY DEPLOYMENT EXITOSO"
+
           echo "V4 ESTA AL 100%"
+
           echo "========================================="
+
+
 
       - name: Verificar trafico final
+
         run: |
+
           gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="yaml(status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic)"
 
+
+
       - name: Rollback automatico
+
         if: failure() && steps.stable.outputs.revision != '' && steps.deploy.outputs.revision != ''
+
         env:
+
           STABLE_REVISION: ${{ steps.stable.outputs.revision }}
+
           CANARY_REVISION: ${{ steps.deploy.outputs.revision }}
+
         run: |
+
           echo "========================================="
+
           echo "FALLO DETECTADO"
+
           echo "ROLLBACK AUTOMATICO"
+
           echo "========================================="
+
+
 
           echo "Revision estable:"
+
           echo "$STABLE_REVISION"
 
+
+
           echo "Revision Canary:"
+
           echo "$CANARY_REVISION"
 
+
+
           gcloud run services update-traffic "${{ env.SERVICE }}" \
+
             "--to-revisions=${STABLE_REVISION}=100,${CANARY_REVISION}=0" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}"
 
-          echo "========================================="
-          echo "ROLLBACK COMPLETADO"
-          echo "TRAFICO RESTAURADO A LA REVISION ESTABLE"
+
+
           echo "========================================="
 
+          echo "ROLLBACK COMPLETADO"
+
+          echo "TRAFICO RESTAURADO A LA REVISION ESTABLE"
+
+          echo "========================================="
+
+
+
           gcloud run services describe "${{ env.SERVICE }}" \
+
             --region="${{ env.REGION }}" \
+
             --project="${{ env.PROJECT_ID }}" \
+
             --format="yaml(status.latestReadyRevisionName,status.traffic)"
+
+
 
           exit 1
