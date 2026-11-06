@@ -4,11 +4,9 @@ Este proyecto consiste en una API REST para manejar información básica de un h
 
 La aplicación permite registrar huéspedes, habitaciones y check-ins. También permite consultar, actualizar y eliminar la información guardada.
 
-El proyecto fue realizado usando Fastify, TypeScript y MySQL.
+El proyecto fue realizado usando Fastify, TypeScript y MySQL. Durante el desarrollo también se incorporaron pruebas automatizadas, Docker, GitHub Actions y una estrategia de despliegue Canary sobre Google Cloud Run.
 
 ## Tecnologías usadas
-
-Para realizar el proyecto se utilizaron las siguientes tecnologías:
 
 - Node.js
 - TypeScript
@@ -19,7 +17,9 @@ Para realizar el proyecto se utilizaron las siguientes tecnologías:
 - Docker
 - Docker Compose
 - GitHub Actions
-- Railway
+- Google Cloud Run
+- Google Artifact Registry
+- Google Cloud Monitoring
 - Git y GitHub
 
 ## Entidades del proyecto
@@ -53,21 +53,12 @@ Si se quiere ejecutar usando contenedores también se debe tener:
 
 ## Clonar el proyecto
 
-Primero se debe clonar el repositorio desde GitHub:
-
 ```bash
 git clone https://github.com/sgiraldor/hotel-fastify.git
-```
-
-Después entrar a la carpeta del proyecto:
-
-```bash
 cd hotel-fastify
 ```
 
 ## Instalar las dependencias
-
-Para instalar las dependencias del proyecto se ejecuta:
 
 ```bash
 npm install
@@ -80,8 +71,6 @@ Para trabajar de forma local se debe crear un archivo llamado:
 ```text
 .env
 ```
-
-En este archivo se colocan los datos necesarios para conectarse a MySQL.
 
 Ejemplo:
 
@@ -97,7 +86,7 @@ Los valores pueden cambiar dependiendo de la configuración de MySQL que tenga c
 
 ## Ejecutar el proyecto
 
-Para iniciar el proyecto en modo desarrollo se utiliza:
+Para iniciar el proyecto en modo desarrollo:
 
 ```bash
 npm run dev
@@ -109,113 +98,35 @@ La aplicación se ejecuta normalmente en:
 http://localhost:3000
 ```
 
-Para verificar que la API está funcionando se puede hacer una petición GET a:
-
-```text
-/
-```
-
-La respuesta debe ser parecida a:
-
-```json
-{
-  "message": "Hotel funcionando"
-}
-```
+Para verificar que la API está funcionando se puede hacer una petición GET a `/`.
 
 ## Rutas de Huesped
 
-Crear un huésped:
-
 ```text
-POST /huesped
-```
-
-Consultar todos los huéspedes:
-
-```text
-GET /huesped
-```
-
-Consultar un huésped por su id:
-
-```text
-GET /huesped/:id
-```
-
-Actualizar un huésped:
-
-```text
-PATCH /huesped/:id
-```
-
-Eliminar un huésped:
-
-```text
+POST   /huesped
+GET    /huesped
+GET    /huesped/:id
+PATCH  /huesped/:id
 DELETE /huesped/:id
 ```
 
 ## Rutas de Habitacion
 
-Crear una habitación:
-
 ```text
-POST /habitacion
-```
-
-Consultar todas las habitaciones:
-
-```text
-GET /habitacion
-```
-
-Consultar una habitación por su id:
-
-```text
-GET /habitacion/:id
-```
-
-Actualizar una habitación:
-
-```text
-PATCH /habitacion/:id
-```
-
-Eliminar una habitación:
-
-```text
+POST   /habitacion
+GET    /habitacion
+GET    /habitacion/:id
+PATCH  /habitacion/:id
 DELETE /habitacion/:id
 ```
 
 ## Rutas de CheckIn
 
-Crear un check-in:
-
 ```text
-POST /checkin
-```
-
-Consultar los check-ins:
-
-```text
-GET /checkin
-```
-
-Consultar un check-in por su id:
-
-```text
-GET /checkin/:id
-```
-
-Actualizar un check-in:
-
-```text
-PATCH /checkin/:id
-```
-
-Eliminar un check-in:
-
-```text
+POST   /checkin
+GET    /checkin
+GET    /checkin/:id
+PATCH  /checkin/:id
 DELETE /checkin/:id
 ```
 
@@ -223,57 +134,42 @@ DELETE /checkin/:id
 
 El proyecto tiene pruebas unitarias y pruebas de integración realizadas con Vitest.
 
-Para ejecutar las pruebas se utiliza:
+Para ejecutar las pruebas:
 
 ```bash
 npm test
 ```
 
-Para ejecutar las pruebas y mirar la cobertura se utiliza:
+Para ejecutar las pruebas y mirar la cobertura:
 
 ```bash
 npm run test:coverage
 ```
 
-Actualmente el proyecto tiene más del 85% de cobertura general.
-
 ## Docker
 
-El proyecto también se puede ejecutar usando Docker.
-
-Se utiliza Docker para levantar la API y la base de datos MySQL en contenedores.
-
-Para construir y levantar los contenedores se utiliza:
+Para construir y levantar los contenedores:
 
 ```bash
 docker compose up --build
 ```
 
-Para mirar los contenedores que están funcionando:
+Para consultar los contenedores:
 
 ```bash
 docker compose ps
 ```
 
-Se deben mostrar los servicios de la API y MySQL.
+Para detenerlos:
 
-Por ejemplo:
-
-```text
-hotel-api
-hotel-mysql
+```bash
+docker compose down
 ```
 
 La API queda disponible en:
 
 ```text
 http://localhost:3000
-```
-
-Para detener los contenedores se utiliza:
-
-```bash
-docker compose down
 ```
 
 ## Base de datos
@@ -288,102 +184,245 @@ habitacion
 checkin
 ```
 
-Estas tablas permiten guardar la información utilizada por la API.
-
 ## GitHub Actions
 
-El proyecto utiliza GitHub Actions para ejecutar los pipelines automáticamente.
+El proyecto utiliza GitHub Actions para automatizar procesos de integración, pruebas y despliegue.
 
-Se crearon dos pipelines:
-
-```text
-Pipeline de Pruebas
-Pipeline de Produccion
-```
-
-Cada pipeline tiene su propio ambiente.
-
-## Pipeline de Pruebas
-
-El pipeline de pruebas se ejecuta cuando se realiza un push a la rama main.
-
-Este pipeline realiza los siguientes pasos:
-
-1. Descarga el código del repositorio.
-2. Configura Node.js.
-3. Instala las dependencias.
-4. Compila el proyecto.
-5. Ejecuta las pruebas.
-6. Ejecuta la cobertura.
-7. Si todo funciona correctamente, realiza el despliegue al ambiente de pruebas.
-
-El ambiente de pruebas debe tener mínimo 60% de cobertura.
-
-Si alguna prueba falla, el pipeline se detiene y no realiza el despliegue.
-
-## Pipeline de Produccion
-
-El pipeline de producción también realiza varias verificaciones antes de desplegar la aplicación.
-
-Los pasos principales son:
-
-1. Descargar el código.
-2. Configurar Node.js.
-3. Instalar las dependencias.
-4. Compilar el proyecto.
-5. Ejecutar las pruebas.
-6. Revisar la cobertura.
-7. Desplegar la aplicación en producción.
-
-Para producción se configuró un Quality Gate de mínimo 85% de cobertura.
-
-Si no se alcanza ese porcentaje o alguna prueba falla, el pipeline se detiene y no se realiza el despliegue.
-
-## Ambientes
-
-El proyecto tiene dos ambientes separados:
-
-### Ambiente de pruebas
-
-Se utiliza para probar los cambios antes de considerarlos listos para producción.
-
-### Ambiente de producción
-
-Es el ambiente donde se encuentra la versión final de la aplicación.
-
-Los dos ambientes tienen configuración independiente en Railway.
-
-## Railway
-
-Railway se utilizó para desplegar la aplicación y las bases de datos MySQL.
-
-La aplicación de producción se encuentra en:
+Actualmente el repositorio contiene un pipeline específico para la estrategia Canary:
 
 ```text
-https://hotel-production-4bd4.up.railway.app
+.github/workflows/canary-pipeline.yml
 ```
 
-Para comprobar que está funcionando se puede entrar a esa dirección y debe aparecer:
+El pipeline realiza, entre otros, los siguientes pasos:
 
-```json
-{
-  "message": "Hotel funcionando"
-}
+1. Descarga del código.
+2. Configuración de Node.js.
+3. Instalación de dependencias.
+4. Compilación.
+5. Ejecución de pruebas.
+6. Autenticación en Google Cloud.
+7. Construcción de la imagen Docker.
+8. Publicación en Artifact Registry.
+9. Obtención del digest inmutable.
+10. Despliegue de la nueva revisión Canary.
+11. Smoke test.
+12. Distribución progresiva del tráfico.
+13. Validación de cada etapa.
+14. Promoción final al 100%.
+
+Los commits del proyecto utilizan GitMoji.
+
+## Despliegue Canary
+
+La estrategia Canary se implementó sobre Google Cloud Run.
+
+En este proyecto se utilizan las siguientes revisiones:
+
+| Revisión | Rol |
+|---|---|
+| V1 | Stable |
+| V4 | Canary |
+
+V1 corresponde a la versión estable y V4 corresponde a la nueva versión que se prueba progresivamente antes de recibir todo el tráfico.
+
+### Cambio funcional de V4
+
+La versión V4 incorpora cambios funcionales respecto a V1.
+
+Entre ellos se agregaron:
+
+- `email`
+- `estado`
+
+Estos cambios permiten diferenciar funcionalmente la nueva revisión de la versión estable.
+
+## Arquitectura Canary
+
+El flujo general es:
+
+```text
+                    GitHub
+                       |
+                       v
+                GitHub Actions
+                       |
+              +--------+--------+
+              |                 |
+           Tests             Build
+              |                 |
+              +--------+--------+
+                       |
+                       v
+               Docker Image
+                       |
+                       v
+             Artifact Registry
+                       |
+                       v
+                  Cloud Run
+                  /                        /                         v           v
+          V1 Stable      V4 Canary
+                \           /
+                 \         /
+                  Traffic
+                  Splitting
 ```
 
-Los despliegues se realizan desde los pipelines usando Railway CLI.
+Google Cloud Monitoring se utiliza para observar el comportamiento de las revisiones durante el despliegue.
 
-Los tokens necesarios para realizar los despliegues están guardados como Secrets en GitHub y no directamente dentro del código.
+## Etapas del Canary
+
+La nueva revisión V4 se despliega inicialmente sin tráfico público.
+
+El pipeline realiza el siguiente proceso:
+
+| Etapa | Tráfico V4 Canary | Acción |
+|---|---:|---|
+| 0 | 0% | Despliegue de V4 sin tráfico |
+| 1 | 5% | Primera exposición al tráfico |
+| 2 | 25% | Incremento progresivo |
+| 3 | 50% | Incremento progresivo |
+| 4 | 100% | Promoción completa de V4 |
+
+Entre las etapas se realiza un Bake Time para observar el comportamiento de la aplicación antes de aumentar nuevamente el tráfico.
+
+El pipeline actual utiliza un tiempo de observación de 15 segundos entre las etapas Canary.
+
+## Validación del Canary
+
+Antes de avanzar entre las etapas, el pipeline realiza validaciones sobre la nueva revisión.
+
+Se realizan comprobaciones de:
+
+- disponibilidad de la revisión;
+- respuestas HTTP;
+- solicitudes exitosas;
+- errores HTTP;
+- latencia.
+
+El objetivo es evitar avanzar a la siguiente etapa si la nueva revisión no cumple las condiciones definidas en el pipeline.
+
+## Imagen inmutable
+
+La imagen desplegada se identifica mediante su digest SHA256.
+
+El pipeline obtiene el digest de la imagen publicada en Artifact Registry y utiliza la referencia inmutable para desplegar la revisión Canary.
+
+Esto permite que las diferentes etapas del despliegue trabajen sobre el mismo artefacto.
+
+## Observabilidad
+
+La observabilidad del despliegue se realiza mediante Google Cloud Monitoring.
+
+Se creó el dashboard:
+
+```text
+Hotel V4 Canary - Observabilidad
+```
+
+Actualmente contiene los siguientes widgets:
+
+### Tráfico por revisión V1 vs V4
+
+Muestra la cantidad de solicitudes asociadas a las diferentes revisiones del servicio `hotel-v4-canary`.
+
+### Errores HTTP 5xx del Canary
+
+Muestra las respuestas HTTP de clase 5xx del servicio Canary.
+
+### Latencia P99 del Canary
+
+Muestra el percentil 99 de la latencia de las solicitudes.
+
+### Instancias activas por revisión
+
+Muestra las instancias activas asociadas a las diferentes revisiones.
+
+Estas métricas permiten observar el comportamiento del servicio durante las etapas del Canary.
+
+## Traffic Splitting
+
+La distribución de tráfico se realiza mediante Cloud Run.
+
+Durante el despliegue progresivo, el tráfico pasa por las siguientes etapas:
+
+```text
+V1 Stable 100% / V4 Canary 0%
+        |
+        v
+V1 Stable 95% / V4 Canary 5%
+        |
+        v
+V1 Stable 75% / V4 Canary 25%
+        |
+        v
+V1 Stable 50% / V4 Canary 50%
+        |
+        v
+V1 Stable 0% / V4 Canary 100%
+```
+
+El pipeline automatiza la modificación de los porcentajes y realiza la validación correspondiente antes de continuar.
+
+## Expand / Contract
+
+Los cambios de V4 se realizaron buscando mantener la compatibilidad durante la convivencia de V1 y V4.
+
+La nueva versión incorpora los campos:
+
+```text
+email
+estado
+```
+
+Durante el despliegue Canary V1 continúa disponible mientras V4 recibe tráfico de forma progresiva.
+
+La estrategia permite que las dos revisiones convivan durante la transición y que la nueva versión sea validada antes de completar la promoción.
+
+## Evidencias del despliegue
+
+Durante las pruebas del proyecto se verificó:
+
+- despliegue de V4 sin tráfico;
+- smoke test de la nueva revisión;
+- Canary al 5%;
+- Bake Time;
+- validación del 5%;
+- Canary al 25%;
+- Bake Time;
+- validación del 25%;
+- Canary al 50%;
+- Bake Time;
+- validación del 50%;
+- promoción al 100%;
+- validación final;
+- utilización de imagen mediante digest;
+- observabilidad mediante Cloud Monitoring.
+
+## Versionamiento
+
+Las revisiones de Cloud Run utilizadas en el despliegue se identifican como:
+
+```text
+V1 Stable
+V4 Canary
+```
+
+Esto corresponde a la estrategia de revisiones utilizada en Cloud Run y es independiente del Semantic Versioning utilizado para los releases del repositorio.
+
+Los commits utilizan GitMoji.
 
 ## Estructura del proyecto
 
-De forma general el proyecto está organizado así:
+De forma general:
 
 ```text
 hotel-fastify/
 │
 ├── .github/
 │   └── workflows/
+│       └── canary-pipeline.yml
 │
 ├── docker/
 │
@@ -391,7 +430,7 @@ hotel-fastify/
 │   ├── config/
 │   ├── entities/
 │   ├── routes/
-│   └── utils/
+│   └── observability/
 │
 ├── tests/
 │   └── integration/
@@ -402,14 +441,6 @@ hotel-fastify/
 ├── tsconfig.json
 └── README.md
 ```
-
-## Resumen
-
-Con este proyecto se realizó una API REST para un hotel utilizando Fastify y MySQL.
-
-También se agregaron pruebas automáticas, cobertura de código, Docker y dos pipelines de CI/CD.
-
-Los pipelines permiten comprobar que el proyecto funciona antes de realizar los despliegues en los ambientes de pruebas y producción.
 
 ## Autor
 
