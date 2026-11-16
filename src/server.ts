@@ -6,6 +6,7 @@ import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
+import { healthRoutes } from './routes/health.routes';
 import { registrarMetricas } from './observability/metrics';
 import { registrarMetricasHttp } from './observability/http-metrics';
 import { camposDeCorrelacion } from './observability/log-context';
@@ -24,6 +25,7 @@ app.addHook('onRequest', traceIdHook);
 registrarMetricas(app);
 registrarMetricasHttp(app, 'hotel-api');
 
+app.register(healthRoutes);
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
