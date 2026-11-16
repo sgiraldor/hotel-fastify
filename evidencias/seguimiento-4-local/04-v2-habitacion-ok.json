@@ -1,0 +1,10 @@
+﻿{
+    "name":  "04-v2-habitacion-ok",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "sports-e2e-real-001",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}

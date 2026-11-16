@@ -1,0 +1,10 @@
+﻿{
+    "name":  "05-chaos-enable",
+    "url":  "http://127.0.0.1:3000/api/v2/chaos/dependency",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "7ba36261-82a7-48e2-a129-11307c5c1e48",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"message\":\"Caos habilitado\",\"durationSeconds\":45,\"chaos\":{\"envDown\":false,\"temporalActivo\":true,\"activo\":true,\"until\":1794873341287,\"activations\":1,\"injections\":0}}"
+}

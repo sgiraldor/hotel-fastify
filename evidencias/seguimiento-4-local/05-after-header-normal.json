@@ -1,0 +1,10 @@
+﻿{
+    "name":  "05-after-header-normal",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "after-header",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}

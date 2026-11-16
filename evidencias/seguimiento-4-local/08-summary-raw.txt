@@ -1,0 +1,83 @@
+﻿=== TRACE PROPAGATION ===
+04-v2-habitacion-ok:
+{
+    "name":  "04-v2-habitacion-ok",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "sports-e2e-real-001",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}
+
+04-v2-habitacion-gen-trace:
+{
+    "name":  "04-v2-habitacion-gen-trace",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "b96a89c2-ad8f-447c-831b-6a51fddef66e",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}
+
+04-legacy-habitacion:
+{
+    "name":  "04-legacy-habitacion",
+    "url":  "http://127.0.0.1:3000/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}
+
+=== CHAOS ===
+05-chaos-habitacion-503:
+{
+    "name":  "05-chaos-habitacion-503",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  503,
+    "headers":  {
+                    "x-trace-id":  "chaos-active-001",
+                    "Retry-After":  "5"
+                },
+    "body":  ""
+}
+
+05-chaos-live-still-200:
+{
+    "name":  "05-chaos-live-still-200",
+    "url":  "http://127.0.0.1:3000/live",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+}
+
+05-chaos-recovered:
+{
+    "name":  "05-chaos-recovered",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "chaos-recovered-001",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}
+
+05-chaos-no-token:
+{
+    "name":  "05-chaos-no-token",
+    "url":  "http://127.0.0.1:3000/api/v2/chaos/dependency",
+    "status":  401,
+    "headers":  {
+                    "x-trace-id":  "4f4dcf8c-325e-4254-9c47-0cccca352d15"
+                },
+    "body":  ""
+}
+

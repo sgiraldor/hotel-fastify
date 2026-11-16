@@ -1,0 +1,12 @@
+﻿docker :  Container hotel-mysql Stopping 
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-9a6dc382-2729-4978-8155-d293c489dde9.ps1: 106 Carácter: 86
++ ...  $env:RESILIENCE_MODE = 'protected'; docker compose down 2>&1 | Out-F ...
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container hotel-mysql Stopping :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container hotel-mysql Stopped 
+ Container hotel-mysql Removing 
+ Container hotel-mysql Removed 
+ Network hotel-fastify_default Removing 
+ Network hotel-fastify_default Removed 

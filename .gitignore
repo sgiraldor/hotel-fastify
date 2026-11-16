@@ -15,3 +15,7 @@ terraform/oci/*.tfstate*
 scripts/experiments/results/*.json
 !scripts/experiments/results/.gitkeep
 
+# no versionar tokens locales si alguien los deja en archivos sueltos
+evidencias/**/*token*
+evidencias/**/*.pem
+

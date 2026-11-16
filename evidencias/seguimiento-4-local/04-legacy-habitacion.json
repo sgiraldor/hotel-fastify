@@ -1,0 +1,9 @@
+﻿{
+    "name":  "04-legacy-habitacion",
+    "url":  "http://127.0.0.1:3000/habitacion/1",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+}

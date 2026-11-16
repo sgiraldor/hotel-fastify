@@ -1,0 +1,10 @@
+﻿{
+    "name":  "04-v2-habitacion-404",
+    "url":  "http://127.0.0.1:3000/api/v2/habitacion/999999",
+    "status":  404,
+    "headers":  {
+
+                },
+    "body":  "",
+    "error":  "Error en el servidor remoto: (404) No se encontró."
+}

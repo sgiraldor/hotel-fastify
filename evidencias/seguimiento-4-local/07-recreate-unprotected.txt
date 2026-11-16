@@ -1,0 +1,10 @@
+﻿docker :  Container hotel-api Recreate 
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-006edb21-7ad9-4aad-95c7-31405c399dfe.ps1: 137 Carácter: 1
++ docker compose up -d --no-deps --force-recreate api 2>&1 | Out-File - ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container hotel-api Recreate :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container hotel-api Recreated 
+ Container hotel-api Starting 
+ Container hotel-api Started 
