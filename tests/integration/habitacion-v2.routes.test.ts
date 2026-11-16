@@ -13,6 +13,7 @@ vi.mock('../../src/config/database', () => ({
   AppDataSource: {
     getRepository: vi.fn(() => repositorioMock),
   },
+  conTimeoutConsulta: <T>(operacion: Promise<T>) => operacion,
 }));
 
 import { traceIdHook } from '../../src/plugins/trace-id.plugin';

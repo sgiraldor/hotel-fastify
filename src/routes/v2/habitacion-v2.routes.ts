@@ -1,5 +1,8 @@
 ﻿import { FastifyInstance } from 'fastify';
-import { AppDataSource } from '../../config/database';
+import {
+  AppDataSource,
+  conTimeoutConsulta,
+} from '../../config/database';
 import { Habitacion } from '../../entities/habitacion.entity';
 import { validarHabitacion } from '../../utils/habitacion.utils';
 import { traceIdDeLaPeticion } from '../../plugins/trace-id.plugin';
@@ -93,7 +96,9 @@ export async function habitacionV2Routes(app: FastifyInstance) {
           });
         }
 
-        const habitacion = await habitacionRepository.findOneBy({ id });
+        const habitacion = await conTimeoutConsulta(
+          habitacionRepository.findOneBy({ id }),
+        );
 
         if (!habitacion) {
           return reply.code(404).send({
@@ -104,6 +109,22 @@ export async function habitacionV2Routes(app: FastifyInstance) {
 
         return reply.code(200).send(habitacion);
       } catch (error) {
+        const mensaje =
+          error instanceof Error ? error.message : 'Error desconocido';
+
+        if (mensaje.startsWith('DB_QUERY_TIMEOUT_')) {
+          request.log.warn(
+            { error, traceId },
+            'Fail-fast: timeout de consulta habitacion V2',
+          );
+
+          return reply.code(504).send({
+            message: 'Timeout consultando habitacion (fail-fast)',
+            code: 'DB_QUERY_TIMEOUT',
+            traceId,
+          });
+        }
+
         request.log.error(
           { error, traceId },
           'ERROR AL CONSULTAR HABITACION V2',

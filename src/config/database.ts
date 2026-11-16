@@ -3,8 +3,18 @@ import { config } from 'dotenv';
 import { Huesped } from '../entities/huesped.entity';
 import { Habitacion } from '../entities/habitacion.entity';
 import { CheckIn } from '../entities/checkin.entity';
+import {
+  obtenerLimitePool,
+  obtenerQueryTimeoutMs,
+  obtenerModoResiliencia,
+} from './resilience';
+
+export { conTimeoutConsulta } from './resilience';
 
 config();
+
+const limitePool = obtenerLimitePool();
+const queryTimeoutMs = obtenerQueryTimeoutMs();
 
 const databaseConfig = {
   type: 'mysql' as const,
@@ -13,6 +23,10 @@ const databaseConfig = {
   database: process.env.DB_NAME,
   entities: [Huesped, Habitacion, CheckIn],
   synchronize: false,
+  extra: {
+    connectionLimit: limitePool,
+    connectTimeout: queryTimeoutMs,
+  },
   ...(process.env.INSTANCE_UNIX_SOCKET
     ? {
         socketPath: process.env.INSTANCE_UNIX_SOCKET,
@@ -24,3 +38,11 @@ const databaseConfig = {
 };
 
 export const AppDataSource = new DataSource(databaseConfig);
+
+export function descripcionResilienciaDb() {
+  return {
+    mode: obtenerModoResiliencia(),
+    poolLimit: limitePool,
+    queryTimeoutMs,
+  };
+}
