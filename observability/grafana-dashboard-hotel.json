@@ -1,0 +1,89 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "Hotel RPS (throughput)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "hotel_http_throughput_rps",
+          "legendFormat": "rps",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Hotel p95 latency (ms)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "hotel_http_p95_ms",
+          "legendFormat": "p95",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Hotel 5xx errors",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(hotel_http_errors_5xx_total[1m])",
+          "legendFormat": "5xx/s",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Chaos active / injections",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "hotel_chaos_active",
+          "legendFormat": "chaos_active",
+          "refId": "A"
+        },
+        {
+          "expr": "hotel_chaos_503_total",
+          "legendFormat": "injections",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "title": "Resilience mode protected",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "hotel_resilience_protected",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Ronda 0 vs Ronda 1 (anotar ventanas manualmente)",
+      "type": "text",
+      "gridPos": { "h": 4, "w": 18, "x": 6, "y": 16 },
+      "options": {
+        "content": "Usar anotaciones Grafana para marcar: Baseline, R0 (unprotected+caos), R1 (protected+caos). Correlacionar con x-trace-id en Tempo/Jaeger."
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["hotel", "seguimiento-4", "chaos"],
+  "templating": { "list": [] },
+  "time": { "from": "now-30m", "to": "now" },
+  "title": "Hotel API — Seguimiento #4 (Samuel)",
+  "uid": "hotel-seguimiento-4",
+  "version": 1
+}

@@ -1,0 +1,54 @@
+name: Chaos Hotel (manual auxiliar)
+
+# No altera Canary ni Railway.
+# No ejecuta fallos contra nube automaticamente.
+# Samuel no duplica el Chaos Gate principal de Jarrison.
+
+on:
+  workflow_dispatch:
+    inputs:
+      hotel_base_url:
+        description: "URL base de Hotel (local o laboratorio autorizado)"
+        required: true
+        default: "http://127.0.0.1:3000"
+      dry_run:
+        description: "Si true, solo valida scripts/tests sin inyectar caos remoto"
+        type: boolean
+        default: true
+
+jobs:
+  validate-hotel-chaos-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar
+        run: npm run build
+
+      - name: Pruebas (incluye caos y resiliencia)
+        run: npm test
+
+      - name: Validar experimento JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('chaos/experiment-hotel-dependency.json','utf8')); console.log('ok')"
+
+      - name: Recordatorio integracion Sports Chaos Gate
+        run: |
+          echo "Jarrison puede:"
+          echo "1) GET /api/v2/chaos/dependency (token)"
+          echo "2) POST enable/disable"
+          echo "3) Medir GET /api/v2/habitacion/:id y /metrics"
+          echo "4) Verificar recuperacion"
+          echo "HOTEL_BASE_URL=${{ inputs.hotel_base_url }}"
+          echo "dry_run=${{ inputs.dry_run }}"
+          if [ "${{ inputs.dry_run }}" != "true" ]; then
+            echo "Inyeccion remota deshabilitada en este workflow por seguridad academica."
+            echo "Usar chaos/run-local.mjs desde un entorno autorizado."
+          fi

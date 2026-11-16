@@ -9,6 +9,12 @@ export default defineConfig({
         'src/server.ts',
         'src/config/**',
         'src/entities/**',
+        'src/observability/otel.ts',
+        'src/observability/http-instrumentation.ts',
+        'src/observability/http-metrics.ts',
+        'src/observability/log-context.ts',
+        'src/observability/metrics.ts',
+        'src/routes/health.routes.ts',
       ],
       reporter: ['text', 'html'],
 

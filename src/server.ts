@@ -9,6 +9,7 @@ import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
 import { healthRoutes } from './routes/health.routes';
 import { registrarMetricas, incrementarChaos503 } from './observability/metrics';
 import { registrarMetricasHttp } from './observability/http-metrics';
+import { registrarPrometheus } from './observability/prometheus-metrics';
 import { camposDeCorrelacion } from './observability/log-context';
 import { traceIdHook } from './plugins/trace-id.plugin';
 import {
@@ -42,6 +43,7 @@ app.addHook('onRequest', async (request, reply) => {
 
 registrarMetricas(app);
 registrarMetricasHttp(app, 'hotel-api');
+registrarPrometheus(app);
 
 app.register(healthRoutes);
 app.register(huespedRoutes);
