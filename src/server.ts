@@ -1,20 +1,33 @@
+import './observability/otel';
 import 'reflect-metadata';
 import fastify from 'fastify';
 import { AppDataSource } from './config/database';
 import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
+import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
 import { registrarMetricas } from './observability/metrics';
+import { registrarMetricasHttp } from './observability/http-metrics';
+import { camposDeCorrelacion } from './observability/log-context';
+import { traceIdHook } from './plugins/trace-id.plugin';
 
 const app = fastify({
-  logger: true,
+  logger: {
+    level: 'info',
+    mixin() {
+      return camposDeCorrelacion();
+    },
+  },
 });
 
+app.addHook('onRequest', traceIdHook);
 registrarMetricas(app);
+registrarMetricasHttp(app, 'hotel-api');
 
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
+app.register(habitacionV2Routes);
 
 // Endpoint de falla controlada exclusivo para pruebas Canary
 app.get('/canary/failure', async (_request, reply) => {
