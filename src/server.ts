@@ -7,10 +7,17 @@ import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
 import { healthRoutes } from './routes/health.routes';
-import { registrarMetricas } from './observability/metrics';
+import { registrarMetricas, incrementarChaos503 } from './observability/metrics';
 import { registrarMetricasHttp } from './observability/http-metrics';
 import { camposDeCorrelacion } from './observability/log-context';
 import { traceIdHook } from './plugins/trace-id.plugin';
+import {
+  chaosControlRoutes,
+  chaosDependencyHook,
+} from './plugins/chaos-dependency.plugin';
+import { obtenerRequestTimeoutMs } from './config/resilience';
+
+const requestTimeoutMs = obtenerRequestTimeoutMs();
 
 const app = fastify({
   logger: {
@@ -19,9 +26,20 @@ const app = fastify({
       return camposDeCorrelacion();
     },
   },
+  ...(requestTimeoutMs > 0
+    ? { requestTimeout: requestTimeoutMs }
+    : {}),
 });
 
 app.addHook('onRequest', traceIdHook);
+app.addHook('onRequest', async (request, reply) => {
+  await chaosDependencyHook(request, reply);
+
+  if (reply.sent) {
+    incrementarChaos503();
+  }
+});
+
 registrarMetricas(app);
 registrarMetricasHttp(app, 'hotel-api');
 
@@ -30,6 +48,7 @@ app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
 app.register(habitacionV2Routes);
+app.register(chaosControlRoutes);
 
 // Endpoint de falla controlada exclusivo para pruebas Canary
 app.get('/canary/failure', async (_request, reply) => {
