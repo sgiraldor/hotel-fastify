@@ -9,3 +9,7 @@ hotel_db.sql
 terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.*
+terraform/oci/.terraform/
+terraform/oci/*.tfvars
+terraform/oci/*.tfstate*
+
