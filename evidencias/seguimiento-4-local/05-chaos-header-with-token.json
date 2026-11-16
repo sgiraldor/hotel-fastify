@@ -1,0 +1,8 @@
+﻿{
+    "status":  503,
+    "name":  "05-chaos-header-with-token",
+    "headers":  {
+                    "x-trace-id":  "header-chaos"
+                },
+    "note":  "503 con token"
+}

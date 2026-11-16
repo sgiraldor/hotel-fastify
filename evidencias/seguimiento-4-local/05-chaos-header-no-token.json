@@ -1,0 +1,8 @@
+﻿{
+    "status":  200,
+    "name":  "05-chaos-header-no-token",
+    "headers":  {
+                    "x-trace-id":  "no-token"
+                },
+    "note":  "header sin token no activa caos"
+}
