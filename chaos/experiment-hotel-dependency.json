@@ -1,0 +1,143 @@
+{
+  "version": "1.0.0",
+  "title": "Hotel dependency unavailable (Samuel)",
+  "description": "Verifica que la indisponibilidad controlada de Hotel responde 503 en el contrato Sports→Hotel, sin tumbar /live, y que al desactivar se recupera.",
+  "tags": ["hotel", "oci", "dependency", "seguimiento-4"],
+  "configuration": {
+    "hotel_base_url": {
+      "type": "env",
+      "key": "HOTEL_BASE_URL",
+      "default": "http://127.0.0.1:3000"
+    },
+    "chaos_lab_token": {
+      "type": "env",
+      "key": "CHAOS_LAB_TOKEN"
+    },
+    "habitacion_id": {
+      "type": "env",
+      "key": "HOTEL_HABITACION_ID",
+      "default": "1"
+    },
+    "observation_window_seconds": 30
+  },
+  "steady-state-hypothesis": {
+    "title": "Hotel responde 200 en GET /api/v2/habitacion/:id y /live=200",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "hotel-live-ok",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/live",
+          "timeout": 3
+        }
+      },
+      {
+        "type": "probe",
+        "name": "hotel-habitacion-ok",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+          "headers": {
+            "x-trace-id": "chaos-toolkit-steady"
+          },
+          "timeout": 3
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "action",
+      "name": "enable-hotel-chaos",
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/api/v2/chaos/dependency",
+        "method": "POST",
+        "headers": {
+          "x-chaos-token": "${chaos_lab_token}",
+          "content-type": "application/json"
+        },
+        "body": {
+          "action": "enable",
+          "durationSeconds": 60
+        },
+        "timeout": 5
+      }
+    },
+    {
+      "type": "probe",
+      "name": "habitacion-returns-503",
+      "tolerance": 503,
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+        "headers": {
+          "x-trace-id": "chaos-toolkit-inject"
+        },
+        "timeout": 3
+      }
+    },
+    {
+      "type": "probe",
+      "name": "live-still-ok-during-chaos",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/live",
+        "timeout": 3
+      }
+    },
+    {
+      "type": "action",
+      "name": "wait-observation-window",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": [
+          "-e",
+          "setTimeout(()=>{}, Number(process.env.CHAOS_OBSERVE_MS||5000))"
+        ],
+        "timeout": 60
+      }
+    },
+    {
+      "type": "action",
+      "name": "disable-hotel-chaos",
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/api/v2/chaos/dependency",
+        "method": "POST",
+        "headers": {
+          "x-chaos-token": "${chaos_lab_token}",
+          "content-type": "application/json"
+        },
+        "body": {
+          "action": "disable"
+        },
+        "timeout": 5
+      }
+    }
+  ],
+  "rollbacks": [
+    {
+      "type": "action",
+      "name": "force-disable-hotel-chaos",
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/api/v2/chaos/dependency",
+        "method": "POST",
+        "headers": {
+          "x-chaos-token": "${chaos_lab_token}",
+          "content-type": "application/json"
+        },
+        "body": {
+          "action": "disable"
+        },
+        "timeout": 5
+      }
+    }
+  ]
+}
