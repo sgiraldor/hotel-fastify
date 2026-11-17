@@ -40,7 +40,9 @@ Hotel **no** es coordinador y **no** llama a Cine.
 - [OCI_DEPLOY_READINESS.md](./OCI_DEPLOY_READINESS.md)
 - [OCI_COST_OPTIMIZATION.md](./OCI_COST_OPTIMIZATION.md)
 
-URL OCI lab: `http://149.130.165.30` (NLB). Observabilidad local: Prometheus `:9090`, Grafana `:3001`.
+URL OCI lab: `http://149.130.165.30` (NLB).  
+OTLP compartido: `http://157.137.233.183:31418` (Basic Auth) — ver [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md).  
+Grafana OKE: `kubectl -n observability port-forward svc/grafana 3001:3000`. Local Docker: Prometheus `:9090`, Grafana `:3001`.
 
 ## Comandos rápidos de demostración
 
