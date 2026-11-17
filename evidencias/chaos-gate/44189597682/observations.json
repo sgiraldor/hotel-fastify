@@ -1,0 +1,33 @@
+[
+  {
+    "phase": "inject-habitacion",
+    "status": 503,
+    "at": "2026-11-17T22:24:31.013Z"
+  },
+  {
+    "phase": "inject-habitacion",
+    "status": 503,
+    "at": "2026-11-17T22:24:31.080Z"
+  },
+  {
+    "phase": "inject-habitacion",
+    "status": 503,
+    "at": "2026-11-17T22:24:31.141Z"
+  },
+  {
+    "phase": "inject-live",
+    "status": 200,
+    "at": "2026-11-17T22:24:31.201Z"
+  },
+  {
+    "phase": "disable",
+    "status": null,
+    "at": "2026-11-17T22:24:31.236Z"
+  },
+  {
+    "phase": "recovery-habitacion",
+    "status": 200,
+    "elapsed_s": 0.067,
+    "at": "2026-11-17T22:24:31.303Z"
+  }
+]

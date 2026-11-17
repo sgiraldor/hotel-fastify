@@ -77,7 +77,7 @@ El workflow `.github/workflows/chaos-hotel-manual.yml` levanta Hotel y MySQL sol
 | Negativa | https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442 | roja | 0 (3/3 en 200) | 1 | 0,063 s |
 | Positiva | https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682 | verde | 1 (3/3 en 503) | 1 | 0,067 s |
 
-En las dos, el `disable` respondió 200, la habitación y `/live` quedaron en 200 y `compose_down=0`. Los artefactos son `chaos-gate-44189190442-1` y `chaos-gate-44189597682-1`. La causa de la corrida roja fue `CAUSA: habitacion_503_rate=0 umbral=1`. El registro está en `evidencias/chaos-gate/acciones.txt`.
+En las dos, el `disable` respondió 200, la habitación y `/live` quedaron en 200 y `compose_down=0`. Los artefactos revisados están en `evidencias/chaos-gate/44189190442` y `evidencias/chaos-gate/44189597682`. La causa de la corrida roja fue `CAUSA: habitacion_503_rate=0 umbral=1`. El registro está en `evidencias/chaos-gate/acciones.txt`.
 
 ## No ejecutar en OCI compartida sin autorización
 

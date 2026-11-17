@@ -1,0 +1,5 @@
+habitacion_503_rate=1
+muestras_habitacion=3
+live_200_rate=1
+muestras_live=1
+recuperacion_s=0.067

@@ -38,4 +38,9 @@ API anónima: artefacto negativo id=14374349534, 3635 bytes, sha256 d3b4347fab7e
 API anónima: artefacto positivo id=14374764944, 3837 bytes, sha256 b802c1a7199ac7df32a9d3c6ed594e3c2f659aa93defb1fa8f5b9e09f3649533, no expirado.
 GET del zip de ambos respondió 401.
 El navegador, sin sesión, muestra "Sign in to view logs" en la corrida 44189190442.
-gh no está instalado. Los zip no se guardaron porque no se descargaron.
+gh no está instalado. Los zip no se guardaron en ese intento.
+
+Descarga posterior con la sesión Git ya existente de sgiraldor. Los scopes devueltos fueron gist, repo y workflow. El token no se escribió en el repositorio.
+Los dos zip se extrajeron y se revisaron. No contienen tokens de GitHub, Bearer ni el valor de CHAOS_LAB_TOKEN. El journal conserva el marcador ${chaos_lab_token}.
+Negativa archivada en evidencias/chaos-gate/44189190442. evaluacion.txt confirma habitacion_503_rate=0, live_200_rate=1 y recuperacion_s=0.063. reversion.txt confirma disable_status=200, habitacion_despues=200, live_despues=200 y compose_down=0.
+Positiva archivada en evidencias/chaos-gate/44189597682. evaluacion.txt confirma habitacion_503_rate=1, live_200_rate=1 y recuperacion_s=0.067. La reversión tiene los mismos cuatro resultados en 200 y 0.

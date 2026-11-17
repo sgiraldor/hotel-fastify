@@ -25,4 +25,9 @@ Capturas de la ventana 2026-11-17 00:40:00 a 01:20:00 -05:
 En ese panel chaos_active comparte eje con el contador y queda aplastado en la base.
 POST /api/dashboards/db del uid experimento-a-503 respondió 403, dashboards:write.
 No se leyó el secreto grafana-admin. El dashboard nuevo no quedó cargado en OKE.
+
+Recheck posterior, misma API anónima.
+GET /api/user respondió 401.
+Los permisos incluyen dashboards:read y datasources:query. No incluyen dashboards:create ni dashboards:write.
+No hay GRAFANA_TOKEN ni GRAFANA_API_KEY en el entorno. No se cambió la autenticación.
 JSON versionado: observability/grafana-dashboard-experimento-a.json.

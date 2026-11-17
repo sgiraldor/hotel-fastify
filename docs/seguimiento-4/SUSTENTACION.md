@@ -26,8 +26,8 @@ En R0 el enable de `glg2z` y `tmqlg` es anterior al inicio, el disable es poster
 | Fail-fast y bulkhead | Aíslan MySQL en local. B baja el p95 y también el éxito. C rechaza 190454 veces. No causan el parcial de R1 |
 | Circuit breaker | Compatible con 18 llegadas frente a 349 solicitudes. Falta la métrica de Sports |
 | Latencia de Sports y agotamiento de Cine | No están evidenciados en este repo |
-| Chaos gate | Corrió en el runner. La negativa 44189190442 quedó roja y la positiva 44189597682 quedó verde. Los zip siguen sin descargarse: la API respondió 401 |
-| Grafana | La captura real es del dashboard provisionado, `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. El JSON nuevo no está cargado en OKE |
+| Chaos gate | Corrió en el runner. La negativa 44189190442 quedó roja y la positiva 44189597682 quedó verde. Los artefactos revisados están en `evidencias/chaos-gate/` |
+| Grafana | La captura real es del dashboard provisionado, `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. El JSON nuevo sigue sin cargarse: la sesión anónima no tiene `dashboards:write` |
 | Baseline 289 | Es la cifra definitiva del grupo. Su JSON de k6 no está archivado |
 
 ## Comandos de lectura

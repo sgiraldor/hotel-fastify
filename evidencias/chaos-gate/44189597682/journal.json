@@ -1,0 +1,606 @@
+{
+  "chaoslib-version": "1.45.1",
+  "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+  "node": "runnervmccnms",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "Chaos gate Hotel — HTTP 503 en el runner",
+    "description": "Indisponibilidad controlada solo contra http://127.0.0.1:3000. La inyección caduca a los 15 s. Mide 503 en habitación, 200 en /live y recuperación en menos de 5 s.",
+    "tags": [
+      "hotel",
+      "chaos-gate",
+      "localhost"
+    ],
+    "configuration": {
+      "hotel_base_url": {
+        "type": "env",
+        "key": "HOTEL_BASE_URL",
+        "default": "http://127.0.0.1:3000"
+      },
+      "chaos_lab_token": {
+        "type": "env",
+        "key": "CHAOS_LAB_TOKEN"
+      },
+      "habitacion_id": {
+        "type": "env",
+        "key": "HOTEL_HABITACION_ID",
+        "default": "1"
+      }
+    },
+    "steady-state-hypothesis": {
+      "title": "Habitación y /live responden 200 antes de inyectar",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "steady-live",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "url": "${hotel_base_url}/live",
+            "timeout": 5
+          }
+        },
+        {
+          "type": "probe",
+          "name": "steady-habitacion",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+            "headers": {
+              "x-trace-id": "gate-steady"
+            },
+            "timeout": 5
+          }
+        }
+      ]
+    },
+    "method": [
+      {
+        "type": "action",
+        "name": "enable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "enable",
+            "durationSeconds": 15
+          },
+          "timeout": 5
+        }
+      },
+      {
+        "type": "probe",
+        "name": "habitacion-503-1",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      {
+        "type": "probe",
+        "name": "habitacion-503-2",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      {
+        "type": "probe",
+        "name": "habitacion-503-3",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      {
+        "type": "probe",
+        "name": "live-durante-el-fallo",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-live",
+            "--expect",
+            "200"
+          ],
+          "timeout": 10
+        }
+      },
+      {
+        "type": "action",
+        "name": "disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      },
+      {
+        "type": "action",
+        "name": "marcar-disable",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "mark-disable"
+          ],
+          "timeout": 10
+        }
+      },
+      {
+        "type": "probe",
+        "name": "habitacion-recuperada",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "recovery-habitacion",
+            "--expect",
+            "200"
+          ],
+          "timeout": 15
+        }
+      }
+    ],
+    "rollbacks": [
+      {
+        "type": "action",
+        "name": "force-disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      }
+    ],
+    "dry": null
+  },
+  "start": "2026-11-17T22:24:30.824628+00:00",
+  "status": "completed",
+  "deviated": false,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "steady-live",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/live",
+              "timeout": 5
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "40",
+              "Date": "Tue, 17 Nov 2026 22:24:30 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+          },
+          "start": "2026-11-17T22:24:30.824892+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T22:24:30.828299+00:00",
+          "duration": 0.003407,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "steady-habitacion",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+              "headers": {
+                "x-trace-id": "gate-steady"
+              },
+              "timeout": 5
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "x-trace-id": "gate-steady",
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "126",
+              "Date": "Tue, 17 Nov 2026 22:24:30 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"id\":1,\"numeroHabitacion\":\"gate-101\",\"precioHabitacion\":\"100.00\",\"estadoHabitacion\":\"disponible\",\"tipoHabitacion\":\"sencilla\"}"
+          },
+          "start": "2026-11-17T22:24:30.828446+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T22:24:30.832658+00:00",
+          "duration": 0.004212,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "steady-live",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/live",
+              "timeout": 5
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "40",
+              "Date": "Tue, 17 Nov 2026 22:24:31 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+          },
+          "start": "2026-11-17T22:24:31.309237+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T22:24:31.311561+00:00",
+          "duration": 0.002324,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "steady-habitacion",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+              "headers": {
+                "x-trace-id": "gate-steady"
+              },
+              "timeout": 5
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "x-trace-id": "gate-steady",
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "126",
+              "Date": "Tue, 17 Nov 2026 22:24:31 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"id\":1,\"numeroHabitacion\":\"gate-101\",\"precioHabitacion\":\"100.00\",\"estadoHabitacion\":\"disponible\",\"tipoHabitacion\":\"sencilla\"}"
+          },
+          "start": "2026-11-17T22:24:31.311712+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T22:24:31.315565+00:00",
+          "duration": 0.003853,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "enable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "enable",
+            "durationSeconds": 15
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "517abfe5-1b13-40c3-83cb-28b389d0e246",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "165",
+          "Date": "Tue, 17 Nov 2026 22:24:30 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos habilitado\",\"durationSeconds\":15,\"chaos\":{\"envDown\":false,\"temporalActivo\":true,\"activo\":true,\"until\":1794954285837,\"activations\":1,\"injections\":0}}"
+      },
+      "start": "2026-11-17T22:24:30.832920+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:30.837949+00:00",
+      "duration": 0.005029
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "habitacion-503-1",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "inject-habitacion=503\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:30.838058+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.022920+00:00",
+      "duration": 0.184862
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "habitacion-503-2",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "inject-habitacion=503\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:31.023073+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.085549+00:00",
+      "duration": 0.062476
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "habitacion-503-3",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-habitacion",
+            "--expect",
+            "503"
+          ],
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "inject-habitacion=503\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:31.085666+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.147424+00:00",
+      "duration": 0.061758
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "live-durante-el-fallo",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "inject-live",
+            "--expect",
+            "200"
+          ],
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "inject-live=200\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:31.147546+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.207930+00:00",
+      "duration": 0.060384
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "f17349fa-f0c9-4713-b402-a196c3e2da50",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "140",
+          "Date": "Tue, 17 Nov 2026 22:24:31 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos deshabilitado\",\"chaos\":{\"envDown\":false,\"temporalActivo\":false,\"activo\":false,\"until\":null,\"activations\":1,\"injections\":3}}"
+      },
+      "start": "2026-11-17T22:24:31.208042+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.211301+00:00",
+      "duration": 0.003259
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "marcar-disable",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "mark-disable"
+          ],
+          "timeout": 10
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "disable_marcado=1\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:31.211430+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.241287+00:00",
+      "duration": 0.029857
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "habitacion-recuperada",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "chaos/gate-probe.mjs",
+            "recovery-habitacion",
+            "--expect",
+            "200"
+          ],
+          "timeout": 15
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "recovery-habitacion=200 recuperacion_s=0.067\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T22:24:31.241383+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.309018+00:00",
+      "duration": 0.067635
+    }
+  ],
+  "rollbacks": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "force-disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "85fd1c1a-dc3a-4093-b7f2-bc7d5f64af4f",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "140",
+          "Date": "Tue, 17 Nov 2026 22:24:31 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos deshabilitado\",\"chaos\":{\"envDown\":false,\"temporalActivo\":false,\"activo\":false,\"until\":null,\"activations\":1,\"injections\":3}}"
+      },
+      "start": "2026-11-17T22:24:31.315862+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T22:24:31.318859+00:00",
+      "duration": 0.002997
+    }
+  ],
+  "end": "2026-11-17T22:24:31.318934+00:00",
+  "duration": 0.4968850612640381
+}

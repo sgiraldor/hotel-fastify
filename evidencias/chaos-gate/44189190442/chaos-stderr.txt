@@ -1,0 +1,25 @@
+[32m[2026-11-17 22:22:26 INFO] Validating the experiment's syntax
+[32m[2026-11-17 22:22:26 INFO] Experiment looks valid
+[32m[2026-11-17 22:22:26 INFO] Running experiment: Chaos gate Hotel — corrida negativa sin inyección
+[32m[2026-11-17 22:22:26 INFO] Steady-state strategy: default
+[32m[2026-11-17 22:22:26 INFO] Rollbacks strategy: always
+[32m[2026-11-17 22:22:26 INFO] Steady state hypothesis: Habitación y /live responden 200
+[32m[2026-11-17 22:22:26 INFO] Probe: steady-live
+[32m[2026-11-17 22:22:26 INFO] Probe: steady-habitacion
+[32m[2026-11-17 22:22:26 INFO] Steady state hypothesis is met!
+[32m[2026-11-17 22:22:26 INFO] Playing your experiment's method now...
+[32m[2026-11-17 22:22:26 INFO] Probe: habitacion-sin-fallo-1
+[32m[2026-11-17 22:22:26 INFO] Probe: habitacion-sin-fallo-2
+[32m[2026-11-17 22:22:26 INFO] Probe: habitacion-sin-fallo-3
+[32m[2026-11-17 22:22:26 INFO] Probe: live-sin-fallo
+[32m[2026-11-17 22:22:26 INFO] Action: marcar-disable
+[32m[2026-11-17 22:22:26 INFO] Probe: habitacion-sigue-disponible
+[32m[2026-11-17 22:22:27 INFO] Steady state hypothesis: Habitación y /live responden 200
+[32m[2026-11-17 22:22:27 INFO] Probe: steady-live
+[32m[2026-11-17 22:22:27 INFO] Probe: steady-habitacion
+[32m[2026-11-17 22:22:27 INFO] Steady state hypothesis is met!
+[33m[2026-11-17 22:22:27 WARNING] Rollbacks were explicitly requested to be played
+[32m[2026-11-17 22:22:27 INFO] Let's rollback...
+[32m[2026-11-17 22:22:27 INFO] Rollback: force-disable-hotel-chaos
+[32m[2026-11-17 22:22:27 INFO] Action: force-disable-hotel-chaos
+[32m[2026-11-17 22:22:27 INFO] Experiment ended with status: completed

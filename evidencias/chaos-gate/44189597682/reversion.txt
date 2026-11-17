@@ -1,0 +1,18 @@
+disable_inicio=2026-11-17T22:24:31Z
+disable_status=200
+habitacion_despues=200
+live_despues=200
+ Container hotel-gate-api Stopping 
+ Container hotel-gate-api Stopped 
+ Container hotel-gate-api Removing 
+ Container hotel-gate-api Removed 
+ Container hotel-gate-mysql Stopping 
+ Container hotel-gate-mysql Stopped 
+ Container hotel-gate-mysql Removing 
+ Container hotel-gate-mysql Removed 
+ Network hotel-gate_default Removing 
+ Volume hotel-gate_hotel_mysql_data Removing 
+ Network hotel-gate_default Removed 
+ Volume hotel-gate_hotel_mysql_data Removed 
+compose_down=0
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS
