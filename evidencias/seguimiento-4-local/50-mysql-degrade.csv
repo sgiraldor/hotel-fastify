@@ -1,0 +1,4 @@
+﻿round,reqs,rps,p95_ms,success_rate,error_rate,status_200,status_504,mode,latency_ms
+baseline,98437,1640.56,5.939,1,0,98437,0,protected,0
+r0,150,2.49,2578.124,1,0,150,0,unprotected,2500
+r1,205,3.41,2004.403,0,1,0,23,protected,2500

@@ -14,6 +14,7 @@ vi.mock('../../src/config/database', () => ({
     getRepository: vi.fn(() => repositorioMock),
   },
   conTimeoutConsulta: <T>(operacion: Promise<T>) => operacion,
+  conConsultaResiliente: <T>(factory: () => Promise<T>) => factory(),
 }));
 
 import { traceIdHook } from '../../src/plugins/trace-id.plugin';

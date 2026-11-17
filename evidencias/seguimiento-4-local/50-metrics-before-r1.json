@@ -1,0 +1,37 @@
+﻿{
+    "requests_total":  2,
+    "requests_2xx":  2,
+    "requests_4xx":  0,
+    "requests_5xx":  0,
+    "requests_503_chaos":  0,
+    "average_response_time_ms":  4.24,
+    "p50_response_time_ms":  1.16,
+    "p95_response_time_ms":  7.31,
+    "p99_response_time_ms":  7.31,
+    "throughput_rps_approx":  0.5195,
+    "resilience_mode":  "protected",
+    "db":  {
+               "mode":  "protected",
+               "poolLimit":  10,
+               "queueLimit":  10,
+               "concurrencyLimit":  10,
+               "queryTimeoutMs":  2000,
+               "requestTimeoutMs":  3000,
+               "inflight":  0,
+               "timeoutsFailFast":  0,
+               "bulkheadRejections":  0,
+               "completed":  0
+           },
+    "patterns":  {
+                     "fail_fast_timeouts":  0,
+                     "bulkhead_rejections":  0,
+                     "inflight":  0,
+                     "completed_queries":  0
+                 },
+    "chaos":  {
+                  "active":  false,
+                  "activations":  0,
+                  "injections":  0
+              },
+    "note":  "Metricas in-process por pod; usar OTLP/Prometheus para multi-replica"
+}

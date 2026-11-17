@@ -6,7 +6,7 @@ param(
   [int]$LatencyMs = 2500
 )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 $k6 = 'C:\Program Files\k6\k6.exe'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 Set-Location $root
@@ -39,17 +39,23 @@ $hypothesis | ConvertTo-Json -Depth 5 | Set-Content "$ev\50-hypothesis-mysql-deg
 Write-Host 'Hipótesis declarada en 50-hypothesis-mysql-degrade.json'
 
 function Restart-Api([string]$Mode) {
-  Write-Host "Reiniciando api RESILIENCE_MODE=$Mode (compose degrade)"
+  Write-Host "Reiniciando api RESILIENCE_MODE=$Mode (compose degrade, --no-deps)"
   $env:RESILIENCE_MODE = $Mode
   $env:CHAOS_LAB_TOKEN = $Token
-  docker compose -f docker-compose.yml -f docker-compose.degrade.yml up -d --build api 2>&1 | Out-Host
+  # No recrear toxiproxy (perdería el proxy). Forzar recreate solo de api.
+  cmd /c "docker compose -f docker-compose.yml -f docker-compose.degrade.yml up -d --no-deps --force-recreate api" | Out-Host
   $deadline = (Get-Date).AddMinutes(5)
+  $ready = $false
   do {
     Start-Sleep 3
     try {
-      if ((Invoke-WebRequest "$BaseUrl/ready" -UseBasicParsing -TimeoutSec 5).StatusCode -eq 200) { break }
+      if ((Invoke-WebRequest "$BaseUrl/ready" -UseBasicParsing -TimeoutSec 5).StatusCode -eq 200) {
+        $ready = $true
+        break
+      }
     } catch {}
   } while ((Get-Date) -lt $deadline)
+  if (-not $ready) { throw "API no quedó ready en modo $Mode" }
   $m = Invoke-RestMethod "$BaseUrl/metrics"
   Write-Host "ready mode=$($m.resilience_mode) pool=$($m.db.poolLimit) qTimeout=$($m.db.queryTimeoutMs)"
   if ($m.resilience_mode -ne $Mode) { throw "Modo esperado $Mode" }
@@ -84,8 +90,13 @@ function Measure-Recovery {
   return @{ recovered = $ok; recovery_ms = $sw.ElapsedMilliseconds }
 }
 
-# Setup toxiproxy proxy (sin latencia)
+# Asegurar toxiproxy + proxy ANTES de tocar la API
+cmd /c "docker compose -f docker-compose.yml -f docker-compose.degrade.yml up -d toxiproxy" | Out-Host
+Start-Sleep 2
 & "$PSScriptRoot\mysql-latency.ps1" -Action setup
+if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) { }
+# Verificar proxy
+& "$PSScriptRoot\mysql-latency.ps1" -Action status | Out-Host
 
 # Baseline: protected, sin latencia
 Restart-Api 'protected'
@@ -94,7 +105,8 @@ Snapshot-Metrics 'before-baseline'
 Invoke-K6 'baseline'
 Snapshot-Metrics 'after-baseline'
 
-# R0: unprotected + latencia
+# R0: unprotected + latencia (quitar latencia solo para el arranque/ready)
+& "$PSScriptRoot\mysql-latency.ps1" -Action disable
 Restart-Api 'unprotected'
 & "$PSScriptRoot\mysql-latency.ps1" -Action enable -LatencyMs $LatencyMs
 Start-Sleep 2
@@ -102,7 +114,8 @@ Snapshot-Metrics 'before-r0'
 Invoke-K6 'r0'
 Snapshot-Metrics 'after-r0'
 
-# R1: protected + misma latencia
+# R1: protected + misma latencia (mismo perfil/falla; latencia off durante boot)
+& "$PSScriptRoot\mysql-latency.ps1" -Action disable
 Restart-Api 'protected'
 & "$PSScriptRoot\mysql-latency.ps1" -Action enable -LatencyMs $LatencyMs
 Start-Sleep 2

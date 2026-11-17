@@ -1,0 +1,17 @@
+﻿{
+    "hypothesis":  "Bajo latencia MySQL ~2500ms, R1(protected) activa fail-fast/bulkhead y reduce p95 vs R0(unprotected), que completa 200 con p95 alto. No mejora el experimento A de 503 total.",
+    "declared_at":  "2026-11-17T01:38:31.1722434Z",
+    "primary_metric":  "http_req_duration p95 bajo latencia MySQL artificial",
+    "profile":  "LOCAL_MYSQL_DEGRADE_K6_V8_60S",
+    "declared_before_run":  true,
+    "same_for_r0_r1":  true,
+    "secondary_metrics":  [
+                              "hotel_success_rate",
+                              "hotel_status_504 (fail-fast)",
+                              "hotel_status_503 (bulkhead)",
+                              "patterns.fail_fast_timeouts / bulkhead_rejections en /metrics",
+                              "throughput exitoso (status 200 / tiempo)"
+                          ],
+    "experiment":  "B_MYSQL_DEGRADE_COMPLEMENTARY",
+    "fault":  "Toxiproxy latency=2500ms en path API-\u003eMySQL"
+}

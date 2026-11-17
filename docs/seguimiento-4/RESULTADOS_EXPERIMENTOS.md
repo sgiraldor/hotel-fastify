@@ -1,67 +1,80 @@
 # Resultados reales — Seguimiento #4 (Samuel / Hotel)
 
-Actualizado tras ejecución autónoma post-despliegue OCI.
+## A. Experimento obligatorio — indisponibilidad HTTP 503
 
-## 1) Chaos Toolkit (LOCAL)
+**Estado:** validado en LOCAL (Chaos Toolkit + k6). **Pendiente E2E con Sports (Jarrison).**  
+**Evidencias originales conservadas** (no regeneradas ni borradas): `40-chaostoolkit-*`, `42-k6-*`.
 
-- Entorno: `.venv-chaos` (chaostoolkit 1.21.4)
-- Experimento: `chaos/experiment-hotel-dependency.json`
-- Resultado: `status=completed`, `deviated=false`
-- Flujo verificado: steady 200 → enable → **503** (process probe) → `/live` 200 → disable → steady 200
-- Evidencias: `evidencias/seguimiento-4-local/40-chaostoolkit-*`
-- **No ejecutado en OKE** (sin ventana de caos cloud)
+### Hallazgo (sin fabricar mejora)
 
-## 2) Observabilidad (LOCAL)
+| Round | Mode | Fallo | Reqs | RPS | p95 ms | error rate |
+|-------|------|-------|------|-----|--------|------------|
+| Baseline | protected | no | 71158 | 2033 | 2.778 | **0%** |
+| R0 | unprotected | 503 total | 143395 | 4097 | 1.580 | **100%** |
+| R1 | protected | 503 total | 140352 | 4010 | 1.583 | **100%** |
 
-- Prometheus `:9090` scrape `hotel-api` **up**
-- Grafana `:3001` dashboard `hotel-seguimiento-4`
-- Snapshot post-inyección (~20s):
-  - `hotel_http_p95_ms` ≈ 1.24
-  - `hotel_http_throughput_rps` ≈ 0.13 (gauge acumulado desde arranque del proceso)
-  - `hotel_chaos_503_total` = 82
-  - error rate approx ≈ 12.44% (acumulado del proceso, no solo ventana)
-- Evidencias: `41-prometheus-snapshot.json`, `41-metrics-prometheus.txt`
-- Trazas Tempo/Jaeger: no levantadas (OTLP off en compose local); correlación vía `x-trace-id` HTTP
+- Diff R1 vs R0: error_rate **0%** de cambio; p95 **+0.19%**.
+- **No hubo mejora de tasa de éxito.** El interruptor fuerza 503 en toda la ventana; fail-fast/bulkhead de Hotel no pueden convertir eso en disponibilidad.
+- Mitigación E2E: **Sports** (timeout + circuit breaker + respuesta parcial explícita). Ver `CONTRATO_SPORTS_HOTEL.md`.
 
-## 3) Carga k6 — perfil provisional (LOCAL)
+Chaos Toolkit LOCAL: steady 200 → 503 → `/live` 200 → recovery 200 (`40-chaostoolkit-journal.json`).
 
-Perfil **idéntico** Baseline/R0/R1: stages 5s→5VU / 25s hold / 5s→0; peak 5 VU; ~35s.
+---
 
-| Round | Mode | Caos | Reqs | RPS | p95 ms | error rate |
-|-------|------|------|------|-----|--------|------------|
-| Baseline | protected | no | 71158 | 2033.00 | 2.778 | 0.00 |
-| R0 | unprotected | sí (40s) | 143395 | 4096.99 | 1.580 | 1.00 |
-| R1 | protected | sí (40s) | 140352 | 4010.00 | 1.583 | 1.00 |
+## B. Prueba complementaria — MySQL degradada (latencia Toxiproxy)
 
-Diff R1 vs R0 (mismo fallo):
+**Ámbito:** solo laboratorio LOCAL, datos sintéticos. **No ejecutada en OCI.**  
+**Fallo:** Toxiproxy `latency=2500ms` en el path API→MySQL (sin borrar datos ni saturar de forma descontrolada).
 
-- error_rate: **0%** de cambio (ambos 100% 503)
-- p95: **+0.19%** (1.580 → 1.583 ms)
-- rps: **-2.12%**
+### Hipótesis declarada *antes* de ejecutar
 
-Interpretación: **no hay mejora inventada**. La indisponibilidad total de Hotel no se mitiga con timeouts/bulkhead del callee; Sports debe implementar CB/retry/fallback.
+Archivo: `evidencias/seguimiento-4-local/50-hypothesis-mysql-degrade.json`
 
-Evidencias: `42-k6-*`, `scripts/experiments/k6-hotel-profile.js`
+> Bajo latencia MySQL ~2500ms, R1 (`protected`) activa fail-fast/bulkhead y **acota p95** frente a R0 (`unprotected`), que completa HTTP 200 con p95 alto. **No** se afirma mejora de disponibilidad del experimento A (503 total).
 
-## 4) Patrones de resiliencia (LOCAL)
+Métrica objetivo primaria: **p95** bajo degradación.  
+Secundarias: success/error rate, throughput exitoso, counters fail-fast/bulkhead, recuperación.
 
-| Modo | poolLimit | queryTimeoutMs | requestTimeoutMs |
-|------|-----------|----------------|------------------|
-| unprotected | 50 | 30000 | 0 |
-| protected | 10 | 2000 | 3000 |
+### Perfil k6 (idéntico R0/R1)
 
-- Unit tests: 4/4 OK (`43-resilience-unit.txt`)
-- Métrica que cambia realmente: límites expuestos en `/metrics` (`db.poolLimit`, `db.queryTimeoutMs`) y comportamiento ante DB lenta (`conTimeoutConsulta`)
-- Un 503 rápido del interruptor **no** cuenta como éxito de resiliencia E2E
+`LOCAL_MYSQL_DEGRADE_K6_V8_60S`: stages 10s→8 VU / 40s hold / 10s→0.
 
-## 5) Kubernetes OCI (solo verificación)
+### Resultados numéricos reales
 
-- 2/2 Hotel Ready + MySQL Ready
-- Probes `/live` + `/ready`; req 100m/128Mi lim 500m/512Mi
-- HTTP público: `http://149.130.165.30` → 200 + `x-trace-id`
-- Evidencias: `44-oke-*` (sin cambios de infra, sin caos cloud)
+| Round | Mode | Latencia | Reqs | RPS | p95 ms | success | error | Notas |
+|-------|------|----------|------|-----|--------|---------|-------|-------|
+| Baseline | protected | 0 | 98437 | 1640.56 | 5.939 | **100%** | 0% | sin toxic |
+| R0 | unprotected | 2500ms | 150 | 2.49 | **2578.1** | **100%** | 0% | 150× HTTP 200 |
+| R1 | protected | 2500ms | 205 | 3.41 | **2004.4** | **0%** | 100% | 5xx; fail-fast |
 
-## Pendiente terceros
+Diff R1 vs R0:
 
-- **Jarrison (Sports)**: perfil k6 común, CB/timeouts caller, Chaos Gate E2E, integración AWS→OCI
-- **Daniel (Cine)**: eslabón GCP y correlación multicloud completa
+| Señal | Valor |
+|-------|-------|
+| p95 | **-22.25%** (2578 → 2004 ms) |
+| success_rate | **-100 pp** (100% → 0%) |
+| throughput exitoso | 2.49 rps → **0** rps |
+| fail_fast_timeouts (`/metrics`) | **23** |
+| bulkhead_rejections | **0** (8 VU ≤ concurrencyLimit 10) |
+| recuperación tras quitar toxic | **14 ms**, HTTP 200 |
+
+### Interpretación honesta
+
+- Hipótesis **p95 acotado + fail-fast activado**: **sí** (R1).
+- Hipótesis **mejora de tasa de éxito**: **no** (R1 empeora éxito a propósito al cortar espera).
+- Un 504/503 rápido **no** se cuenta como disponibilidad recuperada.
+- Con pool limitado, parte de los 5xx adicionales reflejan presión de conexiones mientras queries huérfanas siguen hasta MySQL (límite conocido del fail-fast a nivel Promise).
+- Bulkhead lógico verificado en unit test; en esta carga no fue el rechazo dominante.
+
+Evidencias: `50-hypothesis-*`, `50-k6-mysql-*`, `50-mysql-degrade.csv`, `50-mysql-degrade-diff.json`, `50-metrics-*`, `50-recovery.json`.
+
+---
+
+## Observabilidad LOCAL
+
+Prometheus `:9090` + Grafana `:3001` (dashboard `hotel-seguimiento-4`).  
+Métricas nuevas: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_total`, `hotel_db_inflight`, `hotel_db_pool_limit`.
+
+## OCI (solo verificación, sin caos)
+
+URL: `http://149.130.165.30` — 2 pods Ready. Evidencias `28-39`, `44-oke-*`.

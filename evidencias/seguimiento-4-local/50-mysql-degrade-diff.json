@@ -1,0 +1,66 @@
+﻿{
+    "experiment":  "B_MYSQL_DEGRADE_COMPLEMENTARY",
+    "scope":  "LOCAL",
+    "fault":  "Toxiproxy latency=2500ms",
+    "profile":  "LOCAL_MYSQL_DEGRADE_K6_V8_60S",
+    "hypothesis_declared_before":  true,
+    "baseline":  {
+                     "reqs":  98437,
+                     "p95_ms":  5.939,
+                     "success_rate":  1,
+                     "status_200":  98437,
+                     "error_rate":  0,
+                     "rps":  1640.56
+                 },
+    "r0":  {
+               "reqs":  150,
+               "p95_ms":  2578.124,
+               "success_rate":  1,
+               "status_200":  150,
+               "error_rate":  0,
+               "rps":  2.49
+           },
+    "r1":  {
+               "reqs":  205,
+               "status_504":  23,
+               "p95_ms":  2004.403,
+               "success_rate":  0,
+               "status_503":  0,
+               "error_rate":  1,
+               "rps":  3.41
+           },
+    "patterns_after_r1":  {
+                              "fail_fast_timeouts":  23,
+                              "bulkhead_rejections":  0,
+                              "inflight":  0,
+                              "completed_queries":  0
+                          },
+    "db_after_r1":  {
+                        "mode":  "protected",
+                        "poolLimit":  10,
+                        "queueLimit":  10,
+                        "concurrencyLimit":  10,
+                        "queryTimeoutMs":  2000,
+                        "requestTimeoutMs":  3000,
+                        "inflight":  0,
+                        "timeoutsFailFast":  23,
+                        "bulkheadRejections":  0,
+                        "completed":  0
+                    },
+    "recovery":  {
+                     "recovered":  true,
+                     "recovery_ms":  14
+                 },
+    "diff_r1_vs_r0":  {
+                          "hypothesis_p95_bounded":  true,
+                          "hypothesis_success_rate_improved":  false,
+                          "hypothesis_failfast_activated":  true,
+                          "error_rate_pp":  100,
+                          "successful_throughput_rps_r0":  2.49,
+                          "success_rate_pp":  -100,
+                          "successful_throughput_rps_r1":  0,
+                          "p95_pct_change":  -22.25,
+                          "interpretation":  "R1 NO mejora tasa de éxito (0% vs 100% en R0). Sí acota p95 (~2004 vs ~2578 ms, -22%) y activa fail-fast (504 + counters). Bulkhead no fue el cuello principal con 8 VU \u003c= pool 10. La mejora de disponibilidad E2E del 503 total sigue dependiendo de Sports.",
+                          "p95_ms_delta":  -573.721
+                      }
+}

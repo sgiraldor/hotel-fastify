@@ -5,9 +5,10 @@
 1. **Contrato**: `GET /api/v2/habitacion/:id` + `x-trace-id` (local y OCI).
 2. **Caos**: Chaos Toolkit local → steady 200 → 503 → `/live` 200 → recovery 200.
 3. **Observabilidad**: Prometheus scrapea `/metrics/prometheus`; Grafana en `:3001`.
-4. **Carga**: mismo perfil k6 Baseline / R0 / R1.
-5. **Resiliencia honesta**: fail-fast + bulkhead cambian timeouts/pool; **no** salvan indisponibilidad total (Sports debe mitigar).
-6. **OCI**: 2 pods Ready, NLB Free, URL pública.
+4. **Carga A (503)**: R0=R1=100% error — sin mejora de éxito (evidencia conservada).
+5. **Carga B (MySQL lenta)**: R1 acota p95 (−22%) y activa fail-fast; **no** mejora success rate.
+6. **Resiliencia honesta**: no vender 504 como disponibilidad; E2E → Sports.
+7. **OCI**: 2 pods Ready, NLB Free, URL pública.
 
 ## Comandos rápidos
 

@@ -16,6 +16,7 @@ vi.mock('../../src/config/database', () => ({
     query: vi.fn(),
   },
   conTimeoutConsulta: <T>(operacion: Promise<T>) => operacion,
+  conConsultaResiliente: <T>(factory: () => Promise<T>) => factory(),
   descripcionResilienciaDb: () => ({
     mode: 'protected',
     poolLimit: 10,
