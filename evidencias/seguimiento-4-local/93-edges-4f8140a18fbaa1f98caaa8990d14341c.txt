@@ -1,0 +1,8 @@
+sports-api SPAN_KIND_INTERNAL flujo.multicloud [58bf19b252b1460e] -> sports-api SPAN_KIND_INTERNAL hotel.get_habitacion [8fbf1d0b8aa938af]
+sports-api SPAN_KIND_INTERNAL flujo.multicloud [58bf19b252b1460e] -> sports-api SPAN_KIND_INTERNAL cine.get_pelicula [1125c6bf3314fb04]
+sports-api SPAN_KIND_SERVER GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId [23c4b3b33ca12a2e] -> sports-api SPAN_KIND_INTERNAL flujo.multicloud [58bf19b252b1460e]
+sports-api SPAN_KIND_INTERNAL hotel.get_habitacion [8fbf1d0b8aa938af] -> sports-api SPAN_KIND_CLIENT GET /api/v2/habitacion/:id [ee9f09d7a04a1788]
+sports-api SPAN_KIND_INTERNAL cine.get_pelicula [1125c6bf3314fb04] -> sports-api SPAN_KIND_CLIENT GET /api/v2/peliculas/:id [bc21953c3ab7f36b]
+ROOT sports-api SPAN_KIND_SERVER GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId [23c4b3b33ca12a2e]
+sports-api SPAN_KIND_CLIENT GET /api/v2/peliculas/:id [bc21953c3ab7f36b] -> cine-api SPAN_KIND_SERVER GET [b76594a36c80eebc]
+sports-api SPAN_KIND_CLIENT GET /api/v2/habitacion/:id [ee9f09d7a04a1788] -> hotel-api SPAN_KIND_SERVER GET [2c3cb8f686787eca]

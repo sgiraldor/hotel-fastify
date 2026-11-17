@@ -1,0 +1,82 @@
+[
+    {
+        "service":  "sports-api",
+        "name":  "hotel.get_habitacion",
+        "spanId":  "8fbf1d0b8aa938af",
+        "parent":  "58bf19b252b1460e",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890277008000000",
+        "endNs":  "1794890277008329191",
+        "durMs":  0.329
+    },
+    {
+        "service":  "sports-api",
+        "name":  "cine.get_pelicula",
+        "spanId":  "1125c6bf3314fb04",
+        "parent":  "58bf19b252b1460e",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890277208000000",
+        "endNs":  "1794890277276407259",
+        "durMs":  68.407
+    },
+    {
+        "service":  "sports-api",
+        "name":  "flujo.multicloud",
+        "spanId":  "58bf19b252b1460e",
+        "parent":  "23c4b3b33ca12a2e",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890277001000000",
+        "endNs":  "1794890277276031189",
+        "durMs":  275.031
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/habitacion/:id",
+        "spanId":  "ee9f09d7a04a1788",
+        "parent":  "8fbf1d0b8aa938af",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794890277027000000",
+        "endNs":  "1794890277204687683",
+        "durMs":  177.688
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/peliculas/:id",
+        "spanId":  "bc21953c3ab7f36b",
+        "parent":  "1125c6bf3314fb04",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794890277209000000",
+        "endNs":  "1794890277275907645",
+        "durMs":  66.908
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId",
+        "spanId":  "23c4b3b33ca12a2e",
+        "parent":  "",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890277000000000",
+        "endNs":  "1794890277278492224",
+        "durMs":  278.492
+    },
+    {
+        "service":  "cine-api",
+        "name":  "GET",
+        "spanId":  "b76594a36c80eebc",
+        "parent":  "bc21953c3ab7f36b",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890277246000000",
+        "endNs":  "1794890277264421940",
+        "durMs":  18.422
+    },
+    {
+        "service":  "hotel-api",
+        "name":  "GET",
+        "spanId":  "2c3cb8f686787eca",
+        "parent":  "ee9f09d7a04a1788",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890277155000000",
+        "endNs":  "1794890277156658649",
+        "durMs":  1.659
+    }
+]

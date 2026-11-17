@@ -21,7 +21,7 @@ Hotel /metrics/prometheus ──────────────────
 | Auth externa | TLS + HTTP Basic → 401 sin credenciales / 200 con Basic |
 | Hotel → Tempo / Prometheus | **OK** (`service.name=hotel-api`) |
 | Sports / Cine → collector | **OK** (métricas/trazas sueltas) |
-| W3C E2E un solo Trace ID (3 SERVER) | **NO** — traza `ad97747b...` solo completa en `sports-api` (ver `FLUJO_MULTICLOUD.md` / `92-*`) |
+| W3C E2E un solo Trace ID (3 SERVER) | **SÍ** — `4d2c23eb...` y `4f8140a1...` (`93-*`; histórico incompleto `92-*`) |
 | Let's Encrypt / CA pública | **bloqueado**: hace falta dominio DNS apuntando a la IP (no inventado) |
 
 Evidencias: `80-*` HTTP; `81-*` HTTPS; `91-*` Cine; `92-*` W3C E2E.

@@ -31,56 +31,52 @@ Jarrison reporta además k6 230/230 OK y p95 ~320 ms (mocks **no** sustituyen OC
 |------|--------|
 | **Integración HTTP multicloud** | **Funciona** (Sports orquesta Hotel+Cine → 200 completo) |
 | **Export OTLP por servicio** | **OK** los tres (`service_name` en Prometheus) |
-| **Trazabilidad W3C E2E (un solo Trace ID)** | **NO completa** — ver sección siguiente |
+| **Trazabilidad W3C E2E (un solo Trace ID)** | **COMPLETA** (tras fix propagación Sports+Cine) |
 
-HTTP 200 E2E **≠** traza W3C compartida con SERVER spans de Hotel y Cine.
+## W3C E2E — trazas verificadas en Tempo OCI
 
-## W3C Trace ID real (Jarrison) — verificación Tempo
+Evidencias: `93-tempo-*.json`, `93-spans-*`, `93-edges-*`, `93-e2e-verdict.txt`.  
+(Histórico incompleto previo: `92-*` / Trace ID `ad97747b...` — solo Sports.)
 
-| Campo | Valor |
-|-------|--------|
-| Trace ID | `ad97747b16a40a3c738b6591e1f59309` |
-| `x-trace-id` | `otel-oci-live-20261116230837-flujo-1` |
-| Root Sports span | `354377a4a5339766` · `GET /api/v2/flujo/...` · ~264 ms |
+### Traza Jarrison `4d2c23ebdfcb130da2473261057148f1`
 
-| Servicio en **esa** traza | ¿Presente? | Notas |
-|---------------------------|------------|--------|
-| `sports-api` | **SÍ** | server + internal + **CLIENT** a Hotel/Cine |
-| `hotel-api` (SERVER del flujo) | **NO** | no hay span Hotel ~177 ms hijo del CLIENT Sports |
-| `cine-api` (SERVER del flujo) | **NO** | ausente |
+| Chequeo | Resultado |
+|---------|-----------|
+| Sports SERVER | **SÍ** `ac8de2d9147b061b` · flujo · ~318 ms |
+| Hotel SERVER | **SÍ** `4913a9c6dbbb97ea` · parent CLIENT `553769519c1c3bd3` |
+| Cine SERVER | **SÍ** `e18766bc96bd0c21` · parent CLIENT `a4d609f324b97dde` |
+| Padre-hijo cruzado | **SÍ** |
+| Secuencia Hotel→Cine | **SÍ** |
 
-Padre-hijo **dentro de Sports** (sí, secuencial):
+### Traza Daniel `4f8140a18fbaa1f98caaa8990d14341c`
 
-1. `flujo.multicloud` → `hotel.get_habitacion` → CLIENT `GET /api/v2/habitacion/:id` (~177 ms)
-2. luego → `cine.get_pelicula` → CLIENT `GET /api/v2/peliculas/:id` (~52 ms)
+| Chequeo | Resultado |
+|---------|-----------|
+| Sports SERVER | **SÍ** `23c4b3b33ca12a2e` · ~278 ms |
+| Hotel SERVER | **SÍ** `2c3cb8f686787eca` · parent `ee9f09d7a04a1788` |
+| Cine SERVER | **SÍ** `b76594a36c80eebc` · parent `bc21953c3ab7f36b` |
+| Padre-hijo cruzado | **SÍ** |
+| Secuencia Hotel→Cine | **SÍ** |
 
-**Hotel sí propaga** cuando recibe `traceparent` (probe Samuel: log `otelTraceId=ad97747b...`).  
-Pendiente típico: Sports debe **inyectar `traceparent`** en el HTTP real a Hotel/Cine; Cine debe **extraer** y exportar el SERVER span al mismo Trace ID.
-
-Evidencias: `92-tempo-trace-*.json`, `92-spans-*.txt`, `92-e2e-verdict.txt`.
+Cadena típica: Sports SERVER → `flujo.multicloud` → Hotel CLIENT→**Hotel SERVER** → luego Cine CLIENT→**Cine SERVER**.  
+Nota: duración Hotel SERVER (~1–2 ms) es in-process; el RTT multicloud está en el CLIENT Sports (~180–230 ms).
 
 ## Observabilidad compartida (OKE)
 
 Collector: `https://157.137.233.183:31443` (TLS + Basic).  
 Grafana: `kubectl -n observability port-forward svc/grafana 3001:3000`
 
-| service.name | Tempo (traces sueltas) | Prometheus `service_name` | Misma traza W3C E2E |
-|--------------|------------------------|---------------------------|---------------------|
-| `hotel-api` | **sí** | **sí** | **no** (en traza de Jarrison) |
-| `sports-api` | **sí** | **sí** | **sí** (raíz) |
-| `cine-api` | **sí** | **sí** | **no** (en traza de Jarrison) |
-
-Evidencias: `90-*` HTTP; `91-*` Cine OTLP; `92-*` W3C E2E.
-
-### Comando Tempo (Trace ID conocido)
+| service.name | Tempo | Prometheus | Misma traza W3C E2E |
+|--------------|-------|------------|---------------------|
+| `hotel-api` | **sí** | **sí** | **sí** (`93-*`) |
+| `sports-api` | **sí** | **sí** | **sí** |
+| `cine-api` | **sí** | **sí** | **sí** |
 
 ```powershell
 kubectl -n observability port-forward svc/tempo 13200:3200
-curl.exe -sS "http://127.0.0.1:13200/api/traces/ad97747b16a40a3c738b6591e1f59309"
-# Éxito E2E = batches con service.name sports-api + hotel-api + cine-api y parents cruzados
+curl.exe -sS "http://127.0.0.1:13200/api/traces/4d2c23ebdfcb130da2473261057148f1"
+curl.exe -sS "http://127.0.0.1:13200/api/traces/4f8140a18fbaa1f98caaa8990d14341c"
 ```
-
-`x-trace-id` (negocio) ≠ Trace ID OTel; la unión en Tempo exige `traceparent` de punta a punta.
 
 ## Hotel OCI
 

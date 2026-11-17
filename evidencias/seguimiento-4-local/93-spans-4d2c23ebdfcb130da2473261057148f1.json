@@ -1,0 +1,82 @@
+[
+    {
+        "service":  "hotel-api",
+        "name":  "GET",
+        "spanId":  "4913a9c6dbbb97ea",
+        "parent":  "553769519c1c3bd3",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890119575000000",
+        "endNs":  "1794890119576469169",
+        "durMs":  1.469
+    },
+    {
+        "service":  "cine-api",
+        "name":  "GET",
+        "spanId":  "e18766bc96bd0c21",
+        "parent":  "a4d609f324b97dde",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890119675000000",
+        "endNs":  "1794890119682051540",
+        "durMs":  7.052
+    },
+    {
+        "service":  "sports-api",
+        "name":  "hotel.get_habitacion",
+        "spanId":  "dd70014020be6e57",
+        "parent":  "ab42de18d64c0cf0",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890119388000000",
+        "endNs":  "1794890119388455180",
+        "durMs":  0.455
+    },
+    {
+        "service":  "sports-api",
+        "name":  "cine.get_pelicula",
+        "spanId":  "323743f66f607b82",
+        "parent":  "ab42de18d64c0cf0",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890119639000000",
+        "endNs":  "1794890119695436484",
+        "durMs":  56.436
+    },
+    {
+        "service":  "sports-api",
+        "name":  "flujo.multicloud",
+        "spanId":  "ab42de18d64c0cf0",
+        "parent":  "ac8de2d9147b061b",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794890119381000000",
+        "endNs":  "1794890119695398589",
+        "durMs":  314.399
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/habitacion/:id",
+        "spanId":  "553769519c1c3bd3",
+        "parent":  "dd70014020be6e57",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794890119405000000",
+        "endNs":  "1794890119634057835",
+        "durMs":  229.058
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/peliculas/:id",
+        "spanId":  "a4d609f324b97dde",
+        "parent":  "323743f66f607b82",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794890119639000000",
+        "endNs":  "1794890119693580590",
+        "durMs":  54.58
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId",
+        "spanId":  "ac8de2d9147b061b",
+        "parent":  "",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794890119379000000",
+        "endNs":  "1794890119697089910",
+        "durMs":  318.09
+    }
+]

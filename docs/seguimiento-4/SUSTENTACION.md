@@ -3,13 +3,11 @@
 ## Qué demostrar (5–7 min)
 
 1. **Contrato OCI**: `GET http://149.130.165.30/api/v2/habitacion/:id` → 200 + `x-trace-id`.
-2. **Caos LOCAL**: Chaos Toolkit → steady 200 → 503 → `/live` 200 → recovery 200.
-3. **Observabilidad LOCAL**: Prometheus scrapea `/metrics/prometheus`; Grafana `:3001`.
-4. **Experimento A (obligatorio)**: R0=R1=**100% error** bajo 503 — **sin mejora de disponibilidad**.
-5. **B/C (complementarios, no reemplazan A)**:
-   - B: fail-fast acota p95 (−22%); success 100%→0%.
-   - C: bulkhead aísla (`peak_inflight` 24→4; 190454 rechazos); success 100%→0.03%.
-6. **Honestidad**: rechazo/504 rápido ≠ éxito; E2E → Sports (timeout + CB + `partial`).
+2. **W3C E2E**: Tempo Trace ID `4d2c23eb...` / `4f8140a1...` con SERVER `sports-api`+`hotel-api`+`cine-api` (evidencia `93-*`).
+3. **Caos LOCAL**: Chaos Toolkit → steady 200 → 503 → `/live` 200 → recovery 200.
+4. **Experimento A (obligatorio)**: R0=R1=**100% error** bajo 503 — **sin mejora de disponibilidad** en Hotel.
+5. **B/C (complementarios, no reemplazan A)**: fail-fast/bulkhead aíslan; success no mejora.
+6. **Honestidad**: rechazo/504 rápido ≠ éxito; mitigación E2E ante 503 → Sports.
 7. **OCI vivo**: 2 pods Hotel + MySQL Ready; caos cloud **listo, no ejecutado**.
 
 ## Limitaciones reales (decirlas)
@@ -20,7 +18,7 @@
 | B: success R1 = 0% | Fail-fast recorta cola; no inventa éxito |
 | C: success R1 ≈ 0.03% | Bulkhead aísla MySQL; sacrifica throughput exitoso |
 | Caos OCI no corrido | Runbook `DEMO_OCI_EXPERIMENTO_A.md` pendiente de ventana |
-| E2E incompleto | Falta implementación Sports (Jarrison) y Cine (Daniel) |
+| W3C E2E | **Completa** tras propagación Sports/Cine (`93-*`); no confundir con caos A |
 
 ## Comandos rápidos
 
@@ -50,6 +48,9 @@ curl.exe -sS -i -H "x-trace-id: demo" http://149.130.165.30/api/v2/habitacion/1
 | `50-*` | B MySQL Toxiproxy | LOCAL |
 | `60-*` | C bulkhead 24 VU | LOCAL |
 | `28-39`, `44-*`, `70-*` | OKE pods/HTTP | OCI |
+| `91-*` | Cine OTLP | OCI Tempo/Prom |
+| `92-*` | W3C incompleto (histórico) | OCI Tempo |
+| `93-*` | W3C E2E completo 3 APIs | OCI Tempo |
 
 ## Integración Sports
 
