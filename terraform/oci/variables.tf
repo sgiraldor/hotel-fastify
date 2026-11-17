@@ -72,3 +72,18 @@ variable "node_memory_gb" {
   type        = number
   default     = 12
 }
+
+variable "kubernetes_version" {
+  type        = string
+  default     = "v1.36.1"
+}
+
+variable "node_image_id" {
+  type        = string
+  description = "Image OCID OKE aarch64 compatible con A1.Flex"
+}
+
+variable "node_boot_volume_gb" {
+  type        = number
+  default     = 50
+}
