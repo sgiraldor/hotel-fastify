@@ -21,21 +21,28 @@ Complementa el **interruptor propio** (`CHAOS_DEPENDENCY_DOWN` / API `/api/v2/ch
 ## Prerrequisitos
 
 ```bash
-pip install chaostoolkit chaostoolkit-lib
+# Entorno aislado (recomendado)
+python -m venv .venv-chaos
+.\.venv-chaos\Scripts\python -m pip install chaostoolkit chaostoolkit-lib
+
 # Hotel corriendo en HOTEL_BASE_URL
-export HOTEL_BASE_URL=http://127.0.0.1:3000
-export CHAOS_LAB_TOKEN=tu-token-laboratorio
-export HOTEL_HABITACION_ID=1
+$env:HOTEL_BASE_URL="http://127.0.0.1:3000"
+$env:CHAOS_LAB_TOKEN="tu-token-laboratorio"
+$env:HOTEL_HABITACION_ID="1"
 ```
+
+Notas Chaos Toolkit:
+- El body JSON del POST va en `provider.arguments` con header `Content-Type: application/json`.
+- Las tolerancias HTTP solo se evalúan en *steady-state*; las aserciones 503 del *method* usan probe `process`.
 
 ## Ejecutar
 
 ```bash
-# Windows PowerShell
+# Windows PowerShell (usa .venv-chaos y guarda journal)
 ./chaos/run-experiment.ps1
 
 # o manual
-chaos run chaos/experiment-hotel-dependency.json
+.\.venv-chaos\Scripts\chaos.exe run --journal-path evidencias/seguimiento-4-local/40-chaostoolkit-journal.json chaos/experiment-hotel-dependency.json
 ```
 
 ## Revertir

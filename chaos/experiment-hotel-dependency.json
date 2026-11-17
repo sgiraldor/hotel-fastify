@@ -58,9 +58,9 @@
         "method": "POST",
         "headers": {
           "x-chaos-token": "${chaos_lab_token}",
-          "content-type": "application/json"
+          "Content-Type": "application/json"
         },
-        "body": {
+        "arguments": {
           "action": "enable",
           "durationSeconds": 60
         },
@@ -70,14 +70,14 @@
     {
       "type": "probe",
       "name": "habitacion-returns-503",
-      "tolerance": 503,
       "provider": {
-        "type": "http",
-        "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
-        "headers": {
-          "x-trace-id": "chaos-toolkit-inject"
-        },
-        "timeout": 3
+        "type": "process",
+        "path": "node",
+        "arguments": [
+          "-e",
+          "const base=process.env.HOTEL_BASE_URL||'http://127.0.0.1:3000'; const id=process.env.HOTEL_HABITACION_ID||'1'; fetch(base+'/api/v2/habitacion/'+id,{headers:{'x-trace-id':'chaos-toolkit-inject'}}).then(async r=>{const t=await r.text(); if(r.status!==503){console.error('expected 503 got '+r.status+' body='+t); process.exit(1);} console.log(t);}).catch(e=>{console.error(e); process.exit(1);})"
+        ],
+        "timeout": 15
       }
     },
     {
@@ -112,9 +112,9 @@
         "method": "POST",
         "headers": {
           "x-chaos-token": "${chaos_lab_token}",
-          "content-type": "application/json"
+          "Content-Type": "application/json"
         },
-        "body": {
+        "arguments": {
           "action": "disable"
         },
         "timeout": 5
@@ -131,9 +131,9 @@
         "method": "POST",
         "headers": {
           "x-chaos-token": "${chaos_lab_token}",
-          "content-type": "application/json"
+          "Content-Type": "application/json"
         },
-        "body": {
+        "arguments": {
           "action": "disable"
         },
         "timeout": 5

@@ -2,6 +2,8 @@ node_modules/
 dist/
 .env
 coverage/
+.venv-chaos/
+.venv*/
 
 *.pem
 hotel_db.sql
@@ -22,4 +24,7 @@ scripts/experiments/results/*.json
 evidencias/**/*.pem
 evidencias/**/*secret*
 evidencias/**/*.env
+
+
+chaostoolkit.log
 

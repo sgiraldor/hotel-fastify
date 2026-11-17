@@ -1,0 +1,477 @@
+{
+  "chaoslib-version": "1.45.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "node": "DESKTOP-E7S56H6",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "Hotel dependency unavailable (Samuel)",
+    "description": "Verifica que la indisponibilidad controlada de Hotel responde 503 en el contrato Sportsâ†’Hotel, sin tumbar /live, y que al desactivar se recupera.",
+    "tags": [
+      "hotel",
+      "oci",
+      "dependency",
+      "seguimiento-4"
+    ],
+    "configuration": {
+      "hotel_base_url": {
+        "type": "env",
+        "key": "HOTEL_BASE_URL",
+        "default": "http://127.0.0.1:3000"
+      },
+      "chaos_lab_token": {
+        "type": "env",
+        "key": "CHAOS_LAB_TOKEN"
+      },
+      "habitacion_id": {
+        "type": "env",
+        "key": "HOTEL_HABITACION_ID",
+        "default": "1"
+      },
+      "observation_window_seconds": 30
+    },
+    "steady-state-hypothesis": {
+      "title": "Hotel responde 200 en GET /api/v2/habitacion/:id y /live=200",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "hotel-live-ok",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "url": "${hotel_base_url}/live",
+            "timeout": 3
+          }
+        },
+        {
+          "type": "probe",
+          "name": "hotel-habitacion-ok",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+            "headers": {
+              "x-trace-id": "chaos-toolkit-steady"
+            },
+            "timeout": 3
+          }
+        }
+      ]
+    },
+    "method": [
+      {
+        "type": "action",
+        "name": "enable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "enable",
+            "durationSeconds": 60
+          },
+          "timeout": 5
+        }
+      },
+      {
+        "type": "probe",
+        "name": "habitacion-returns-503",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "const base=process.env.HOTEL_BASE_URL||'http://127.0.0.1:3000'; const id=process.env.HOTEL_HABITACION_ID||'1'; fetch(base+'/api/v2/habitacion/'+id,{headers:{'x-trace-id':'chaos-toolkit-inject'}}).then(async r=>{const t=await r.text(); if(r.status!==503){console.error('expected 503 got '+r.status+' body='+t); process.exit(1);} console.log(t);}).catch(e=>{console.error(e); process.exit(1);})"
+          ],
+          "timeout": 15
+        }
+      },
+      {
+        "type": "probe",
+        "name": "live-still-ok-during-chaos",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/live",
+          "timeout": 3
+        }
+      },
+      {
+        "type": "action",
+        "name": "wait-observation-window",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "setTimeout(()=>{}, Number(process.env.CHAOS_OBSERVE_MS||5000))"
+          ],
+          "timeout": 60
+        }
+      },
+      {
+        "type": "action",
+        "name": "disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      }
+    ],
+    "rollbacks": [
+      {
+        "type": "action",
+        "name": "force-disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      }
+    ],
+    "dry": null
+  },
+  "start": "2026-11-17T01:15:32.505399+00:00",
+  "status": "completed",
+  "deviated": false,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "hotel-live-ok",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/live",
+              "timeout": 3
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "40",
+              "Date": "Tue, 17 Nov 2026 01:15:32 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+          },
+          "start": "2026-11-17T01:15:32.506085+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T01:15:32.509993+00:00",
+          "duration": 0.003908,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "hotel-habitacion-ok",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+              "headers": {
+                "x-trace-id": "chaos-toolkit-steady"
+              },
+              "timeout": 3
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "x-trace-id": "chaos-toolkit-steady",
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "121",
+              "Date": "Tue, 17 Nov 2026 01:15:32 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+          },
+          "start": "2026-11-17T01:15:32.510253+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T01:15:32.528981+00:00",
+          "duration": 0.018728,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "hotel-live-ok",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/live",
+              "timeout": 3
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "40",
+              "Date": "Tue, 17 Nov 2026 01:15:37 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+          },
+          "start": "2026-11-17T01:15:37.767912+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T01:15:37.771005+00:00",
+          "duration": 0.003093,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "hotel-habitacion-ok",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+              "headers": {
+                "x-trace-id": "chaos-toolkit-steady"
+              },
+              "timeout": 3
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "x-trace-id": "chaos-toolkit-steady",
+              "content-type": "application/json; charset=utf-8",
+              "content-length": "121",
+              "Date": "Tue, 17 Nov 2026 01:15:37 GMT",
+              "Connection": "keep-alive",
+              "Keep-Alive": "timeout=72"
+            },
+            "body": "{\"id\":1,\"numeroHabitacion\":\"101\",\"precioHabitacion\":\"150000.00\",\"estadoHabitacion\":\"Disponible\",\"tipoHabitacion\":\"Doble\"}"
+          },
+          "start": "2026-11-17T01:15:37.771286+00:00",
+          "status": "succeeded",
+          "end": "2026-11-17T01:15:37.776648+00:00",
+          "duration": 0.005362,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "enable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "enable",
+            "durationSeconds": 60
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "7d714120-096d-4f99-a719-187b3ed3bb34",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "165",
+          "Date": "Tue, 17 Nov 2026 01:15:32 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos habilitado\",\"durationSeconds\":60,\"chaos\":{\"envDown\":false,\"temporalActivo\":true,\"activo\":true,\"until\":1794878192556,\"activations\":1,\"injections\":1}}"
+      },
+      "start": "2026-11-17T01:15:32.529550+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:32.557659+00:00",
+      "duration": 0.028109
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "habitacion-returns-503",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "const base=process.env.HOTEL_BASE_URL||'http://127.0.0.1:3000'; const id=process.env.HOTEL_HABITACION_ID||'1'; fetch(base+'/api/v2/habitacion/'+id,{headers:{'x-trace-id':'chaos-toolkit-inject'}}).then(async r=>{const t=await r.text(); if(r.status!==503){console.error('expected 503 got '+r.status+' body='+t); process.exit(1);} console.log(t);}).catch(e=>{console.error(e); process.exit(1);})"
+          ],
+          "timeout": 15
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "{\"message\":\"Hotel temporalmente indisponible (experimento de caos)\",\"code\":\"CHAOS_DEPENDENCY_DOWN\",\"traceId\":\"chaos-toolkit-inject\",\"retryAfterSeconds\":5}\n",
+        "stderr": ""
+      },
+      "start": "2026-11-17T01:15:32.557847+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:32.658389+00:00",
+      "duration": 0.100542
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "live-still-ok-during-chaos",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/live",
+          "timeout": 3
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "40",
+          "Date": "Tue, 17 Nov 2026 01:15:32 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+      },
+      "start": "2026-11-17T01:15:32.658595+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:32.679180+00:00",
+      "duration": 0.020585
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "wait-observation-window",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "setTimeout(()=>{}, Number(process.env.CHAOS_OBSERVE_MS||5000))"
+          ],
+          "timeout": 60
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "start": "2026-11-17T01:15:32.679370+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:37.740346+00:00",
+      "duration": 5.060976
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "482bb22c-0391-4c61-8828-c55dcf6ad3d4",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "140",
+          "Date": "Tue, 17 Nov 2026 01:15:37 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos deshabilitado\",\"chaos\":{\"envDown\":false,\"temporalActivo\":false,\"activo\":false,\"until\":null,\"activations\":1,\"injections\":2}}"
+      },
+      "start": "2026-11-17T01:15:37.740574+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:37.767388+00:00",
+      "duration": 0.026814
+    }
+  ],
+  "rollbacks": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "force-disable-hotel-chaos",
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/chaos/dependency",
+          "method": "POST",
+          "headers": {
+            "x-chaos-token": "${chaos_lab_token}",
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "action": "disable"
+          },
+          "timeout": 5
+        }
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "x-trace-id": "a338fe77-8f02-4050-8e10-5c46e7976192",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "140",
+          "Date": "Tue, 17 Nov 2026 01:15:37 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=72"
+        },
+        "body": "{\"message\":\"Caos deshabilitado\",\"chaos\":{\"envDown\":false,\"temporalActivo\":false,\"activo\":false,\"until\":null,\"activations\":1,\"injections\":2}}"
+      },
+      "start": "2026-11-17T01:15:37.777175+00:00",
+      "status": "succeeded",
+      "end": "2026-11-17T01:15:37.780524+00:00",
+      "duration": 0.003349
+    }
+  ],
+  "end": "2026-11-17T01:15:37.780669+00:00",
+  "duration": 5.2752861976623535
+}
