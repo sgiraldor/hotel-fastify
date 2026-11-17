@@ -1,54 +1,133 @@
-name: Chaos Hotel (manual auxiliar)
+name: Chaos gate Hotel
 
-# No altera Canary ni Railway.
-# No ejecuta fallos contra nube automaticamente.
-# Samuel no duplica el Chaos Gate principal de Jarrison.
+# Puerta de calidad del Seguimiento #4.
+# El fallo solo existe dentro del runner, contra http://127.0.0.1:3000.
+# No usa OCI, Sports, Cine, Kubernetes ni el perfil k6 multicloud.
 
 on:
   workflow_dispatch:
     inputs:
-      hotel_base_url:
-        description: "URL base de Hotel (local o laboratorio autorizado)"
-        required: true
-        default: "http://127.0.0.1:3000"
-      dry_run:
-        description: "Si true, solo valida scripts/tests sin inyectar caos remoto"
+      demostrar_fallo:
+        description: "true ejecuta la corrida negativa, sin inyectar el 503"
         type: boolean
-        default: true
+        default: false
+
+permissions:
+  contents: read
 
 jobs:
-  validate-hotel-chaos-contract:
+  chaos-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      HOTEL_BASE_URL: http://127.0.0.1:3000
+      GATE_OBS_FILE: ${{ github.workspace }}/chaos-gate-results/observations.json
+      COMPOSE_FILE: docker-compose.yml:chaos/docker-compose.gate.yml
+      COMPOSE_PROJECT_NAME: hotel-gate
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
 
-      - name: Instalar dependencias
-        run: npm ci
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Compilar
-        run: npm run build
+      - name: Instalar Chaos Toolkit
+        run: python -m pip install --disable-pip-version-check chaostoolkit
 
-      - name: Pruebas (incluye caos y resiliencia)
-        run: npm test
+      - name: Rechazar cualquier host que no sea el runner
+        run: node chaos/gate-preflight.mjs
 
-      - name: Validar experimento JSON
-        run: node -e "JSON.parse(require('fs').readFileSync('chaos/experiment-hotel-dependency.json','utf8')); console.log('ok')"
-
-      - name: Recordatorio integracion Sports Chaos Gate
+      - name: Token temporal
         run: |
-          echo "Jarrison puede:"
-          echo "1) GET /api/v2/chaos/dependency (token)"
-          echo "2) POST enable/disable"
-          echo "3) Medir GET /api/v2/habitacion/:id y /metrics"
-          echo "4) Verificar recuperacion"
-          echo "HOTEL_BASE_URL=${{ inputs.hotel_base_url }}"
-          echo "dry_run=${{ inputs.dry_run }}"
-          if [ "${{ inputs.dry_run }}" != "true" ]; then
-            echo "Inyeccion remota deshabilitada en este workflow por seguridad academica."
-            echo "Usar chaos/run-local.mjs desde un entorno autorizado."
+          set +x
+          token=$(openssl rand -hex 16)
+          echo "::add-mask::$token"
+          echo "CHAOS_LAB_TOKEN=$token" >> "$GITHUB_ENV"
+
+      - name: Levantar Hotel y MySQL aislados
+        run: docker compose up -d --build --wait
+
+      - name: Sembrar habitación y comprobar el estado estable
+        run: |
+          set -euo pipefail
+          docker compose exec -T mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" hotel_db' < chaos/seed-habitacion.sql
+          id=$(docker compose exec -T mysql sh -c 'mysql --batch --skip-column-names -uroot -p"$MYSQL_ROOT_PASSWORD" hotel_db -e "SELECT id FROM habitacion WHERE numeroHabitacion='"'"'gate-101'"'"';"')
+          id=$(echo "$id" | tr -d '[:space:]')
+          if [ -z "$id" ]; then
+            echo "CAUSA: la habitación de laboratorio no quedó sembrada"
+            exit 1
           fi
+          echo "HOTEL_HABITACION_ID=$id" >> "$GITHUB_ENV"
+          echo "habitacion_id=$id"
+          for _ in $(seq 1 30); do
+            codigo=$(curl -sS -o /dev/null -w "%{http_code}" -H "x-trace-id: gate-espera" "$HOTEL_BASE_URL/api/v2/habitacion/$id" || true)
+            if [ "$codigo" = "200" ]; then
+              echo "estado_estable=200"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "CAUSA: el estado estable no llegó a HTTP 200"
+          exit 1
+
+      - name: Ejecutar el experimento declarativo
+        id: chaos
+        run: |
+          set -o pipefail
+          mkdir -p chaos-gate-results
+          echo '[]' > chaos-gate-results/observations.json
+          if [ "${{ inputs.demostrar_fallo }}" = "true" ]; then
+            experimento=chaos/experiment-hotel-gate-negative.json
+          else
+            experimento=chaos/experiment-hotel-gate.json
+          fi
+          echo "experimento=$experimento"
+          set +e
+          chaos run \
+            --rollback-strategy always \
+            --journal-path chaos-gate-results/journal.json \
+            "$experimento" \
+            > chaos-gate-results/chaos-stdout.txt \
+            2> chaos-gate-results/chaos-stderr.txt
+          codigo=$?
+          set -e
+          node chaos/gate-scrub.mjs chaos-gate-results
+          exit "$codigo"
+
+      - name: Evaluar umbrales
+        if: always()
+        run: |
+          set -o pipefail
+          node chaos/gate-evaluator.mjs chaos-gate-results/observations.json | tee chaos-gate-results/evaluacion.txt
+
+      - name: Revertir y limpiar
+        if: always()
+        run: |
+          set +e
+          mkdir -p chaos-gate-results
+          {
+            echo "disable_inicio=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            node chaos/gate-probe.mjs disable
+            codigo_hab=$(curl -sS -o /dev/null -w "%{http_code}" -H "x-trace-id: gate-reversion" "$HOTEL_BASE_URL/api/v2/habitacion/${HOTEL_HABITACION_ID:-1}" || echo caido)
+            codigo_live=$(curl -sS -o /dev/null -w "%{http_code}" "$HOTEL_BASE_URL/live" || echo caido)
+            echo "habitacion_despues=$codigo_hab"
+            echo "live_despues=$codigo_live"
+            docker compose down -v --remove-orphans
+            echo "compose_down=$?"
+            docker compose ps -a
+          } > chaos-gate-results/reversion.txt 2>&1
+          node chaos/gate-scrub.mjs chaos-gate-results || true
+          cat chaos-gate-results/reversion.txt
+
+      - name: Publicar evidencias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chaos-gate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: chaos-gate-results/
+          if-no-files-found: error
+          retention-days: 14

@@ -29,4 +29,5 @@ evidencias/**/*.env
 
 
 chaostoolkit.log
+chaos-gate-results/
 

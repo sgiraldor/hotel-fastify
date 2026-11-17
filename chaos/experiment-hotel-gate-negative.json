@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "title": "Chaos gate Hotel — corrida negativa sin inyección",
+  "description": "No activa el 503. Sirve para demostrar que el evaluador rechaza habitacion_503_rate distinto de 1 con observaciones reales. Solo http://127.0.0.1:3000.",
+  "tags": ["hotel", "chaos-gate", "localhost", "negative"],
+  "configuration": {
+    "hotel_base_url": {
+      "type": "env",
+      "key": "HOTEL_BASE_URL",
+      "default": "http://127.0.0.1:3000"
+    },
+    "chaos_lab_token": {
+      "type": "env",
+      "key": "CHAOS_LAB_TOKEN"
+    },
+    "habitacion_id": {
+      "type": "env",
+      "key": "HOTEL_HABITACION_ID",
+      "default": "1"
+    }
+  },
+  "steady-state-hypothesis": {
+    "title": "Habitación y /live responden 200",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "steady-live",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/live",
+          "timeout": 5
+        }
+      },
+      {
+        "type": "probe",
+        "name": "steady-habitacion",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "${hotel_base_url}/api/v2/habitacion/${habitacion_id}",
+          "headers": {
+            "x-trace-id": "gate-steady-negative"
+          },
+          "timeout": 5
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "probe",
+      "name": "habitacion-sin-fallo-1",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "inject-habitacion", "--expect", "any"],
+        "timeout": 10
+      }
+    },
+    {
+      "type": "probe",
+      "name": "habitacion-sin-fallo-2",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "inject-habitacion", "--expect", "any"],
+        "timeout": 10
+      }
+    },
+    {
+      "type": "probe",
+      "name": "habitacion-sin-fallo-3",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "inject-habitacion", "--expect", "any"],
+        "timeout": 10
+      }
+    },
+    {
+      "type": "probe",
+      "name": "live-sin-fallo",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "inject-live", "--expect", "200"],
+        "timeout": 10
+      }
+    },
+    {
+      "type": "action",
+      "name": "marcar-disable",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "mark-disable"],
+        "timeout": 10
+      }
+    },
+    {
+      "type": "probe",
+      "name": "habitacion-sigue-disponible",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": ["chaos/gate-probe.mjs", "recovery-habitacion", "--expect", "200"],
+        "timeout": 15
+      }
+    }
+  ],
+  "rollbacks": [
+    {
+      "type": "action",
+      "name": "force-disable-hotel-chaos",
+      "provider": {
+        "type": "http",
+        "url": "${hotel_base_url}/api/v2/chaos/dependency",
+        "method": "POST",
+        "headers": {
+          "x-chaos-token": "${chaos_lab_token}",
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "action": "disable"
+        },
+        "timeout": 5
+      }
+    }
+  ]
+}
