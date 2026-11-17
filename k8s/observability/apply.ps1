@@ -10,6 +10,9 @@ kubectl apply -f "$PSScriptRoot/tempo.yaml"
 kubectl apply -f "$PSScriptRoot/otel-collector.yaml"
 kubectl apply -f "$PSScriptRoot/prometheus.yaml"
 kubectl apply -f "$PSScriptRoot/grafana.yaml"
+# Requiere Secret otel-tls-lab (generate-tls-lab.ps1)
+kubectl apply -f "$PSScriptRoot/otel-tls-proxy.yaml"
+kubectl -n observability delete svc otel-collector-public --ignore-not-found | Out-Host
 
 $dash = Join-Path $repo "observability/grafana-dashboard-multicloud.json"
 kubectl -n observability create configmap grafana-dashboards `
@@ -24,4 +27,4 @@ kubectl -n observability rollout status deploy/grafana --timeout=180s
 
 kubectl -n observability get pods,svc
 Write-Host "Grafana: kubectl -n observability port-forward svc/grafana 3001:3000"
-Write-Host "OTLP NodePort: http://<NODE_EXTERNAL_IP>:31418"
+Write-Host "OTLP HTTPS: https://<NODE_EXTERNAL_IP>:31443 (Basic + cert observability/certs/otel-lab-ca.crt)"

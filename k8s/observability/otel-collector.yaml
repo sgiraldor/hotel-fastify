@@ -150,23 +150,5 @@ spec:
     - name: prom
       port: 8889
       targetPort: prom
----
-# NodePort público SIN LoadBalancer nuevo (reutiliza IP del worker).
-# Auth Basic obligatoria. HTTPS omitido para no crear LB/cert de pago.
-apiVersion: v1
-kind: Service
-metadata:
-  name: otel-collector-public
-  namespace: observability
-  labels:
-    app: otel-collector
-    exposure: nodeport-lab
-spec:
-  type: NodePort
-  selector:
-    app: otel-collector
-  ports:
-    - name: otlp-http
-      port: 4318
-      targetPort: otlp-http
-      nodePort: 31418
+# Ingesta pública: SOLO HTTPS vía otel-tls-proxy (NodePort 31443).
+# El Service otel-collector-public HTTP quedó eliminado para no enviar Basic en claro.

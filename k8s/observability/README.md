@@ -6,16 +6,18 @@ Stack académico en el mismo worker ARM64: Collector + Tempo + Prometheus + Graf
 
 | Componente | Acceso |
 |------------|--------|
-| OTLP HTTP | NodePort `31418` en IP pública del worker (Basic Auth) |
+| OTLP público | **HTTPS** NodePort `31443` (TLS lab + Basic Auth) |
+| OTLP HTTP NodePort | **eliminado** (no enviar Basic en claro) |
 | Grafana / Prometheus / Tempo | ClusterIP → `kubectl port-forward` |
 
-**No** se crea un segundo LoadBalancer (costo). HTTPS omitido a propósito (evitar LB/cert de pago).
+CA pública (Let's Encrypt): requiere **dominio** DNS → IP del worker (no inventado aquí).
 
 ## Aplicar
 
 ```powershell
 $env:OTEL_LAB_TOKEN = "<token-lab-compartido>"
 powershell -File k8s/observability/create-secrets.ps1
+powershell -File k8s/observability/generate-tls-lab.ps1
 powershell -File k8s/observability/apply.ps1
 kubectl apply -f k8s/hotel-api-configmap.yaml
 kubectl rollout restart deploy/hotel-api
