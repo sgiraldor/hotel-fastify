@@ -24,6 +24,9 @@ if ($DurationSeconds -lt 1 -or $DurationSeconds -gt 300) {
   Write-Error 'DurationSeconds debe estar entre 1 y 300.'
 }
 
+# 75 s de stages + 5 s de gracefulRampDown del perfil canonico.
+$k6BudgetMs = 80000
+
 $scriptPath = Join-Path $PSScriptRoot 'pod-switch.js'
 $scriptText = [System.IO.File]::ReadAllText($scriptPath)
 
@@ -148,9 +151,33 @@ if ($Action -eq 'enable') {
     }
   } catch {
     Write-Warning $_.Exception.Message
+    Write-Output 'k6_permitido=no'
     Disable-All -PodNames $pods
     exit 1
   }
+
+  $earliest = $null
+  foreach ($result in @($results)) {
+    $until = [int64]$result.chaos.until
+    if ($null -eq $earliest -or $until -lt $earliest) {
+      $earliest = $until
+    }
+  }
+
+  $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+  $remaining = 0
+  if ($null -ne $earliest) {
+    $remaining = $earliest - $nowMs
+  }
+  if ($null -eq $earliest -or $remaining -lt $k6BudgetMs) {
+    Write-Warning "ventana restante ${remaining} ms no cubre los 80 s de k6; no iniciar la ronda"
+    Write-Output 'k6_permitido=no'
+    Disable-All -PodNames $pods
+    exit 1
+  }
+
+  $startBefore = [DateTimeOffset]::FromUnixTimeMilliseconds($earliest - $k6BudgetMs).ToLocalTime().ToString('o')
+  Write-Output "k6_permitido=si k6_start_before=$startBefore remaining_ms=$remaining"
 } else {
   foreach ($podName in $pods) {
     try {
