@@ -14,8 +14,9 @@ data:
   OTEL_SERVICE_NAME: "hotel-api"
   OTEL_TRACES_EXPORTER: "otlp"
   OTEL_METRICS_EXPORTER: "otlp"
-  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  # Auth Basic: OTEL_EXPORTER_OTLP_HEADERS vive en Secret hotel-api-secrets (no en Git)
   # Laboratorio: caos desactivado por defecto
   CHAOS_DEPENDENCY_DOWN: "false"
   RESILIENCE_MODE: "protected"

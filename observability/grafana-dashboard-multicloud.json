@@ -1,0 +1,168 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "Throughput por servicio (Hotel scrape)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "hotel_http_throughput_rps",
+          "legendFormat": "hotel-api",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Latencia p95 Hotel (ms)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "hotel_http_p95_ms",
+          "legendFormat": "hotel p95",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Error rate 5xx Hotel",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "rate(hotel_http_errors_5xx_total[1m])",
+          "legendFormat": "5xx/s",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Estado experimento (chaos / resilience)",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "hotel_chaos_active",
+          "legendFormat": "chaos_active",
+          "refId": "A"
+        },
+        {
+          "expr": "hotel_resilience_protected",
+          "legendFormat": "protected",
+          "refId": "B"
+        },
+        {
+          "expr": "hotel_chaos_503_total",
+          "legendFormat": "chaos_503_total",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "title": "Bulkhead / fail-fast",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "hotel_db_bulkhead_rejections_total",
+          "legendFormat": "bulkhead_rej",
+          "refId": "A"
+        },
+        {
+          "expr": "hotel_db_failfast_timeouts_total",
+          "legendFormat": "failfast",
+          "refId": "B"
+        },
+        {
+          "expr": "hotel_db_inflight",
+          "legendFormat": "inflight",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "title": "OTLP metrics recibidas (collector → Prometheus)",
+      "type": "timeseries",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "count({job=\"otel-collector\"}) or vector(0)",
+          "legendFormat": "series otel-collector",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Comparación R0 vs R1 (anotar ventanas)",
+      "type": "text",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 15 },
+      "options": {
+        "mode": "markdown",
+        "content": "## R0 / R1\nUsar **Annotations** de Grafana para marcar:\n- Baseline\n- **R0** unprotected + fallo\n- **R1** protected + mismo fallo\n\nHotel (LOCAL):\n- A 503: R0=R1=100% error\n- B MySQL: p95↓ success↓\n- C bulkhead: aislamiento sí, success↓\n\nSports/Cine: paneles OTLP se llenan cuando exporten con `service.name` correcto."
+      }
+    },
+    {
+      "title": "Buscar traza (Tempo) — pegar Trace ID OTel",
+      "type": "traces",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 22 },
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "targets": [
+        {
+          "queryType": "traceqlSearch",
+          "refId": "A",
+          "filters": [
+            {
+              "id": "service-name",
+              "tag": "service.name",
+              "operator": "=",
+              "scope": "resource",
+              "value": ["hotel-api", "sports-api", "cine-api"],
+              "valueType": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Servicios esperados",
+      "type": "text",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 32 },
+      "options": {
+        "mode": "markdown",
+        "content": "| service.name | Cloud | Estado |\n|---|---|---|\n| `hotel-api` | OCI | exporta OTLP + scrape Prometheus |\n| `sports-api` | AWS | pendiente envío Jarrison |\n| `cine-api` | GCP | pendiente envío Daniel |\n\nCorrelación negocio: header `x-trace-id`. Correlación OTel: `traceparent` / Trace ID en Tempo."
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["seguimiento-4", "hotel", "sports", "cine", "otel"],
+  "templating": { "list": [] },
+  "time": { "from": "now-30m", "to": "now" },
+  "timezone": "browser",
+  "title": "Seguimiento #4 — Multicloud Observability",
+  "uid": "seguimiento-4-multicloud",
+  "version": 1
+}

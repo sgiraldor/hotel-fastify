@@ -1,38 +1,45 @@
-# Configuracion academica de ejemplo para Collector compartido.
-# No despliega nada por si sola. Ajustar exporters al stack del equipo.
+# Ejemplo alineado al collector OKE (k8s/observability/otel-collector.yaml).
+# En cluster: auth Basic + export Tempo + Prometheus exporter :8889.
 receivers:
   otlp:
     protocols:
       http:
         endpoint: 0.0.0.0:4318
-      grpc:
-        endpoint: 0.0.0.0:4317
+        max_request_body_size: 4194304
 
 processors:
-  batch: {}
-  attributes:
-    actions:
+  batch:
+    timeout: 2s
+  memory_limiter:
+    check_interval: 2s
+    limit_mib: 180
+    spike_limit_mib: 40
+  resource:
+    attributes:
       - key: team
         value: seguimiento-4
         action: upsert
 
 exporters:
-  logging:
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: otel
+    resource_to_telemetry_conversion:
+      enabled: true
+  debug:
     verbosity: basic
-  # prometheus:
-  #   endpoint: 0.0.0.0:8889
-  # otlp/tempo:
-  #   endpoint: tempo:4317
-  #   tls:
-  #     insecure: true
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, attributes]
-      exporters: [logging]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/tempo, debug]
     metrics:
       receivers: [otlp]
-      processors: [batch, attributes]
-      exporters: [logging]
+      processors: [memory_limiter, resource, batch]
+      exporters: [prometheus, debug]
