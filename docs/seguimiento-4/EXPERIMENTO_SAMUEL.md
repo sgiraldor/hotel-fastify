@@ -35,3 +35,10 @@ Solo archivos generados en `scripts/experiments/results/` o capturas cloud autor
 ./chaos/revert-chaos.ps1
 # o POST action=disable
 ```
+
+## Demo OCI (preparada, no ejecutada)
+
+Comandos exactos con `try/finally`, duración limitada y verificación de recuperación:  
+[`DEMO_OCI_EXPERIMENTO_A.md`](./DEMO_OCI_EXPERIMENTO_A.md).
+
+B (MySQL) y C (bulkhead) son **complementarios** en LOCAL y **no** reemplazan este experimento A.

@@ -1,8 +1,20 @@
 # Resultados reales — Seguimiento #4 (Samuel / Hotel)
 
+## Alcance de los experimentos
+
+| Experimento | Obligatoriedad | Ámbito | ¿Reemplaza al A? |
+|-------------|----------------|--------|------------------|
+| **A** — HTTP 503 total | **Obligatorio** del seguimiento | LOCAL validado; runbook OCI listo (`DEMO_OCI_EXPERIMENTO_A.md`) **sin ejecutar aún** | — |
+| **B** — MySQL degradada | Complementario | Solo LOCAL | **No** |
+| **C** — Bulkhead alta concurrencia | Complementario | Solo LOCAL | **No** |
+
+B y C demuestran fail-fast/bulkhead del **callee**. **No** sustituyen la indisponibilidad obligatoria (A) ni mitigan el blast radius E2E: eso corresponde a Sports.
+
+---
+
 ## A. Experimento obligatorio — indisponibilidad HTTP 503
 
-**Estado:** validado en LOCAL (Chaos Toolkit + k6). **Pendiente E2E con Sports (Jarrison).**  
+**Estado:** validado en LOCAL (Chaos Toolkit + k6). **Pendiente E2E con Sports (Jarrison) y demo OCI autorizada.**  
 **Evidencias originales conservadas** (no regeneradas ni borradas): `40-chaostoolkit-*`, `42-k6-*`.
 
 ### Hallazgo (sin fabricar mejora)
@@ -103,4 +115,6 @@ Métricas: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_tot
 
 ## OCI (solo verificación, sin caos)
 
-URL: `http://149.130.165.30` — 2 pods Ready. Evidencias `28-39`, `44-oke-*`.
+URL: `http://149.130.165.30` — 2 pods Hotel Ready + MySQL Ready + Service NLB.  
+HTTP `GET /api/v2/habitacion/1` → 200. Evidencias `28-39`, `44-oke-*`, cierre `70-oke-*`.  
+Caos OCI: **preparado, no ejecutado** → `DEMO_OCI_EXPERIMENTO_A.md`.

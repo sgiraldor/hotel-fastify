@@ -3,11 +3,14 @@
 Hotel **no** mitiga sola la indisponibilidad total (experimento A: R0=R1=100% error).  
 Sports, como caller/coordinador, debe implementar la resiliencia E2E.
 
-## 1. Endpoint
+Guía compacta de arranque: [`GUIA_INTEGRACION_JARRISON.md`](./GUIA_INTEGRACION_JARRISON.md).
+
+## 1. Endpoint final
 
 ```
 GET /api/v2/habitacion/:id
 Base lab OCI: http://149.130.165.30
+Ejemplo:      GET http://149.130.165.30/api/v2/habitacion/1 → 200 + x-trace-id
 ```
 
 ## 2. Headers obligatorios (ida)
@@ -92,5 +95,13 @@ Solo con ventana autorizada. No contra OCI sin permiso explícito.
 
 | Experimento | Qué prueba Hotel | Qué debe probar Sports |
 |-------------|------------------|------------------------|
-| A — 503 total | Blast radius + contrato 503 | CB + timeout + partial status |
-| B — MySQL lenta | Fail-fast/bulkhead callee | Timeout caller alineado; no reintentos agresivos |
+| **A** — 503 total (**obligatorio**) | Blast radius + contrato 503; R0=R1=100% error | CB + timeout + partial status |
+| B — MySQL lenta (**complementario**) | Fail-fast callee; no reemplaza A | Timeout caller alineado; no reintentos agresivos |
+| C — Bulkhead (**complementario**) | Aislamiento concurrency; success ↓ | No martillar tras 503 rápidos |
+
+## 11. Estado de entrega Hotel → Sports
+
+- API OCI operativa (2 réplicas + MySQL).
+- Contrato `GET /api/v2/habitacion/:id` estable.
+- Chaos Gate listo; demo OCI documentada y **no ejecutada** hasta autorización.
+- Pendiente exclusivo Sports: timeout, CB, `partial`, propagación de traza E2E y métricas.

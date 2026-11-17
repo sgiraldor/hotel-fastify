@@ -24,9 +24,11 @@ Hotel **no** es coordinador y **no** llama a Cine.
 
 ## Índice
 
-- [RESULTADOS_EXPERIMENTOS.md](./RESULTADOS_EXPERIMENTOS.md) — métricas reales LOCAL/OCI
-- [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo
-- [CONTRATO_SPORTS_HOTEL.md](./CONTRATO_SPORTS_HOTEL.md) — contrato final para Jarrison
+- [RESULTADOS_EXPERIMENTOS.md](./RESULTADOS_EXPERIMENTOS.md) — A (obligatorio) + B/C (complementarios)
+- [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo + limitaciones reales
+- [GUIA_INTEGRACION_JARRISON.md](./GUIA_INTEGRACION_JARRISON.md) — integración inmediata Sports→Hotel
+- [CONTRATO_SPORTS_HOTEL.md](./CONTRATO_SPORTS_HOTEL.md) — contrato técnico completo
+- [DEMO_OCI_EXPERIMENTO_A.md](./DEMO_OCI_EXPERIMENTO_A.md) — runbook caos OCI (**no ejecutado**)
 - [CONTRATOS_MULTICLOUD.md](./CONTRATOS_MULTICLOUD.md)
 - [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md)
 - [EXPERIMENTO_SAMUEL.md](./EXPERIMENTO_SAMUEL.md)
