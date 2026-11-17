@@ -113,6 +113,7 @@ describe('el experimento no sale del runner', () => {
   it('el workflow ejecuta Chaos Toolkit, publica artefactos rojos y limpia siempre', () => {
     const workflow = leer('.github/workflows/chaos-hotel-manual.yml');
 
+    expect(workflow).toContain('chaos/GATE_MODE');
     expect(workflow).toContain('chaos run');
     expect(workflow).toContain('--rollback-strategy always');
     expect(workflow).toContain('node chaos/gate-preflight.mjs');

@@ -11,9 +11,20 @@ on:
         description: "true ejecuta la corrida negativa, sin inyectar el 503"
         type: boolean
         default: false
+  push:
+    branches:
+      - feat/seguimiento-4-chaos
+    paths:
+      - .github/workflows/chaos-hotel-manual.yml
+      - chaos/GATE_MODE
+
+concurrency:
+  group: chaos-gate-${{ github.sha }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
+  actions: write
 
 jobs:
   chaos-gate:
@@ -80,7 +91,12 @@ jobs:
           set -o pipefail
           mkdir -p chaos-gate-results
           echo '[]' > chaos-gate-results/observations.json
-          if [ "${{ inputs.demostrar_fallo }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            modo="${{ inputs.demostrar_fallo }}"
+          else
+            modo=$(tr -d '[:space:]' < chaos/GATE_MODE)
+          fi
+          if [ "$modo" = "true" ] || [ "$modo" = "negative" ]; then
             experimento=chaos/experiment-hotel-gate-negative.json
           else
             experimento=chaos/experiment-hotel-gate.json
