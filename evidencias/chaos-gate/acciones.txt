@@ -1,0 +1,34 @@
+Corridas reales del chaos gate. Las cifras salen de las anotaciones públicas de GitHub Actions.
+El zip del artefacto exige sesión; la API anónima respondió 401 al descargarlo.
+
+Negativa
+url=https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442
+sha=3bc9d12
+conclusion=failure
+paso_fallido=Evaluar umbrales
+habitacion_503_rate=0
+muestras_habitacion=3
+live_200_rate=1
+muestras_live=1
+recuperacion_s=0.063
+CAUSA: habitacion_503_rate=0 umbral=1
+disable_status=200
+habitacion_despues=200
+live_despues=200
+compose_down=0
+artefacto=chaos-gate-44189190442-1
+
+Positiva
+url=https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682
+sha=6c79e25
+conclusion=success
+habitacion_503_rate=1
+muestras_habitacion=3
+live_200_rate=1
+muestras_live=1
+recuperacion_s=0.067
+disable_status=200
+habitacion_despues=200
+live_despues=200
+compose_down=0
+artefacto=chaos-gate-44189597682-1

@@ -66,6 +66,19 @@ El temporizador es por proceso. El NLB no alcanza los dos pods. Procedimiento, m
 ./chaos/chaos-replicas.ps1 -Action disable
 ```
 
+## Chaos gate en GitHub Actions
+
+El workflow `.github/workflows/chaos-hotel-manual.yml` levanta Hotel y MySQL solo dentro del runner y ejecuta Chaos Toolkit contra `http://127.0.0.1:3000`. La inyección dura como máximo 15 s. El evaluador exige tres cosas: todas las sondas de habitación en 503, `/live` en 200 y la habitación de vuelta a 200 en 5 s o menos. Si una falla, el log lleva `CAUSA:` y el job termina en 1. El `disable` y `docker compose down` corren aunque el job falle. El token temporal no se guarda.
+
+`chaos/GATE_MODE` elige la corrida al hacer push de ese archivo: `negative` no inyecta el 503 y debe quedar roja; `positive` inyecta y debe quedar verde.
+
+| Corrida | URL | Resultado | 503 | /live | Recuperación |
+|---|---|---|---|---|---|
+| Negativa | https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442 | roja | 0 (3/3 en 200) | 1 | 0,063 s |
+| Positiva | https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682 | verde | 1 (3/3 en 503) | 1 | 0,067 s |
+
+En las dos, el `disable` respondió 200, la habitación y `/live` quedaron en 200 y `compose_down=0`. Los artefactos son `chaos-gate-44189190442-1` y `chaos-gate-44189597682-1`. La causa de la corrida roja fue `CAUSA: habitacion_503_rate=0 umbral=1`. El registro está en `evidencias/chaos-gate/acciones.txt`.
+
 ## No ejecutar en OCI compartida sin autorización
 
-Este experimento es seguro localmente. Contra OKE/producción académica solo con permiso del equipo.
+Este experimento es seguro localmente y en el runner. Contra OKE solo con permiso del equipo, y el gate no lo hace.

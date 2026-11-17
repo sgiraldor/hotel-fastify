@@ -12,7 +12,7 @@
 
 ## Pendiente de Samuel
 
-1. **Chaos gate real.** `.github/workflows/chaos-hotel-manual.yml` corre tests y deja la inyección remota deshabilitada. Falta una ejecución que lance el experimento declarativo, evalúe la métrica y falle el job si el umbral no se cumple, con reversión en el mismo job.
+1. **Chaos gate real.** Hecho en el runner, sin OCI. La corrida negativa quedó roja por `habitacion_503_rate=0` frente al umbral 1: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442. La positiva quedó verde con tasa 1, `/live` en 1 y recuperación de 0,067 s: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682. En ambas el disable devolvió 200 y Compose se apagó. Detalle en `evidencias/chaos-gate/acciones.txt`.
 2. **Dashboard de la ventana de inyección.** Grafana está en OKE y hay JSON local de paneles. Falta la vista que muestre a la vez el intervalo del 503 y la métrica de parciales o fallidas, más la captura para la entrega.
 3. **Baseline archivado.** La comparación usa 289 completas, disponibilidad 100 % y p95 312,02 ms. El JSON de k6 no está en `load/results/` ni en `evidencias/`.
 4. **Release.** `v1.1.0` queda donde está: apunta a un commit anterior a R0 y R1. Hace falta un tag nuevo y el release creado desde ese tag. Todavía no se crean.
@@ -24,4 +24,4 @@
 
 ## Fuera de este cierre
 
-No repetir el 503. No mover `v1.1.0`. No hacer push ni crear el release hasta cerrar el tag nuevo.
+No repetir el 503 de OCI. No mover `v1.1.0`. El release y el tag nuevo siguen sin crearse. La rama `feat/seguimiento-4-chaos` ya está publicada; `main` no se tocó.
