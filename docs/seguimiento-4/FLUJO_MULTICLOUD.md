@@ -42,10 +42,10 @@ Grafana: `kubectl -n observability port-forward svc/grafana 3001:3000`
 | service.name | Tempo | Prometheus (label) |
 |--------------|-------|--------------------|
 | `hotel-api` | **sí** | **sí** |
-| `sports-api` | **no** (0 traces) | **no** |
-| `cine-api` | **no** (0 traces) | **no** |
+| `sports-api` | **no** (pendiente Jarrison) | **no** |
+| `cine-api` | **sí** (confirmado) | **sí** (`service_name=cine-api`) |
 
-Evidencias: `90-tempo-*.json`, `90-prom-*.json`, `90-tempo-service-summary.txt`.
+Evidencias: `90-*` (flujo HTTP); `91-*` (Cine OTLP en Tempo/Prometheus).
 
 ### Cuando lleguen spans AWS/GCP — correlacionar Trace ID
 

@@ -20,7 +20,7 @@
 ## Solo equipo / autorización
 
 1. **Jarrison**: exportar OTLP `sports-api` al collector HTTPS; coordinar k6 Baseline/R0/R1 del runbook A OCI+Sports (mitigación real, no solo mocks)
-2. **Daniel**: exportar OTLP `cine-api` + confiar `otel-lab-ca.crt`
+2. **Daniel**: OTLP `cine-api` **confirmado** en Tempo/Prometheus (`91-*`); mantener exportación estable
 3. Ventana autorizada caos OKE + ejecución runbook A (aún **no** corrido)
 4. Verificar en Tempo una traza con spans de las tres APIs (`traceparent`)
 5. Push remoto manual (`v1.1.0` intacto)
