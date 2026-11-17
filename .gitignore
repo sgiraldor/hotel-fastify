@@ -19,6 +19,8 @@ terraform/oci/*token*
 terraform/oci/tfplan*
 scripts/experiments/results/*.json
 !scripts/experiments/results/.gitkeep
+load/results/*
+!load/results/.gitkeep
 
 # no versionar secretos locales sueltos
 evidencias/**/*.pem
