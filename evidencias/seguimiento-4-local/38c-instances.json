@@ -1,0 +1,127 @@
+{
+  "data": [
+    {
+      "agent-config": {
+        "are-all-plugins-disabled": false,
+        "is-management-disabled": false,
+        "is-monitoring-disabled": false,
+        "plugins-config": null
+      },
+      "availability-config": {
+        "is-live-migration-preferred": null,
+        "recovery-action": "RESTORE_INSTANCE"
+      },
+      "availability-domain": "IASl:SA-BOGOTA-1-AD-1",
+      "capacity-reservation-id": null,
+      "cluster-placement-group-id": null,
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "dedicated-vm-host-id": null,
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "ocid1.nodepool.oc1.sa-bogota-1.aaaaaaaatandoxo3qm7nzq7w4wjhgia6oc6fgfetqfag4cqsdnsg4y2tsuja",
+          "CreatedOn": "2026-11-17T00:29:54.405Z"
+        }
+      },
+      "display-name": "oke-cc3levwtx6a-nsg4y2tsuja-soxvvdatdwq-0",
+      "extended-metadata": {},
+      "fault-domain": "FAULT-DOMAIN-1",
+      "freeform-tags": {},
+      "id": "ocid1.instance.oc1.sa-bogota-1.anrgcljrqx43bsqcwemsklp4gmmvlx7dner54g32bs2aydkdbqzkwt67w4nq",
+      "image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+      "instance-configuration-id": null,
+      "instance-options": {
+        "are-legacy-imds-endpoints-disabled": false
+      },
+      "ipxe-script": null,
+      "is-ai-enterprise-enabled": null,
+      "is-cross-numa-node": false,
+      "launch-mode": "PARAVIRTUALIZED",
+      "launch-options": {
+        "boot-volume-type": "PARAVIRTUALIZED",
+        "firmware": "UEFI_64",
+        "is-consistent-volume-naming-enabled": true,
+        "is-pv-encryption-in-transit-enabled": false,
+        "network-type": "PARAVIRTUALIZED",
+        "remote-data-volume-type": "PARAVIRTUALIZED"
+      },
+      "licensing-configs": null,
+      "lifecycle-state": "RUNNING",
+      "metadata": {
+        "ansible_args": "eyJjbHVzdGVyX2lkIjoiY2MzbGV2d3R4NmEiLCJrOHNfYXBpc2VydmVyX2FkZHIiOiIxMC4yMC4xLjUiLCJrOHNfYXBpc2VydmVyX3BvcnQiOiI2NDQzIiwiZmxhbm5lbF9ldGNkX2NhX2NlcnQiOiItLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS1cbk1JSURpVENDQW5HZ0F3SUJBZ0lSQU9BVW9sSGlENk5lOUV6U0psZ1B2bUl3RFFZSktvWklodmNOQVFFTEJRQXdcblhqRVBNQTBHQTFVRUF3d0dTemh6SUVOQk1Rc3dDUVlEVlFRR0V3SlZVekVQTUEwR0ExVUVCd3dHUVhWemRHbHVcbk1ROHdEUVlEVlFRS0RBWlBjbUZqYkdVeEREQUtCZ05WQkFzTUEwOWphVEVPTUF3R0ExVUVDQXdGVkdWNFlYTXdcbkhoY05Nall4TVRFM01EQXhPVE0wV2hjTk16RXhNVEUzTURBeE9UTTBXakJlTVE4d0RRWURWUVFEREFaTE9ITWdcblEwRXhDekFKQmdOVkJBWVRBbFZUTVE4d0RRWURWUVFIREFaQmRYTjBhVzR4RHpBTkJnTlZCQW9NQms5eVlXTnNcblpURU1NQW9HQTFVRUN3d0RUMk5wTVE0d0RBWURWUVFJREFWVVpYaGhjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJcbkJRQURnZ0VQQURDQ0FRb0NnZ0VCQU0wTFBXLzdlaisyUzV0Njl3ZTh5OFdBSkh1UVhSS3crSFNralZ2Qis5Q3VcbjVyRmk2VnVSblZ3dk1JYkZlSjdLRXdpVVBKREw5UGdUZ2YxMDgvL3libW9FNE5VT0NkK2l5M2hxZkkyN1F3aGdcbjJYSTNEdzg3eThpVWl0UTMxWHErYjRDdDQzN043WWN3N0srTVZsL0tNYkVjVlFFa2hqajRTUVRyMnBxcTB5SThcbnNlOWFaN2kza1FIR2lUUi9rRmo2aEdnZmtzU1lyeWhjTEtwYjQ3OFRuT01vd2NUdmZxUS9JM3JNVUtVeEJJRTlcbmp4RHRXOFhHZWtNT1orOEhvNHE1MVpGQUc1YnpuUjlsYVdGN3pnK0p1eGJ4OGNWdXZtL0Z6L1pBR3FEUmt6UjZcbnVjTGZFQml4Q1R2YTdQN2tzamQ2R1NYU0oxemU2aVVmMkVlNnVLb0REUzhDQXdFQUFhTkNNRUF3RHdZRFZSMFRcbkFRSC9CQVV3QXdFQi96QU9CZ05WSFE4QkFmOEVCQU1DQVFZd0hRWURWUjBPQkJZRUZLY0V4aVZKdEkyNUNVMENcbmIwN1JnSm8xdUl0WU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQldpWVhRWWVZc29wWC9ydGZHRUxxOHYvR2VcbmljV29DVWRZcDdtSFIraGZTcStUUzRQL1pFRjZOeDZtdTd1aHJUb0tseSs5TWRaQnFra3E1WWFWdVhONzJZeEtcbnJOTU02V0U3UTFrNTl6ZkhnNldlM2Zsa1VpZFBySVNMd3o1ZklrREZzN0l2d1hpVzIwbHhqOTNKK1ZaZ1pBK0xcbkVGSWtGOEttRFE3Qm0zRFJnSDFOdENvbE1iSFRQMU1XcDcwMUR5OHo5MmVwOTBLOUpGZFdLZjRScDFzRWRqb1Ncbmw0NUJpVUtWMUpRNWR1NGt5YWtrS1NhM05KSlVqclpQcnVzYXF6blkxNGlaMWx2ZGQ4QjExQzN0Nk5LWDI4N3pcbi9VMWdoa0ZQRm9lR3hIMkhSNlFwbXVEeFhzclk1dGc1U3ZsN0xka040TUMzb0RrYU5UNUNVRUsyRXowdVxuLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLVxuXG4iLCJrdWJlZG5zX3N2Y19pcCI6IjEwLjk2LjUuNSIsInRtX2lkIjoib2tlIiwia3ViZWxldF9jbGllbnRfY2EiOiItLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS1cbk1JSURpVENDQW5HZ0F3SUJBZ0lSQU9BVW9sSGlENk5lOUV6U0psZ1B2bUl3RFFZSktvWklodmNOQVFFTEJRQXdcblhqRVBNQTBHQTFVRUF3d0dTemh6SUVOQk1Rc3dDUVlEVlFRR0V3SlZVekVQTUEwR0ExVUVCd3dHUVhWemRHbHVcbk1ROHdEUVlEVlFRS0RBWlBjbUZqYkdVeEREQUtCZ05WQkFzTUEwOWphVEVPTUF3R0ExVUVDQXdGVkdWNFlYTXdcbkhoY05Nall4TVRFM01EQXhPVE0wV2hjTk16RXhNVEUzTURBeE9UTTBXakJlTVE4d0RRWURWUVFEREFaTE9ITWdcblEwRXhDekFKQmdOVkJBWVRBbFZUTVE4d0RRWURWUVFIREFaQmRYTjBhVzR4RHpBTkJnTlZCQW9NQms5eVlXTnNcblpURU1NQW9HQTFVRUN3d0RUMk5wTVE0d0RBWURWUVFJREFWVVpYaGhjekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJcbkJRQURnZ0VQQURDQ0FRb0NnZ0VCQU0wTFBXLzdlaisyUzV0Njl3ZTh5OFdBSkh1UVhSS3crSFNralZ2Qis5Q3VcbjVyRmk2VnVSblZ3dk1JYkZlSjdLRXdpVVBKREw5UGdUZ2YxMDgvL3libW9FNE5VT0NkK2l5M2hxZkkyN1F3aGdcbjJYSTNEdzg3eThpVWl0UTMxWHErYjRDdDQzN043WWN3N0srTVZsL0tNYkVjVlFFa2hqajRTUVRyMnBxcTB5SThcbnNlOWFaN2kza1FIR2lUUi9rRmo2aEdnZmtzU1lyeWhjTEtwYjQ3OFRuT01vd2NUdmZxUS9JM3JNVUtVeEJJRTlcbmp4RHRXOFhHZWtNT1orOEhvNHE1MVpGQUc1YnpuUjlsYVdGN3pnK0p1eGJ4OGNWdXZtL0Z6L1pBR3FEUmt6UjZcbnVjTGZFQml4Q1R2YTdQN2tzamQ2R1NYU0oxemU2aVVmMkVlNnVLb0REUzhDQXdFQUFhTkNNRUF3RHdZRFZSMFRcbkFRSC9CQVV3QXdFQi96QU9CZ05WSFE4QkFmOEVCQU1DQVFZd0hRWURWUjBPQkJZRUZLY0V4aVZKdEkyNUNVMENcbmIwN1JnSm8xdUl0WU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQldpWVhRWWVZc29wWC9ydGZHRUxxOHYvR2VcbmljV29DVWRZcDdtSFIraGZTcStUUzRQL1pFRjZOeDZtdTd1aHJUb0tseSs5TWRaQnFra3E1WWFWdVhONzJZeEtcbnJOTU02V0U3UTFrNTl6ZkhnNldlM2Zsa1VpZFBySVNMd3o1ZklrREZzN0l2d1hpVzIwbHhqOTNKK1ZaZ1pBK0xcbkVGSWtGOEttRFE3Qm0zRFJnSDFOdENvbE1iSFRQMU1XcDcwMUR5OHo5MmVwOTBLOUpGZFdLZjRScDFzRWRqb1Ncbmw0NUJpVUtWMUpRNWR1NGt5YWtrS1NhM05KSlVqclpQcnVzYXF6blkxNGlaMWx2ZGQ4QjExQzN0Nk5LWDI4N3pcbi9VMWdoa0ZQRm9lR3hIMkhSNlFwbXVEeFhzclk1dGc1U3ZsN0xka040TUMzb0RrYU5UNUNVRUsyRXowdVxuLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLVxuXG4iLCJwcm94eW11eF9zZXJ2ZXJfcG9ydCI6IjEyMjUwIn0=",
+        "bootstrap-kubelet-conf": "YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VScFZFTkRRVzVIWjBGM1NVSkJaMGxTUVU5QlZXOXNTR2xFTms1bE9VVjZVMHBzWjFCMmJVbDNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGNLV0dwRlVFMUJNRWRCTVZWRlFYZDNSMU42YUhwSlJVNUNUVkZ6ZDBOUldVUldVVkZIUlhkS1ZsVjZSVkJOUVRCSFFURlZSVUozZDBkUldGWjZaRWRzZFFwTlVUaDNSRkZaUkZaUlVVdEVRVnBRWTIxR2FtSkhWWGhFUkVGTFFtZE9Wa0pCYzAxQk1EbHFZVlJGVDAxQmQwZEJNVlZGUTBGM1JsWkhWalJaV0UxM0NraG9ZMDVOYWxsNFRWUkZNMDFFUVhoUFZFMHdWMmhqVGsxNlJYaE5WRVV6VFVSQmVFOVVUVEJYYWtKbFRWRTRkMFJSV1VSV1VWRkVSRUZhVEU5SVRXY0tVVEJGZUVONlFVcENaMDVXUWtGWlZFRnNWbFJOVVRoM1JGRlpSRlpSVVVoRVFWcENaRmhPTUdGWE5IaEVla0ZPUW1kT1ZrSkJiMDFDYXpsNVdWZE9jd3BhVkVWTlRVRnZSMEV4VlVWRGQzZEVWREpPY0UxUk5IZEVRVmxFVmxGUlNVUkJWbFZhV0dob1kzcERRMEZUU1hkRVVWbEtTMjlhU1doMlkwNUJVVVZDQ2tKUlFVUm5aMFZRUVVSRFEwRlJiME5uWjBWQ1FVMHdURkJYTHpkbGFpc3lVelYwTmpsM1pUaDVPRmRCU2toMVVWaFNTM2NyU0ZOcmFsWjJRaXM1UTNVS05YSkdhVFpXZFZKdVZuZDJUVWxpUm1WS04wdEZkMmxWVUVwRVREbFFaMVJuWmpFd09DOHZlV0p0YjBVMFRsVlBRMlFyYVhremFIRm1TVEkzVVhkb1p3b3lXRWt6UkhjNE4zazRhVlZwZEZFek1WaHhLMkkwUTNRME16ZE9OMWxqZHpkTEswMVdiQzlMVFdKRlkxWlJSV3RvYW1vMFUxRlVjakp3Y1hFd2VVazRDbk5sT1dGYU4ya3phMUZJUjJsVVVpOXJSbW8yYUVkblptdHpVMWx5ZVdoalRFdHdZalEzT0ZSdVQwMXZkMk5VZG1aeFVTOUpNM0pOVlV0VmVFSkpSVGtLYW5oRWRGYzRXRWRsYTAxUFdpczRTRzgwY1RVeFdrWkJSelZpZW01U09XeGhWMFkzZW1jclNuVjRZbmc0WTFaMWRtMHZSbm92V2tGSGNVUlNhM3BTTmdwMVkweG1SVUpwZUVOVWRtRTNVRGRyYzJwa05rZFRXRk5LTVhwbE5tbFZaakpGWlRaMVMyOUVSRk00UTBGM1JVRkJZVTVEVFVWQmQwUjNXVVJXVWpCVUNrRlJTQzlDUVZWM1FYZEZRaTk2UVU5Q1owNVdTRkU0UWtGbU9FVkNRVTFEUVZGWmQwaFJXVVJXVWpCUFFrSlpSVVpMWTBWNGFWWktkRWt5TlVOVk1FTUtZakEzVW1kS2J6RjFTWFJaVFVFd1IwTlRjVWRUU1dJelJGRkZRa04zVlVGQk5FbENRVkZDVjJsWldGRlpaVmx6YjNCWUwzSjBaa2RGVEhFNGRpOUhaUXBwWTFkdlExVmtXWEEzYlVoU0syaG1VM0VyVkZNMFVDOWFSVVkyVG5nMmJYVTNkV2h5Vkc5TGJIa3JPVTFrV2tKeGEydHhOVmxoVm5WWVRqY3lXWGhMQ25KT1RVMDJWMFUzVVRGck5UbDZaa2huTmxkbE0yWnNhMVZwWkZCeVNWTk1kM28xWmtsclJFWnpOMGwyZDFocFZ6SXdiSGhxT1ROS0sxWmFaMXBCSzB3S1JVWkphMFk0UzIxRVVUZENiVE5FVW1kSU1VNTBRMjlzVFdKSVZGQXhUVmR3TnpBeFJIazRlamt5WlhBNU1FczVTa1prVjB0bU5GSndNWE5GWkdwdlV3cHNORFZDYVZWTFZqRktVVFZrZFRScmVXRnJhMHRUWVROT1NrcFZhbkphVUhKMWMyRnhlbTVaTVRScFdqRnNkbVJrT0VJeE1VTXpkRFpPUzFneU9EZDZDaTlWTVdkb2EwWlFSbTlsUjNoSU1raFNObEZ3YlhWRWVGaHpjbGsxZEdjMVUzWnNOMHhrYTA0MFRVTXpiMFJyWVU1VU5VTlZSVXN5Ulhvd2RRb3RMUzB0TFVWT1JDQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENnbz0KICAgIHNlcnZlcjogaHR0cHM6Ly8xMC4yMC4xLjU6NjQ0MwogIG5hbWU6IGJvb3RzdHJhcApjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogYm9vdHN0cmFwCiAgICB1c2VyOiBib290c3RyYXAKICBuYW1lOiBib290c3RyYXAKY3VycmVudC1jb250ZXh0OiBib290c3RyYXAKa2luZDogQ29uZmlnCnByZWZlcmVuY2VzOiB7fQp1c2VyczoKLSBuYW1lOiBib290c3RyYXAKICB1c2VyOgogICAgdG9rZW46IHVmeDk0eC5icjBoMXJudTE3NG0zbG1kCg==",
+        "inventory_tmpl": "[tkm-minions]\nlocalhost initial_node_labels=lab=hotel-seguimiento-4,oci.oraclecloud.com/node.info.managed=true,oci.oraclecloud.com/bootstrap-token=bootstrap-token-ufx94x node_is_on_private_subnet={NODE_IS_ON_PRIVATE_SUBNET} nodeid_suffix={NODE_SUFFIX} shape=VM.Standard.A1.Flex ansible_user=opc tenancyid=ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q compartmentid_prefix=ocid1.tenancy.oc1 k8s_kubelet_hostname={K8S_KUBELET_HOSTNAME} region_key=BOG ansible_connection=local public_ipaddress={PUBLIC_IP} zone=IASl:SA-BOGOTA-1-AD-1 k8s_version=v1.36.1 displayname=oke-cc3levwtx6a-nsg4y2tsuja-soxvvdatdwq-0 compartmentname=samuelgiraldoroldan51 nodeid_prefix={NODE_PREFIX} region_name=sa-bogota-1 ta_version={TA_VERSION} region=sa-bogota-1 compartmentid_suffix=aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q private_ipaddress={PRIVATE_IP}\n",
+        "ip-families": "IPv4",
+        "oci_tld": "oraclecloud.com",
+        "oke-ad": "IASl:SA-BOGOTA-1-AD-1",
+        "oke-cluster-display-name": "hotel-oke",
+        "oke-cluster-id": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+        "oke-cluster-label": "cc3levwtx6a",
+        "oke-compartment-name": "samuelgiraldoroldan51",
+        "oke-image-name": "Oracle-Linux-8.10-aarch64-2026.06.15-0-OKE-1.36.1-1505",
+        "oke-initial-node-labels": "lab=hotel-seguimiento-4,oci.oraclecloud.com/node.info.managed=true,oci.oraclecloud.com/bootstrap-token=bootstrap-token-ufx94x",
+        "oke-is-cloud-init": "true",
+        "oke-is-on-private-subnet": "false",
+        "oke-is-onsr": "false",
+        "oke-is-preemptible": "false",
+        "oke-is-private-worker": "true",
+        "oke-k8version": "v1.36.1",
+        "oke-node-package-install-profile": "oci-oke-node-all-1.36.1*",
+        "oke-pool-id": "ocid1.nodepool.oc1.sa-bogota-1.aaaaaaaatandoxo3qm7nzq7w4wjhgia6oc6fgfetqfag4cqsdnsg4y2tsuja",
+        "oke-pool-label": "nsg4y2tsuja",
+        "oke-preconfigured-vnics": "false",
+        "oke-slot": "0",
+        "oke-subnet-label": "soxvvdatdwq",
+        "oke-tenancy-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+        "oke-tm": "oke",
+        "oke-use-oke-yum-repo-for-evergreen": "false",
+        "oke_artifact_signing_key": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAthEFc48kQ9NWHhVRlyDO\n7LW8kZEO42wSweLgF2I2uP9thr6uWf7vu5nsSUp9r31qQA7sfGQ/qXXcS5UTi3VH\nSwvJfkzQ3cVmDrylOSPB0DVyRp5boNIrAIRi9pTCaOAn7TdBtYFJOYiU3+Ymh/Tq\n+gn6tAdKHPgOk9xcNMN7rruTc3lTH7qnyXqRwGDjwV0ACeIH0wblp8XUMGlh+r4K\ngejCXxahGRzE+1W8PNnC95DaNSeTVmX1brTZ7tAPQeNgoleOCGHDHeTtwFuY/76v\nTRA22WDrHubZyBquLfNIuKNJwwqqBmFB2TreLYTNXOGQrxQ+4Wc3Bu7UDs2qr+Vu\n9mTrzOmZgAoSa54XglTNQL7Khqn9N2q0TxX4bisA0NT0JsW4V2FD7YIV8GjO8hd4\nRzaGGeCG9wbti02gmTSGgH7iIVLqSiDxfsmzxbgNik3r5pbNdRBifxnaavfs+mCk\nZnQpcJjpSJdKFMsNbuyQIt1+9NNn40qquAjg+fAPd4+Ggkkjsyni+3qEn6C8/lU+\n2GkQaIoTR8dmFfUtK4NDhdBsJXX3yGottjf2bL4Y9D8KpA1lpIYHYyAGrrTAXLAG\nog0GbYTtktDA3OX5znEyYHyNBoXTYprB/AYX/2BYKvAW+rDU6LiTmn6W/4gwBpQg\n+0s8Wgxs5oAArb1cHzkes/ECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+        "oke_init_script": "IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXhlbyBwaXBlZmFpbAp0a3c9L3Zhci9ydW4vdGt3Cgp2MV9zaGE9ImFuc2libGUtcGxheWJvb2stMS43MC4yLTlmNDRkMTU1OGU1MjE5YTMyZGFlZjQzZmFkNWFmOWFlODRkODU2ZjUtMS50Z3ouc2hhMjU2Igp2Ml9zaGE9JChlY2hvICJhbnNpYmxlLXBsYXlib29rLTEuNzAuMi05ZjQ0ZDE1NThlNTIxOWEzMmRhZWY0M2ZhZDVhZjlhZTg0ZDg1NmY1LTEudGd6IiB8IHNlZCAncy9cLnRnei8tdjJcLnRnei5zaGEyNTYvJykKCnZlcmlmeUNoZWNrc3VtKCkgewogIGlmIGdyZXAgJ1BSRVRUWV9OQU1FPSJPcmFjbGUgTGludXggU2VydmVyIDhcLi4qIicgL2V0Yy9vcy1yZWxlYXNlID4vZGV2L251bGw7IHRoZW4KICAgIG9wZW5zc2wgZGdzdCAtc2hhMjU2IC1zaWduYXR1cmUgJDEgLXZlcmlmeSAkMiAkMwogIGVsc2UKICAgIE9QRU5TU0xfRklQUz0xIG9wZW5zc2wgZGdzdCAtc2hhMjU2IC1zaWduYXR1cmUgJDEgLXZlcmlmeSAkMiAkMwogIGZpCn0KCmRvd25sb2FkQW5zaWJsZSgpIHsKICBjdXJsIC12IC0tZmFpbCAtTDAgaHR0cHM6Ly9vYmplY3RzdG9yYWdlLnNhLWJvZ290YS0xLm9yYWNsZWNsb3VkLmNvbS9uL29keC1va2UvYi90a3ctY2xvdWQtaW5pdC1wcmQtMC9vL2Fuc2libGUtcGxheWJvb2stMS43MC4yLTlmNDRkMTU1OGU1MjE5YTMyZGFlZjQzZmFkNWFmOWFlODRkODU2ZjUtMS50Z3ogLW8gJHRrdy9hbnNpYmxlLXBsYXlib29rLTEuNzAuMi05ZjQ0ZDE1NThlNTIxOWEzMmRhZWY0M2ZhZDVhZjlhZTg0ZDg1NmY1LTEudGd6ICYmCiAgY3VybCAtLWZhaWwgLUggIkF1dGhvcml6YXRpb246IEJlYXJlciBPcmFjbGUiIC1MMCBodHRwOi8vMTY5LjI1NC4xNjkuMjU0L29wYy92Mi9pbnN0YW5jZS9tZXRhZGF0YS9va2VfYXJ0aWZhY3Rfc2lnbmluZ19rZXkgPiAkdGt3L29rZS1zaWduaW5nLnB1YiAmJgogIGlmIGN1cmwgLXYgLS1mYWlsIC1MMCBodHRwczovL29iamVjdHN0b3JhZ2Uuc2EtYm9nb3RhLTEub3JhY2xlY2xvdWQuY29tL24vb2R4LW9rZS9iL3Rrdy1jbG91ZC1pbml0LXByZC0wL28vJHYxX3NoYSAtbyAkdGt3LyR2MV9zaGEgJiYgXAogICAgdmVyaWZ5Q2hlY2tzdW0gJHRrdy8kdjFfc2hhICR0a3cvb2tlLXNpZ25pbmcucHViICR0a3cvYW5zaWJsZS1wbGF5Ym9vay0xLjcwLjItOWY0NGQxNTU4ZTUyMTlhMzJkYWVmNDNmYWQ1YWY5YWU4NGQ4NTZmNS0xLnRnejsgdGhlbgogICAgZWNobyAiQW5zaWJsZSB2ZXJpZmllZDogYXJ0aWZhY3Qtc2lnbmluZy1rZXkiCiAgZWxpZiBjdXJsIC12IC0tZmFpbCAtTDAgaHR0cHM6Ly9vYmplY3RzdG9yYWdlLnNhLWJvZ290YS0xLm9yYWNsZWNsb3VkLmNvbS9uL29keC1va2UvYi90a3ctY2xvdWQtaW5pdC1wcmQtMC9vLyR2Ml9zaGEgLW8gJHRrdy8kdjJfc2hhICYmIFwKICAgIHZlcmlmeUNoZWNrc3VtICR0a3cvJHYyX3NoYSAkdGt3L29rZS1zaWduaW5nLnB1YiAkdGt3L2Fuc2libGUtcGxheWJvb2stMS43MC4yLTlmNDRkMTU1OGU1MjE5YTMyZGFlZjQzZmFkNWFmOWFlODRkODU2ZjUtMS50Z3o7IHRoZW4KICAgIGVjaG8gIkFuc2libGUgdmVyaWZpZWQ6IGFydGlmYWN0LXNpZ25pbmcta2V5LXYyIgogIGVsc2UKICAgIHJldHVybiAxCiAgZmkKfQoKZXhlYyAmPiA+KHRlZSAtaWEgL3Zhci9ydW4vb2tlLWluaXQubG9nKQppZiBbICEgLWYgL3Zhci9sb2cvY2xvdWQtaW5pdC1vdXRwdXQubG9nIF07IHRoZW4KICBleGVjICY+ID4odGVlIC1pYSAvdmFyL2xvZy9jbG91ZC1pbml0LW91dHB1dC5sb2cpCmZpCmV4ZWMgMj4mMQoKaWYgWyAtZiAvZXRjLy5va2VfaW5pdF9jb21wbGV0ZSBdOyB0aGVuCiAgZWNobyAiT0tFIGFscmVhZHkgcHJvdmlzaW9uZWQiCiAgZXhpdCAwCmZpCgppZiBncmVwIC1xaSAidWJ1bnR1IiAvZXRjL29zLXJlbGVhc2U7IHRoZW4KICB1bnRpbCBva2UgYm9vdHN0cmFwICIkQCI7IGRvCiAgICBlY2hvICJva2UgYm9vdHN0cmFwIGZhaWxlZDsgcmV0cnkgaW4gNXMiCiAgICBzbGVlcCA1CiAgZG9uZQogIGV4aXQgMApmaQoKbWtkaXIgLXAgL2V0Yy9ycG0KUlBNX1NQRUM9L2V0Yy9ycG0vbWFjcm9zLnZlcmlmeQppZiBbIC1mIC9ldGMvb2tlL29rZS1pbnN0YWxsLnNoIF07IHRoZW4KICB1bnRpbCBiYXNoIC14ICIvZXRjL29rZS9va2UtaW5zdGFsbC5zaCIgIiRAIgogIGRvCiAgICBlY2hvICJva2UtaW5zdGFsbCBmYWlsZWQ7IHJldHJ5IGluIDVzIgogICAgc2xlZXAgNQogIGRvbmUKZWxzZQogIGVjaG8gIiVfcGtndmVyaWZ5X2xldmVsIG5vbmUiID4kUlBNX1NQRUMKICBta2RpciAtcCAkdGt3CiAgcm0gLXJmICR0a3cvKgogIHVudGlsIGRvd25sb2FkQW5zaWJsZQogIGRvCiAgICBlY2hvICJUS1cgQW5zaWJsZSBkb3dubG9hZCBmYWlsZWQ7IHJldHJ5IGluIDVzIgogICAgcm0gLXJmICR0a3cvKgogICAgbWtkaXIgLXAgJHRrdwogICAgc2xlZXAgNQogIGRvbmUKICB0YXIgLXh6dmYgJHRrdy9hbnNpYmxlLXBsYXlib29rLTEuNzAuMi05ZjQ0ZDE1NThlNTIxOWEzMmRhZWY0M2ZhZDVhZjlhZTg0ZDg1NmY1LTEudGd6IC1DICR0a3cKICB1bnRpbCBiYXNoIC14ICIkdGt3L2Jvb3RzdHJhcC5zaCIgIiRAIgogIGRvCiAgICBlY2hvICJib290c3RyYXAgZmFpbGVkOyByZXRyeSBpbiA1cyIKICAgIHNsZWVwIDUKICBkb25lCiAgcm0gLWYgJFJQTV9TUEVDCmZpCiMgUkVTRVJWRUQgU1BBQ0UgRk9SIE1PRElGSUNBVElPTgojIFRoZSBiNjQgc2l6ZSBvZiB0aGlzIGZpbGUgbXVzdCBiZSAzMTAwIGJ5dGVzCiMgLi4uLi4uLi4uLgo=",
+        "oke_maturity": "prd",
+        "oke_namespace": "odx-oke",
+        "realm": "oc1",
+        "ssh_authorized_keys": "",
+        "user_data": "IyEvYmluL2Jhc2gKb2tlX2luaXRfc2NyaXB0PSQoY3VybCAtLWZhaWwgLW0gNSAtSCAiQXV0aG9yaXphdGlvbjogQmVhcmVyIE9yYWNsZSIgLUwwIGh0dHA6Ly8xNjkuMjU0LjE2OS4yNTQvb3BjL3YyL2luc3RhbmNlL21ldGFkYXRhL29rZV9pbml0X3NjcmlwdCkKaWYgWyAkPyAtbmUgMCBdOyB0aGVuCiAgb2tlX2luaXRfc2NyaXB0PSQoY3VybCAtLWZhaWwgLW0gNSAtZyAtSCAiQXV0aG9yaXphdGlvbjogQmVhcmVyIE9yYWNsZSIgLUwwIGh0dHA6Ly9bZmQwMDpjMTo6YTlmZTphOWZlXS9vcGMvdjIvaW5zdGFuY2UvbWV0YWRhdGEvb2tlX2luaXRfc2NyaXB0KQpmaQplY2hvICRva2VfaW5pdF9zY3JpcHQgfCBiYXNlNjQgLS1kZWNvZGUgPiAvdmFyL3J1bi9va2UtaW5pdC5zaAp0b3VjaCAvdmFyL3J1bi8ub2tlLWRlZmF1bHQtY2xvdWQtaW5pdAoKYmFzaCAvdmFyL3J1bi9va2UtaW5pdC5zaA=="
+      },
+      "placement-constraint-details": null,
+      "platform-config": null,
+      "preemptible-instance-config": null,
+      "region": "sa-bogota-1",
+      "security-attributes": {},
+      "security-attributes-state": "STABLE",
+      "shape": "VM.Standard.A1.Flex",
+      "shape-config": {
+        "baseline-ocpu-utilization": null,
+        "gpu-description": null,
+        "gpus": 0,
+        "local-disk-description": null,
+        "local-disks": 0,
+        "local-disks-total-size-in-gbs": null,
+        "local-volume-size-in-gbs": null,
+        "max-vnic-attachments": 2,
+        "memory-in-gbs": 12.0,
+        "networking-bandwidth-in-gbps": 2.0,
+        "ocpus": 2.0,
+        "processor-description": "3.0 GHz Ampere-´ Altra‘‰Û",
+        "resource-management": null,
+        "vcpus": 2
+      },
+      "source-details": {
+        "boot-volume-size-in-gbs": null,
+        "boot-volume-vpus-per-gb": null,
+        "image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+        "instance-source-image-filter-details": null,
+        "kms-key-id": null,
+        "source-type": "image"
+      },
+      "system-tags": {
+        "orcl-containerengine": {
+          "Cluster": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+          "NodePool": "ocid1.nodepool.oc1.sa-bogota-1.aaaaaaaatandoxo3qm7nzq7w4wjhgia6oc6fgfetqfag4cqsdnsg4y2tsuja",
+          "NodeType": "oke-managed"
+        }
+      },
+      "time-created": "2026-11-17T00:29:54.624000+00:00",
+      "time-maintenance-reboot-due": null
+    }
+  ]
+}

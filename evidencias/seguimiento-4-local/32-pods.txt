@@ -1,0 +1,4 @@
+NAME                           READY   STATUS    RESTARTS   AGE    IP            NODE         NOMINATED NODE   READINESS GATES
+hotel-api-d957748f9-fk8fg      1/1     Running   0          48s    10.244.0.10   10.20.2.52   <none>           <none>
+hotel-api-d957748f9-rn8hk      1/1     Running   0          59s    10.244.0.9    10.20.2.52   <none>           <none>
+hotel-mysql-59cdb6f8f8-7tcrd   1/1     Running   0          111s   10.244.0.8    10.20.2.52   <none>           <none>

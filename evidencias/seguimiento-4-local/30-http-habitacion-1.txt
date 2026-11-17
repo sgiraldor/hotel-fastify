@@ -1,0 +1,12 @@
+﻿URL: http://149.130.165.30/api/v2/habitacion/1
+STATUS: 200
+HEADERS:
+x-trace-id: e71c4d33-81e7-424b-b749-4dd51df3e93a
+Connection: keep-alive
+Keep-Alive: timeout=72
+Content-Length: 121
+Content-Type: application/json; charset=utf-8
+Date: Tue, 17 Nov 2026 01:03:41 GMT
+
+BODY:
+{"id":1,"numeroHabitacion":"101","precioHabitacion":"150000.00","estadoHabitacion":"Disponible","tipoHabitacion":"Doble"}

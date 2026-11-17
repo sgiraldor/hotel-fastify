@@ -1,0 +1,90 @@
+{
+  "data": [
+    {
+      "available-kubernetes-upgrades": [
+        "v1.36.4",
+        "v1.37.0"
+      ],
+      "cluster-pod-network-options": [
+        {
+          "cni-type": "FLANNEL_OVERLAY"
+        }
+      ],
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/samuelgiraldoroldan51@gmail.com",
+          "CreatedOn": "2026-11-17T00:19:27.502Z"
+        }
+      },
+      "endpoint-config": {
+        "is-public-ip-enabled": true,
+        "nsg-ids": [],
+        "security-attributes": null,
+        "subnet-id": "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaafc65lc3yjrs6w6vax53uf5muwiaqkyzxmu5vnxqv23thm5wkfmwa"
+      },
+      "endpoints": {
+        "ipv6-endpoint": null,
+        "kubernetes": null,
+        "private-endpoint": "10.20.1.5:6443",
+        "public-endpoint": "129.38.95.80:6443",
+        "vcn-hostname-endpoint": "cc3levwtx6a.public.hotel.oraclevcn.com:6443"
+      },
+      "freeform-tags": {},
+      "id": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+      "image-policy-config": {
+        "is-policy-enabled": false,
+        "key-details": []
+      },
+      "kubernetes-version": "v1.36.1",
+      "lifecycle-details": null,
+      "lifecycle-state": "ACTIVE",
+      "metadata": {
+        "created-by-user-id": "ocid1.user.oc1..aaaaaaaaij3eeikzicv3oqdi6iwv5rerzo247m6x5vjshxn6evegibm5fytq",
+        "created-by-work-request-id": "ocid1.clustersworkrequest.oc1.sa-bogota-1.aaaaaaaatldf2cxgalma3ete2am7o3jzlfd2ywme2tcyy7zrfw6n2bbsvzgq",
+        "deleted-by-user-id": null,
+        "deleted-by-work-request-id": null,
+        "time-created": "2026-11-17T00:19:27+00:00",
+        "time-credential-expiration": "2031-11-17T00:19:58+00:00",
+        "time-deleted": null,
+        "time-updated": null,
+        "updated-by-user-id": null,
+        "updated-by-work-request-id": null
+      },
+      "name": "hotel-oke",
+      "options": {
+        "add-ons": {
+          "is-kubernetes-dashboard-enabled": false,
+          "is-tiller-enabled": false
+        },
+        "admission-controller-options": {
+          "is-pod-security-policy-enabled": false
+        },
+        "ip-families": [
+          "IPv4"
+        ],
+        "kubernetes-network-config": {
+          "pods-cidr": "10.244.0.0/16",
+          "services-cidr": "10.96.0.0/16"
+        },
+        "open-id-connect-discovery": null,
+        "open-id-connect-token-authentication-config": null,
+        "persistent-volume-config": {
+          "defined-tags": null,
+          "freeform-tags": null
+        },
+        "service-lb-config": {
+          "backend-nsg-ids": null,
+          "defined-tags": null,
+          "freeform-tags": null
+        },
+        "service-lb-subnet-ids": [
+          "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaafc65lc3yjrs6w6vax53uf5muwiaqkyzxmu5vnxqv23thm5wkfmwa"
+        ]
+      },
+      "system-tags": {},
+      "type": "BASIC_CLUSTER",
+      "vcn-id": "ocid1.vcn.oc1.sa-bogota-1.amaaaaaaqx43bsqadrnnjbvw3uwre7jyseb3t7ejuipweqqpxhhnmaqfcv5a"
+    }
+  ]
+}

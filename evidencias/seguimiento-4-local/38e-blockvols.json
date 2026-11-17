@@ -1,0 +1,40 @@
+{
+  "data": [
+    {
+      "auto-tuned-vpus-per-gb": null,
+      "autotune-policies": [],
+      "availability-domain": "IASl:SA-BOGOTA-1-AD-1",
+      "block-volume-replicas": null,
+      "cluster-placement-group-id": null,
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+          "CreatedOn": "2026-11-17T00:50:17.841Z"
+        }
+      },
+      "display-name": "csi-36055fad-2eac-4731-8411-5b5520373d53",
+      "freeform-tags": {},
+      "id": "ocid1.volume.oc1.sa-bogota-1.abrgcljrqsa4ko52uk4zxlvoduql5kh4smcg3be6lymtqvwl3de5vz77r23q",
+      "is-auto-tune-enabled": false,
+      "is-hydrated": true,
+      "is-reservations-enabled": false,
+      "kms-key-id": null,
+      "lifecycle-state": "AVAILABLE",
+      "size-in-gbs": 50,
+      "size-in-mbs": 51200,
+      "source-details": null,
+      "system-tags": {
+        "orcl-cloud": {
+          "free-tier-retained": "true"
+        },
+        "orcl-containerengine": {
+          "Cluster": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a"
+        }
+      },
+      "time-created": "2026-11-17T00:50:17.846000+00:00",
+      "volume-group-id": null,
+      "vpus-per-gb": 10
+    }
+  ]
+}

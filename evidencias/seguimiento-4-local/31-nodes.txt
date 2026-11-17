@@ -1,0 +1,2 @@
+NAME         STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                   KERNEL-VERSION                              CONTAINER-RUNTIME
+10.20.2.52   Ready    node    32m   v1.36.1   10.20.2.52    157.137.233.183   Oracle Linux Server 8.10   5.15.0-321.202.5.1.el8uek.aarch64 (arm64)   cri-o://1.36.0-16.81af8589483.el8

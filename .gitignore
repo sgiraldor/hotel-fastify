@@ -12,6 +12,9 @@ terraform/*.tfstate.*
 terraform/oci/.terraform/
 terraform/oci/*.tfvars
 terraform/oci/*.tfstate*
+terraform/oci/.ocir-*
+terraform/oci/*token*
+terraform/oci/tfplan*
 scripts/experiments/results/*.json
 !scripts/experiments/results/.gitkeep
 

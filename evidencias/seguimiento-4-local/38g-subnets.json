@@ -1,0 +1,74 @@
+{
+  "data": [
+    {
+      "availability-domain": null,
+      "cidr-block": "10.20.2.0/24",
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/samuelgiraldoroldan51@gmail.com",
+          "CreatedOn": "2026-11-17T00:29:44.445Z"
+        }
+      },
+      "dhcp-options-id": "ocid1.dhcpoptions.oc1.sa-bogota-1.aaaaaaaanxmr55wiqxm3ohd7rmlzgaimuklhwidagtjcfgtbbpk5fztlw4sq",
+      "display-name": "hotel-workers",
+      "dns-label": "workers",
+      "freeform-tags": {},
+      "id": "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaauejjhmvnfzfus72wywnvnctxveaxfyjcwdqydnibkxoxvvdatdwq",
+      "ipv4-cidr-blocks": [
+        "10.20.2.0/24"
+      ],
+      "ipv6-cidr-block": null,
+      "ipv6-cidr-blocks": null,
+      "ipv6-virtual-router-ip": null,
+      "lifecycle-state": "AVAILABLE",
+      "prohibit-internet-ingress": false,
+      "prohibit-public-ip-on-vnic": false,
+      "route-table-id": "ocid1.routetable.oc1.sa-bogota-1.aaaaaaaaabsgvlv5sahad55crbqkd6tjo6apwn3mt5s532uae7fba62sc7mq",
+      "security-list-ids": [
+        "ocid1.securitylist.oc1.sa-bogota-1.aaaaaaaamnsyygsl3jy2aaozpqiaetkoepilx7xf3llcm55dt7vgxgruyj7a"
+      ],
+      "subnet-domain-name": "workers.hotel.oraclevcn.com",
+      "system-tags": {},
+      "time-created": "2026-11-17T00:29:44.471000+00:00",
+      "vcn-id": "ocid1.vcn.oc1.sa-bogota-1.amaaaaaaqx43bsqadrnnjbvw3uwre7jyseb3t7ejuipweqqpxhhnmaqfcv5a",
+      "virtual-router-ip": "10.20.2.1",
+      "virtual-router-mac": "00:00:17:96:DB:4E"
+    },
+    {
+      "availability-domain": null,
+      "cidr-block": "10.20.1.0/24",
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/samuelgiraldoroldan51@gmail.com",
+          "CreatedOn": "2026-11-17T00:19:24.374Z"
+        }
+      },
+      "dhcp-options-id": "ocid1.dhcpoptions.oc1.sa-bogota-1.aaaaaaaanxmr55wiqxm3ohd7rmlzgaimuklhwidagtjcfgtbbpk5fztlw4sq",
+      "display-name": "hotel-public",
+      "dns-label": "public",
+      "freeform-tags": {},
+      "id": "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaafc65lc3yjrs6w6vax53uf5muwiaqkyzxmu5vnxqv23thm5wkfmwa",
+      "ipv4-cidr-blocks": [
+        "10.20.1.0/24"
+      ],
+      "ipv6-cidr-block": null,
+      "ipv6-cidr-blocks": null,
+      "ipv6-virtual-router-ip": null,
+      "lifecycle-state": "AVAILABLE",
+      "prohibit-internet-ingress": false,
+      "prohibit-public-ip-on-vnic": false,
+      "route-table-id": "ocid1.routetable.oc1.sa-bogota-1.aaaaaaaaabsgvlv5sahad55crbqkd6tjo6apwn3mt5s532uae7fba62sc7mq",
+      "security-list-ids": [
+        "ocid1.securitylist.oc1.sa-bogota-1.aaaaaaaamnsyygsl3jy2aaozpqiaetkoepilx7xf3llcm55dt7vgxgruyj7a"
+      ],
+      "subnet-domain-name": "public.hotel.oraclevcn.com",
+      "system-tags": {},
+      "time-created": "2026-11-17T00:19:24.393000+00:00",
+      "vcn-id": "ocid1.vcn.oc1.sa-bogota-1.amaaaaaaqx43bsqadrnnjbvw3uwre7jyseb3t7ejuipweqqpxhhnmaqfcv5a",
+      "virtual-router-ip": "10.20.1.1",
+      "virtual-router-mac": "00:00:17:96:DB:4E"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+﻿URL: http://149.130.165.30/live
+STATUS: 200
+HEADERS:
+Connection: keep-alive
+Keep-Alive: timeout=72
+Content-Length: 40
+Content-Type: application/json; charset=utf-8
+Date: Tue, 17 Nov 2026 01:03:41 GMT
+
+BODY:
+{"status":"alive","service":"hotel-api"}

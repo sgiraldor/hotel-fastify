@@ -1,0 +1,11 @@
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                                     SELECTOR
+deployment.apps/hotel-api     2/2     2            2           13m   hotel-api    bog.ocir.io/axtqtuusylqm/hotel-api:1.1.0   app=hotel-api
+deployment.apps/hotel-mysql   1/1     1            1           13m   mysql        docker.io/library/mysql:8.4                app=hotel-mysql
+
+NAME                  TYPE           CLUSTER-IP      EXTERNAL-IP                  PORT(S)             AGE   SELECTOR
+service/hotel-api     LoadBalancer   10.96.214.130   10.20.1.195,149.130.165.30   80:30845/TCP        13m   app=hotel-api
+service/hotel-mysql   ClusterIP      10.96.126.147   <none>                       3306/TCP            13m   app=hotel-mysql
+service/kubernetes    ClusterIP      10.96.0.1       <none>                       443/TCP,12250/TCP   39m   <none>
+
+NAME                                    STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE   VOLUMEMODE
+persistentvolumeclaim/hotel-mysql-pvc   Bound    csi-36055fad-2eac-4731-8411-5b5520373d53   50Gi       RWO            oci-bv         <unset>                 13m   Filesystem
