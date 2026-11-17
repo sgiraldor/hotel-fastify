@@ -117,8 +117,20 @@ jobs:
       - name: Evaluar umbrales
         if: always()
         run: |
+          set +e
           set -o pipefail
           node chaos/gate-evaluator.mjs chaos-gate-results/observations.json | tee chaos-gate-results/evaluacion.txt
+          codigo=${PIPESTATUS[0]}
+          {
+            echo "## Evaluacion"
+            cat chaos-gate-results/evaluacion.txt
+          } >> "$GITHUB_STEP_SUMMARY"
+          while IFS= read -r linea; do
+            case "$linea" in
+              CAUSA:*) echo "::error::$linea" ;;
+            esac
+          done < chaos-gate-results/evaluacion.txt
+          exit "$codigo"
 
       - name: Revertir y limpiar
         if: always()
@@ -138,6 +150,10 @@ jobs:
           } > chaos-gate-results/reversion.txt 2>&1
           node chaos/gate-scrub.mjs chaos-gate-results || true
           cat chaos-gate-results/reversion.txt
+          {
+            echo "## Reversion"
+            cat chaos-gate-results/reversion.txt
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publicar evidencias
         if: always()
