@@ -1,0 +1,69 @@
+{
+  "round": "baseline",
+  "profile": "LOCAL_PROVISIONAL_K6_V5_35S",
+  "stages": [
+    {"duration":"5s","target":5},
+    {"duration":"25s","target":5},
+    {"duration":"5s","target":0}
+  ],
+  "concurrency_peak_vus": 5,
+  "duration_total": "35s",
+  "metrics": {
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 71158,
+        "rate": 2033.0038887834821
+      }
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 71158,
+        "rate": 0,
+        "passes": 0
+      },
+      "thresholds": {
+        "rate<1": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 2.0572008783271096,
+        "min": 0,
+        "med": 2.104,
+        "max": 24.4531,
+        "p(90)": 2.6555,
+        "p(95)": 2.7779599999999975
+      }
+    },
+    "hotel_error_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "passes": 0,
+        "fails": 71158,
+        "rate": 0
+      }
+    },
+    "hotel_latency_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "p(90)": 2.6555,
+        "p(95)": 2.7779599999999975,
+        "avg": 2.0572008783271096,
+        "min": 0,
+        "med": 2.104,
+        "max": 24.4531
+      }
+    }
+  },
+  "captured_at": "2026-11-17T01:19:56.531Z"
+}
