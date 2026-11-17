@@ -1,0 +1,5 @@
+﻿URL: http://149.130.165.30
+/live: 200
+/api/v2/habitacion/1: 200
+x-trace-id: 1e860982-2a3e-4d36-977d-50b5b8eff78d
+scope: OCI

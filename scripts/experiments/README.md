@@ -1,48 +1,37 @@
 # Baseline / Ronda 0 / Ronda 1 (Hotel)
 
-## Perfil de carga
+## Perfil de carga (provisional Samuel)
 
-**LOCAL PROVISIONAL** (`run-round.mjs`) hasta que Jarrison entregue el perfil k6 común.
+Archivo: `k6-hotel-profile.js` — **LOCAL_PROVISIONAL_K6_V5_35S**
 
-Alternar resiliencia sin reescribir historial:
+| Parámetro | Valor (fijo entre rondas) |
+|-----------|---------------------------|
+| Escalones | 5s→5 VU, 25s hold, 5s→0 |
+| Concurrencia pico | 5 VU |
+| Duración | ~35 s |
+| Endpoint | `GET /api/v2/habitacion/:id` |
 
-```bash
-# Ronda 0 — sin protecciones agresivas
-export RESILIENCE_MODE=unprotected
+Sustituir por el k6 común de Jarrison **sin** cambiar parámetros entre R0 y R1.
 
-# Ronda 1 — fail-fast + bulkhead
-export RESILIENCE_MODE=protected
+## Ejecutar las tres rondas
+
+```powershell
+$env:CHAOS_LAB_TOKEN="lab-token"
+.\scripts\experiments\run-k6-rounds.ps1
 ```
 
-Reiniciar el proceso Node tras cambiar la variable (se lee al arranque).
+Secuencia:
 
-## Secuencia
+1. **Baseline** — `RESILIENCE_MODE=protected`, sin caos
+2. **R0** — `unprotected` + mismo caos (`durationSeconds=40`)
+3. **R1** — `protected` + mismo caos
 
-```bash
-export HOTEL_BASE_URL=http://127.0.0.1:3000
-export CHAOS_LAB_TOKEN=lab-token
-export HOTEL_HABITACION_ID=1
+Resultados: `scripts/experiments/results/k6-*-summary.json` y `evidencias/seguimiento-4-local/42-*`.
 
-# Baseline (sin caos)
-node scripts/experiments/run-round.mjs baseline
+## Runner curl legacy
 
-# R0: caos ON + unprotected
-# (API levantada con RESILIENCE_MODE=unprotected)
-node scripts/experiments/run-round.mjs r0
+`run-round.mjs` permanece como respaldo de bajo volumen; preferir k6.
 
-# R1: caos ON + protected
-# (reiniciar API con RESILIENCE_MODE=protected)
-node scripts/experiments/run-round.mjs r1
+## Lectura de resultados
 
-node scripts/experiments/compare-rounds.mjs scripts/experiments/results/r0-....json scripts/experiments/results/r1-....json
-```
-
-## Umbral propuesto (local)
-
-| Señal | Baseline | Bajo caos |
-|---|---|---|
-| success_rate habitacion V2 | ≥ 99% | ~0% (503 esperado en Hotel) |
-| /live | 200 | 200 |
-| p95 (protected vs hang) | bajo | R1 < R0 si hay demora DB |
-
-La mejora E2E de tasa de éxito del **flujo completo** la demuestra Sports con circuit breaker/timeouts; Hotel demuestra fail-fast y blast radius controlado.
+Para el fallo de **indisponibilidad total** (503 del interruptor), esperar error_rate≈100% en R0 y R1. Eso **no** invalida fail-fast/bulkhead (valen para DB lenta/saturación); la mitigación E2E es responsabilidad de Sports.

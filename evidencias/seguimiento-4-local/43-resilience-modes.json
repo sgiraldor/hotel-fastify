@@ -1,0 +1,27 @@
+﻿{
+    "scope":  "LOCAL",
+    "pattern_1":  "fail-fast timeouts (REQUEST_TIMEOUT_MS, DB_QUERY_TIMEOUT_MS)",
+    "pattern_2":  "bulkhead DB pool (DB_POOL_LIMIT)",
+    "unprotected":  {
+                        "resilience_mode":  "unprotected",
+                        "db":  {
+                                   "mode":  "unprotected",
+                                   "poolLimit":  50,
+                                   "queryTimeoutMs":  30000
+                               }
+                    },
+    "protected":  {
+                      "resilience_mode":  "protected",
+                      "db":  {
+                                 "mode":  "protected",
+                                 "poolLimit":  10,
+                                 "queryTimeoutMs":  2000
+                             }
+                  },
+    "what_changes":  [
+                         "protected: poolLimit=10, queryTimeoutMs=2000, requestTimeoutMs=3000",
+                         "unprotected: poolLimit=50, queryTimeoutMs=30000, requestTimeoutMs=0 (sin fail-fast)"
+                     ],
+    "chaos_injection_note":  "El 503 del interruptor es fail-fast intencional; no mide timeout DB. R0/R1 con caos total muestran error_rate=100% en ambos modos.",
+    "sports_dependency":  "Mitigacion E2E de indisponibilidad Hotel debe implementarse en Sports (caller)."
+}

@@ -1,0 +1,4 @@
+﻿round,reqs,rps,p95_ms,error_rate,resilience_mode,chaos
+baseline,71158,2033.00,2.778,0,protected,false
+r0,143395,4096.99,1.580,1,unprotected,true
+r1,140352,4010.00,1.583,1,protected,true
