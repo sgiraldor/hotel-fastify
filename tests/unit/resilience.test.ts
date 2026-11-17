@@ -45,14 +45,23 @@ describe('Patrones de resiliencia Hotel', () => {
     }
   });
 
-  it('modo protected aplica timeouts cortos, pool y cola limitados', () => {
+  it('modo protected aplica timeouts cortos, pool/cola y bulkhead independiente', () => {
     process.env.RESILIENCE_MODE = 'protected';
     expect(obtenerModoResiliencia()).toBe('protected');
     expect(obtenerLimitePool()).toBe(10);
     expect(obtenerQueryTimeoutMs()).toBe(2000);
     expect(obtenerRequestTimeoutMs()).toBe(3000);
     expect(obtenerQueueLimit()).toBe(10);
-    expect(obtenerLimiteConcurrencia()).toBe(10);
+    // Bulkhead por defecto < pool: min(10, 4) = 4
+    expect(obtenerLimiteConcurrencia()).toBe(4);
+  });
+
+  it('DB_CONCURRENCY_LIMIT override no depende del pool', () => {
+    process.env.RESILIENCE_MODE = 'protected';
+    process.env.DB_POOL_LIMIT = '20';
+    process.env.DB_CONCURRENCY_LIMIT = '3';
+    expect(obtenerLimitePool()).toBe(20);
+    expect(obtenerLimiteConcurrencia()).toBe(3);
   });
 
   it('modo unprotected relaja limites (Ronda 0)', () => {

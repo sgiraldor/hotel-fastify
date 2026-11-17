@@ -9,6 +9,7 @@
 export type ResilienceMode = 'protected' | 'unprotected';
 
 let consultasEnVuelo = 0;
+let peakInflight = 0;
 let timeoutsFailFast = 0;
 let rechazosBulkhead = 0;
 let consultasCompletadas = 0;
@@ -56,7 +57,11 @@ export function obtenerRequestTimeoutMs(): number {
   return Number(process.env.REQUEST_TIMEOUT_MS || 3000);
 }
 
-/** Tope de consultas DB concurrentes (control de concurrencia / bulkhead lógico). */
+/**
+ * Tope de consultas DB concurrentes (bulkhead lógico).
+ * Separado del pool: por defecto protected usa min(pool, 4) para demostrar
+ * aislamiento de concurrencia aunque el pool admita más conexiones.
+ */
 export function obtenerLimiteConcurrencia(): number {
   if (obtenerModoResiliencia() === 'unprotected') {
     return Number(
@@ -64,7 +69,11 @@ export function obtenerLimiteConcurrencia(): number {
     );
   }
 
-  return Number(process.env.DB_CONCURRENCY_LIMIT || obtenerLimitePool());
+  if (process.env.DB_CONCURRENCY_LIMIT) {
+    return Number(process.env.DB_CONCURRENCY_LIMIT);
+  }
+
+  return Math.min(obtenerLimitePool(), 4);
 }
 
 export function obtenerEstadisticasResiliencia() {
@@ -76,6 +85,7 @@ export function obtenerEstadisticasResiliencia() {
     queryTimeoutMs: obtenerQueryTimeoutMs(),
     requestTimeoutMs: obtenerRequestTimeoutMs(),
     inflight: consultasEnVuelo,
+    peakInflight,
     timeoutsFailFast,
     bulkheadRejections: rechazosBulkhead,
     completed: consultasCompletadas,
@@ -124,6 +134,9 @@ export async function conConsultaResiliente<T>(
   }
 
   consultasEnVuelo += 1;
+  if (consultasEnVuelo > peakInflight) {
+    peakInflight = consultasEnVuelo;
+  }
 
   try {
     const resultado = await conTimeoutConsulta(operacionFactory());

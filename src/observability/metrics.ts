@@ -91,6 +91,9 @@ export function registrarMetricas(app: FastifyInstance) {
         fail_fast_timeouts: db.timeoutsFailFast,
         bulkhead_rejections: db.bulkheadRejections,
         inflight: db.inflight,
+        peak_inflight: db.peakInflight,
+        concurrency_limit: db.concurrencyLimit,
+        pool_limit: db.poolLimit,
         completed_queries: db.completed,
       },
       chaos: {
