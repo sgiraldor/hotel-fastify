@@ -19,8 +19,8 @@
 
 ## Solo equipo / autorización
 
-1. **Jarrison (Sports)**: timeout + CB + `partial` + traza; **exportar OTLP** a NodePort con Basic Auth; k6 E2E
-2. **Daniel (Cine)**: API GCP + **exportar OTLP** con `service.name=cine-api`
-3. Ventana autorizada de caos en OKE (`DEMO_OCI_EXPERIMENTO_A.md`)
-4. Push remoto manual (`v1.1.0` intacto)
-5. (Opcional) HTTPS/NLB extra **solo con autorización de costo**
+1. **Jarrison**: exportar OTLP `sports-api` al collector HTTPS; coordinar k6 Baseline/R0/R1 del runbook A OCI+Sports (mitigación real, no solo mocks)
+2. **Daniel**: exportar OTLP `cine-api` + confiar `otel-lab-ca.crt`
+3. Ventana autorizada caos OKE + ejecución runbook A (aún **no** corrido)
+4. Verificar en Tempo una traza con spans de las tres APIs (`traceparent`)
+5. Push remoto manual (`v1.1.0` intacto)

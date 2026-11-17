@@ -3,6 +3,9 @@
 Runbook listo para ventana autorizada. **No ejecutar** hasta permiso explícito del equipo.
 No altera MySQL, réplicas ni NLB. Solo interruptor temporal de dependencia.
 
+Para Baseline / R0 / R1 **con Sports** (mismo k6, finally, recuperación):  
+ver [`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
+
 ## Prerrequisitos
 
 ```powershell

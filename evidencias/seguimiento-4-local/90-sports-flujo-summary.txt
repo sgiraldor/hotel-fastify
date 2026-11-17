@@ -1,0 +1,9 @@
+timestamp=timestamp=2026-11-16T22:37:28.7130661-05:00
+http=200
+status=success
+degraded=False
+has_habitacion=True
+has_pelicula=True
+x_trace_id_present=True
+hotel_via=upstream
+cine_origen=database

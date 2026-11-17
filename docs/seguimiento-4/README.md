@@ -28,7 +28,9 @@ Hotel **no** es coordinador y **no** llama a Cine.
 - [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo + limitaciones reales
 - [GUIA_INTEGRACION_JARRISON.md](./GUIA_INTEGRACION_JARRISON.md) — integración inmediata Sports→Hotel
 - [CONTRATO_SPORTS_HOTEL.md](./CONTRATO_SPORTS_HOTEL.md) — contrato técnico completo
-- [DEMO_OCI_EXPERIMENTO_A.md](./DEMO_OCI_EXPERIMENTO_A.md) — runbook caos OCI (**no ejecutado**)
+- [FLUJO_MULTICLOUD.md](./FLUJO_MULTICLOUD.md) — HTTP E2E real vs OTel E2E
+- [DEMO_OCI_EXPERIMENTO_A.md](./DEMO_OCI_EXPERIMENTO_A.md) — caos Hotel OCI (**no ejecutado**)
+- [RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md) — Baseline/R0/R1 con Sports (**no ejecutado**)
 - [CONTRATOS_MULTICLOUD.md](./CONTRATOS_MULTICLOUD.md)
 - [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md)
 - [EXPERIMENTO_SAMUEL.md](./EXPERIMENTO_SAMUEL.md)
