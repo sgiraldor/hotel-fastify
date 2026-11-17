@@ -1,0 +1,502 @@
+﻿[
+    {
+        "peak":  2,
+        "t":  "2026-11-17T01:57:54.0064362Z",
+        "limit":  4,
+        "bulkhead":  0,
+        "inflight":  2,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:54.8198368Z",
+        "limit":  4,
+        "bulkhead":  220,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:55.6295818Z",
+        "limit":  4,
+        "bulkhead":  2333,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:56.4523750Z",
+        "limit":  4,
+        "bulkhead":  5127,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:57.2754109Z",
+        "limit":  4,
+        "bulkhead":  8296,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:58.1015911Z",
+        "limit":  4,
+        "bulkhead":  11430,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:58.9355418Z",
+        "limit":  4,
+        "bulkhead":  14847,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:57:59.7615519Z",
+        "limit":  4,
+        "bulkhead":  18397,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:00.6085520Z",
+        "limit":  4,
+        "bulkhead":  22071,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:01.4440401Z",
+        "limit":  4,
+        "bulkhead":  25629,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:02.2912844Z",
+        "limit":  4,
+        "bulkhead":  29440,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:03.1556517Z",
+        "limit":  4,
+        "bulkhead":  33273,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:04.0071176Z",
+        "limit":  4,
+        "bulkhead":  36875,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:04.8607521Z",
+        "limit":  4,
+        "bulkhead":  40537,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:05.7244308Z",
+        "limit":  4,
+        "bulkhead":  44255,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:06.5708486Z",
+        "limit":  4,
+        "bulkhead":  47699,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:07.4379891Z",
+        "limit":  4,
+        "bulkhead":  50796,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:08.3070273Z",
+        "limit":  4,
+        "bulkhead":  53998,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:09.1840221Z",
+        "limit":  4,
+        "bulkhead":  57536,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:10.0842848Z",
+        "limit":  4,
+        "bulkhead":  61148,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:10.9614594Z",
+        "limit":  4,
+        "bulkhead":  64979,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:11.8307609Z",
+        "limit":  4,
+        "bulkhead":  68685,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:12.7074160Z",
+        "limit":  4,
+        "bulkhead":  72123,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:13.5942802Z",
+        "limit":  4,
+        "bulkhead":  75821,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:14.4805839Z",
+        "limit":  4,
+        "bulkhead":  79481,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:15.3777669Z",
+        "limit":  4,
+        "bulkhead":  83027,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:16.2843462Z",
+        "limit":  4,
+        "bulkhead":  86529,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:17.1748328Z",
+        "limit":  4,
+        "bulkhead":  89882,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:18.0956799Z",
+        "limit":  4,
+        "bulkhead":  93684,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:19.0028843Z",
+        "limit":  4,
+        "bulkhead":  97285,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:19.9200285Z",
+        "limit":  4,
+        "bulkhead":  101028,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:20.8418620Z",
+        "limit":  4,
+        "bulkhead":  104754,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:21.7729207Z",
+        "limit":  4,
+        "bulkhead":  108488,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:22.7085080Z",
+        "limit":  4,
+        "bulkhead":  112170,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:23.6474738Z",
+        "limit":  4,
+        "bulkhead":  116034,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:24.5910973Z",
+        "limit":  4,
+        "bulkhead":  119469,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:25.5368600Z",
+        "limit":  4,
+        "bulkhead":  123206,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:26.4914068Z",
+        "limit":  4,
+        "bulkhead":  126825,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:27.4427197Z",
+        "limit":  4,
+        "bulkhead":  130231,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:28.4052983Z",
+        "limit":  4,
+        "bulkhead":  133812,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:29.3666417Z",
+        "limit":  4,
+        "bulkhead":  137501,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:30.3426004Z",
+        "limit":  4,
+        "bulkhead":  141119,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:31.3120870Z",
+        "limit":  4,
+        "bulkhead":  144749,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:32.2746475Z",
+        "limit":  4,
+        "bulkhead":  148300,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:33.2596972Z",
+        "limit":  4,
+        "bulkhead":  152156,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:34.2249061Z",
+        "limit":  4,
+        "bulkhead":  155857,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:35.2202945Z",
+        "limit":  4,
+        "bulkhead":  159585,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:36.2053827Z",
+        "limit":  4,
+        "bulkhead":  163045,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:37.2540371Z",
+        "limit":  4,
+        "bulkhead":  166429,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    },
+    {
+        "peak":  4,
+        "t":  "2026-11-17T01:58:38.2550998Z",
+        "limit":  4,
+        "bulkhead":  169837,
+        "inflight":  4,
+        "PSComputerName":  "localhost",
+        "RunspaceId":  "c252179b-16ea-49d2-b5e7-d486ea4a178e",
+        "PSShowComputerName":  false
+    }
+]

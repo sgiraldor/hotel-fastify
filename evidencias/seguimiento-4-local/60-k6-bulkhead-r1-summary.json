@@ -1,0 +1,93 @@
+{
+  "experiment": "C_BULKHEAD_HIGH_CONCURRENCY",
+  "round": "r1",
+  "profile": "LOCAL_BULKHEAD_K6_V24_50S",
+  "stages": [
+    {"duration":"5s","target":24},
+    {"duration":"40s","target":24},
+    {"duration":"5s","target":0}
+  ],
+  "concurrency_peak_vus": 24,
+  "duration_total": "50s",
+  "metrics": {
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 190516,
+        "rate": 3670.843921190868
+      }
+    },
+    "http_req_duration": {
+      "contains": "time",
+      "values": {
+        "avg": 5.639889858069687,
+        "min": 0,
+        "med": 3.6962,
+        "max": 9087.9907,
+        "p(90)": 6.91555,
+        "p(95)": 7.858575
+      },
+      "type": "trend"
+    },
+    "hotel_error_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.9996745680152848,
+        "passes": 190454,
+        "fails": 62
+      }
+    },
+    "hotel_success_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.0003254319847151945,
+        "passes": 62,
+        "fails": 190454
+      }
+    },
+    "hotel_latency_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "avg": 5.639889858069687,
+        "min": 0,
+        "med": 3.6962,
+        "max": 9087.9907,
+        "p(90)": 6.91555,
+        "p(95)": 7.858575
+      }
+    },
+    "hotel_latency_success_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "avg": 3308.9859564516123,
+        "min": 2960.0265,
+        "med": 3023.5149499999998,
+        "max": 9087.9907,
+        "p(90)": 3060.12875,
+        "p(95)": 3132.98474
+      }
+    },
+    "hotel_status_200": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 62,
+        "rate": 1.1946100228528513
+      }
+    },
+    "hotel_status_503": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 190454,
+        "rate": 3669.649311168015
+      }
+    }
+  },
+  "captured_at": "2026-11-17T01:58:45.675Z"
+}

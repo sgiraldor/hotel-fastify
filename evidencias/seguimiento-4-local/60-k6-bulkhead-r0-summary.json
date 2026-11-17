@@ -1,0 +1,85 @@
+{
+  "experiment": "C_BULKHEAD_HIGH_CONCURRENCY",
+  "round": "r0",
+  "profile": "LOCAL_BULKHEAD_K6_V24_50S",
+  "stages": [
+    {"duration":"5s","target":24},
+    {"duration":"40s","target":24},
+    {"duration":"5s","target":0}
+  ],
+  "concurrency_peak_vus": 24,
+  "duration_total": "50s",
+  "metrics": {
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 326,
+        "rate": 6.282604549535365
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 3001.8763,
+        "max": 9122.2072,
+        "p(90)": 3050.9342,
+        "p(95)": 8993.984625000001,
+        "avg": 3425.8506309815957,
+        "min": 2953.2746
+      }
+    },
+    "hotel_error_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 326
+      }
+    },
+    "hotel_success_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 326,
+        "fails": 0
+      }
+    },
+    "hotel_latency_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "p(90)": 3050.9342,
+        "p(95)": 8993.984625000001,
+        "avg": 3425.8506309815957,
+        "min": 2953.2746,
+        "med": 3001.8763,
+        "max": 9122.2072
+      }
+    },
+    "hotel_latency_success_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "med": 3001.8763,
+        "max": 9122.2072,
+        "p(90)": 3050.9342,
+        "p(95)": 8993.984625000001,
+        "avg": 3425.8506309815957,
+        "min": 2953.2746
+      }
+    },
+    "hotel_status_200": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 326,
+        "rate": 6.282604549535365
+      }
+    }
+  },
+  "captured_at": "2026-11-17T01:57:42.341Z"
+}

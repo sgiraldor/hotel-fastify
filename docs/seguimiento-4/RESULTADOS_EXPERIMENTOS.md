@@ -70,10 +70,36 @@ Evidencias: `50-hypothesis-*`, `50-k6-mysql-*`, `50-mysql-degrade.csv`, `50-mysq
 
 ---
 
+## C. Bulkhead bajo alta concurrencia (LOCAL)
+
+**Evidencias nuevas** (A/B intactas): `60-hypothesis-bulkhead.json`, `60-k6-bulkhead-*`, `60-bulkhead.csv`, `60-bulkhead-diff.json`, `60-metrics-*`, `60-inflight-samples-*`, `60-recovery.json`.
+
+### Hipótesis (declarada antes)
+
+Con latencia MySQL 3000ms y 24 VU, R1 (`concurrencyLimit=4` < `pool=10`) produce `bulkhead_rejections>0` y `peak_inflight<=4`; R0 (unprotected) no rechaza por bulkhead. Trade-off: R1 **aísla** la dependencia y **reduce** success_rate. Los 503 no son éxitos.
+
+### Carga
+
+`LOCAL_BULKHEAD_K6_V24_50S` — stages 5s→24 / 40s hold / 5s→0; Toxiproxy 3000ms; mismo perfil R0/R1.
+
+### Resultados
+
+| Round | Mode | conc./pool | Reqs | success | error | p95 total | p95 OK | bulkhead | peak_inflight | OK rps |
+|-------|------|------------|------|---------|-------|-----------|--------|----------|---------------|--------|
+| R0 | unprotected | 50/50 | 326 | **100%** | 0% | 8994 ms | 8994 ms | **0** | **24** | 6.28 |
+| R1 | protected | **4**/10 | 190516 | **0.03%** | 99.97% | **7.9 ms** | 3133 ms | **190454** | **4** | 1.19 |
+
+- Bulkhead activado en R1: sí (`503` + counter).
+- `peak_inflight` acotado al límite: sí (4).
+- Mejora de disponibilidad/success: **no** (intercambio explícito aislamiento ↔ éxito).
+- Recuperación tras desactivar Toxiproxy: **14 ms**, HTTP 200.
+
+---
+
 ## Observabilidad LOCAL
 
 Prometheus `:9090` + Grafana `:3001` (dashboard `hotel-seguimiento-4`).  
-Métricas nuevas: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_total`, `hotel_db_inflight`, `hotel_db_pool_limit`.
+Métricas: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_total`, `hotel_db_inflight`, `hotel_db_peak_inflight`, `hotel_db_concurrency_limit`, `hotel_db_pool_limit`.
 
 ## OCI (solo verificación, sin caos)
 

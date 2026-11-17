@@ -1,0 +1,37 @@
+﻿{
+    "experiment":  "C_BULKHEAD_HIGH_CONCURRENCY",
+    "declared_before_run":  true,
+    "declared_at":  "2026-11-17T01:56:31.7957244Z",
+    "hypothesis":  "Con latencia MySQL 3000ms y 24 VU, R1(protected, concurrencyLimit=4 \u003c pool=10) produce bulkhead_rejections\u003e0 y peak_inflight\u003c=4; R0(unprotected) no rechaza por bulkhead y admite mayor inflight. Trade-off esperado: R1 baja success_rate a cambio de aislar la dependencia.",
+    "primary_metric":  "patterns.bulkhead_rejections (R1 \u003e 0) y peak_inflight \u003c= concurrencyLimit",
+    "threshold_pass_r1":  "bulkhead_rejections \u003e= 1 AND peak_inflight \u003c= concurrencyLimit",
+    "threshold_pass_r0":  "bulkhead_rejections == 0 (o despreciable) bajo la misma carga",
+    "abort_conditions":  [
+                             "API no ready tras 5 min",
+                             "Toxiproxy/proxy inaccesible",
+                             "k6 no instalado"
+                         ],
+    "load":  {
+                 "profile":  "LOCAL_BULKHEAD_K6_V24_50S",
+                 "endpoint":  "GET /api/v2/habitacion/1",
+                 "stages":  [
+                                "5s-\u003e24VU",
+                                "40s hold 24VU",
+                                "5s-\u003e0"
+                            ],
+                 "latency_ms":  3000
+             },
+    "r0_config":  {
+                      "pool":  50,
+                      "concurrencyLimit":  50,
+                      "mode":  "unprotected",
+                      "queryTimeoutMs":  30000
+                  },
+    "r1_config":  {
+                      "pool":  10,
+                      "concurrencyLimit":  4,
+                      "mode":  "protected",
+                      "queryTimeoutMs":  15000
+                  },
+    "note":  "queryTimeout R1 elevado a 15s para que el rechazo por bulkhead sea observable frente al fail-fast; no se cuenta 503 como Ã©xito."
+}
