@@ -64,6 +64,7 @@ export function registrarMetricas(app: FastifyInstance) {
       totalRequests > 0 ? totalResponseTime / totalRequests : 0;
     const elapsedSeconds = Math.max(1, (Date.now() - startedAt) / 1000);
     const chaos = obtenerEstadoCaos();
+    const db = descripcionResilienciaDb();
 
     return {
       requests_total: totalRequests,
@@ -85,7 +86,13 @@ export function registrarMetricas(app: FastifyInstance) {
         (totalRequests / elapsedSeconds).toFixed(4),
       ),
       resilience_mode: obtenerModoResiliencia(),
-      db: descripcionResilienciaDb(),
+      db,
+      patterns: {
+        fail_fast_timeouts: db.timeoutsFailFast,
+        bulkhead_rejections: db.bulkheadRejections,
+        inflight: db.inflight,
+        completed_queries: db.completed,
+      },
       chaos: {
         active: chaos.activo,
         activations: chaos.activations,

@@ -6,15 +6,20 @@ import { CheckIn } from '../entities/checkin.entity';
 import {
   obtenerLimitePool,
   obtenerQueryTimeoutMs,
-  obtenerModoResiliencia,
+  obtenerQueueLimit,
+  obtenerEstadisticasResiliencia,
 } from './resilience';
 
-export { conTimeoutConsulta } from './resilience';
+export {
+  conTimeoutConsulta,
+  conConsultaResiliente,
+} from './resilience';
 
 config();
 
 const limitePool = obtenerLimitePool();
 const queryTimeoutMs = obtenerQueryTimeoutMs();
+const queueLimit = obtenerQueueLimit();
 
 const databaseConfig = {
   type: 'mysql' as const,
@@ -25,7 +30,10 @@ const databaseConfig = {
   synchronize: false,
   extra: {
     connectionLimit: limitePool,
-    connectTimeout: queryTimeoutMs,
+    connectTimeout: Math.max(1000, queryTimeoutMs || 10000),
+    waitForConnections: true,
+    // En protected limita la cola; en unprotected 0 = ilimitada (mysql2).
+    queueLimit,
   },
   ...(process.env.INSTANCE_UNIX_SOCKET
     ? {
@@ -40,9 +48,5 @@ const databaseConfig = {
 export const AppDataSource = new DataSource(databaseConfig);
 
 export function descripcionResilienciaDb() {
-  return {
-    mode: obtenerModoResiliencia(),
-    poolLimit: limitePool,
-    queryTimeoutMs,
-  };
+  return obtenerEstadisticasResiliencia();
 }

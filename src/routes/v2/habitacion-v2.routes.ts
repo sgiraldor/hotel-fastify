@@ -1,7 +1,7 @@
 ﻿import { FastifyInstance } from 'fastify';
 import {
   AppDataSource,
-  conTimeoutConsulta,
+  conConsultaResiliente,
 } from '../../config/database';
 import { Habitacion } from '../../entities/habitacion.entity';
 import { validarHabitacion } from '../../utils/habitacion.utils';
@@ -96,7 +96,7 @@ export async function habitacionV2Routes(app: FastifyInstance) {
           });
         }
 
-        const habitacion = await conTimeoutConsulta(
+        const habitacion = await conConsultaResiliente(() =>
           habitacionRepository.findOneBy({ id }),
         );
 
@@ -121,6 +121,35 @@ export async function habitacionV2Routes(app: FastifyInstance) {
           return reply.code(504).send({
             message: 'Timeout consultando habitacion (fail-fast)',
             code: 'DB_QUERY_TIMEOUT',
+            available: false,
+            traceId,
+          });
+        }
+
+        if (mensaje.startsWith('DB_BULKHEAD_REJECTED_')) {
+          request.log.warn(
+            { error, traceId },
+            'Bulkhead: rechazo por exceso de concurrencia DB',
+          );
+
+          return reply.code(503).send({
+            message: 'Hotel saturado en dependencia DB (bulkhead)',
+            code: 'DB_BULKHEAD_REJECTED',
+            available: false,
+            traceId,
+          });
+        }
+
+        if (/Queue limit reached/i.test(mensaje)) {
+          request.log.warn(
+            { error, traceId },
+            'Bulkhead pool: cola de conexiones agotada',
+          );
+
+          return reply.code(503).send({
+            message: 'Pool MySQL saturado (queue limit)',
+            code: 'DB_POOL_QUEUE_LIMIT',
+            available: false,
             traceId,
           });
         }
@@ -132,6 +161,7 @@ export async function habitacionV2Routes(app: FastifyInstance) {
 
         return reply.code(500).send({
           message: 'Error al consultar la habitacion',
+          available: false,
           traceId,
         });
       }

@@ -1,6 +1,9 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import { obtenerEstadoCaos } from '../plugins/chaos-dependency.plugin';
-import { obtenerModoResiliencia } from '../config/resilience';
+import {
+  obtenerModoResiliencia,
+  obtenerEstadisticasResiliencia,
+} from '../config/resilience';
 
 let total = 0;
 let errors5xx = 0;
@@ -32,6 +35,7 @@ export function registrarPrometheus(app: FastifyInstance) {
 
   app.get('/metrics/prometheus', async (_request, reply) => {
     const chaos = obtenerEstadoCaos();
+    const stats = obtenerEstadisticasResiliencia();
     const elapsed = Math.max(1, (Date.now() - startedAt) / 1000);
     const p95 = percentile(durations, 95);
     const rps = total / elapsed;
@@ -58,6 +62,18 @@ export function registrarPrometheus(app: FastifyInstance) {
       '# HELP hotel_resilience_protected 1 if RESILIENCE_MODE=protected',
       '# TYPE hotel_resilience_protected gauge',
       `hotel_resilience_protected ${obtenerModoResiliencia() === 'protected' ? 1 : 0}`,
+      '# HELP hotel_db_failfast_timeouts_total Fail-fast query timeouts',
+      '# TYPE hotel_db_failfast_timeouts_total counter',
+      `hotel_db_failfast_timeouts_total ${stats.timeoutsFailFast}`,
+      '# HELP hotel_db_bulkhead_rejections_total Bulkhead concurrency rejections',
+      '# TYPE hotel_db_bulkhead_rejections_total counter',
+      `hotel_db_bulkhead_rejections_total ${stats.bulkheadRejections}`,
+      '# HELP hotel_db_inflight In-flight DB queries',
+      '# TYPE hotel_db_inflight gauge',
+      `hotel_db_inflight ${stats.inflight}`,
+      '# HELP hotel_db_pool_limit Configured MySQL pool limit',
+      '# TYPE hotel_db_pool_limit gauge',
+      `hotel_db_pool_limit ${stats.poolLimit}`,
       '',
     ].join('\n');
 
