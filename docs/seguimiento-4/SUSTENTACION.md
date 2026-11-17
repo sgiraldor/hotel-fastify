@@ -27,7 +27,7 @@ En R0 el enable de `glg2z` y `tmqlg` es anterior al inicio, el disable es poster
 | Circuit breaker | Compatible con 18 llegadas frente a 349 solicitudes. Falta la métrica de Sports |
 | Latencia de Sports y agotamiento de Cine | No están evidenciados en este repo |
 | Chaos gate | Corrió en el runner. La negativa 44189190442 quedó roja y la positiva 44189597682 quedó verde. Los artefactos revisados están en `evidencias/chaos-gate/` |
-| Grafana | La captura real es del dashboard provisionado, `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. El JSON nuevo sigue sin cargarse: la sesión anónima no tiene `dashboards:write` |
+| Grafana | `http://127.0.0.1:3001/d/experimento-a-503`, ventana 00:40 a 01:20 -05. Capturas `98-grafana-experimento-a-*.png`. k6 está marcado como archivo |
 | Baseline 289 | Es la cifra definitiva del grupo. Su JSON de k6 no está archivado |
 
 ## Comandos de lectura

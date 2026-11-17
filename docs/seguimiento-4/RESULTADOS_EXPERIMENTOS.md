@@ -100,7 +100,7 @@ Evidencias: `60-hypothesis-bulkhead.json`, `60-k6-bulkhead-*`, `60-bulkhead.csv`
 
 Local: Prometheus `:9090` y Grafana `:3001`, dashboard `hotel-seguimiento-4`. Métricas de activación: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_total`, `hotel_db_inflight`, `hotel_db_peak_inflight`.
 
-OCI: Tempo y Prometheus en el namespace `observability`. `93-prom-summary.txt` lista `cine-api`, `hotel-api` y `sports-api`. El 17 de noviembre de 2026 Prometheus seguía teniendo `hotel_chaos_active` y los saltos de `hotel_chaos_503_total` de `94-*` y `96-*`. Esas series no son las 289, 320, 349 ni los p95 de k6. Esas cifras están en `observability/grafana-dashboard-experimento-a.json`, marcadas como archivo de k6. La captura de Grafana OKE, ventana 00:40 a 01:20 -05, está en `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. El dashboard nuevo no se importó: la API anónima respondió 403.
+OCI: Tempo y Prometheus en el namespace `observability`. El dashboard `experimento-a-503` está publicado por el ConfigMap `grafana-dashboards`. La URL local es `http://127.0.0.1:3001/d/experimento-a-503`, ventana 00:40 a 01:20 -05. Las 289/289, 320/320 y 349/349, y los p95, están marcados como archivo de k6. `hotel_chaos_active` y `hotel_chaos_503_total` salen de Prometheus. Tempo respondió 200 para la traza `68adbcf21b960acf374c54886c56d681` a través de Grafana. Capturas: `98-grafana-experimento-a-k6.png`, `98-grafana-experimento-a-series.png` y `98-grafana-experimento-a-contador.png`. El dashboard `seguimiento-4-multicloud` siguió en HTTP 200.
 
 ## Matriz verificada en este repositorio
 

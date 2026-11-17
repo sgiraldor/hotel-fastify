@@ -100,10 +100,19 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <BASE64>   # Secret K8s
 
 ```powershell
 kubectl -n observability port-forward svc/grafana 3001:3000
-# http://127.0.0.1:3001 — dashboard "Seguimiento #4 — Multicloud Observability"
-# El JSON observability/grafana-dashboard-experimento-a.json no está provisionado.
-# Guardarlo exige dashboards:write. El 2026-11-17 la API anónima respondió 403.
+# http://127.0.0.1:3001/d/seguimiento-4-multicloud
+# http://127.0.0.1:3001/d/experimento-a-503
 ```
+
+El dashboard del 503 está en el ConfigMap `grafana-dashboards`, archivo `experimento-a.json`, junto a `multicloud.json`. Grafana lo lee cada 30 s desde `/var/lib/grafana/dashboards`. No hizo falta reiniciar el pod. La ventana por defecto es 17/11/2026 00:40:00 a 01:20:00, hora de Colombia.
+
+Para quitar solo ese dashboard, sin tocar el multicloud:
+
+```powershell
+kubectl apply -f k8s/observability/grafana-dashboards-backup.yaml
+```
+
+Ese respaldo es el ConfigMap anterior, únicamente con `multicloud.json`. El proveedor tiene `disableDeletion: false`, así que al desaparecer el archivo Grafana retira `experimento-a-503`. No se borran pods ni se cambia el Deployment.
 
 ---
 
