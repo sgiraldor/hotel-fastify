@@ -2,7 +2,19 @@
 
 Manifiestos **válidos y versionados**. No implican despliegue real en OCI.
 
-## Aplicar (cuando exista cluster)
+Verificación OCI (2026-11-16, solo lectura): tenancy en `sa-bogota-1` **sin** OKE/MySQL/OCIR/VCN activos detectables; kubeconfig histórico **inalcanzable**.  
+Plan completo: [`docs/seguimiento-4/OCI_DEPLOY_READINESS.md`](../docs/seguimiento-4/OCI_DEPLOY_READINESS.md).
+
+## Antes de aplicar (checklist)
+
+1. Cluster OKE alcanzable (`kubectl get nodes` OK).
+2. Imagen en OCIR: `bog.ocir.io/<OBJECT_STORAGE_NAMESPACE>/hotel-api:1.1.0`.
+3. Secret `ocirsecret` (pull) y `hotel-api-secrets` (DB + token lab).
+4. ConfigMap con `DB_HOST` real (no `REPLACE_MYSQL_HOST`).
+5. Descomentar `imagePullSecrets` en el Deployment si el repo es privado.
+6. Acordar exposición: `LoadBalancer` (costo) vs mecanismo del laboratorio.
+
+## Aplicar (cuando exista cluster y haya autorización)
 
 ```bash
 kubectl apply -f k8s/hotel-api-configmap.yaml

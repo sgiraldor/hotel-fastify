@@ -32,6 +32,7 @@ Hotel **no** es coordinador y **no** llama a Cine.
 - [INFORME_SAMUEL_6P.md](./INFORME_SAMUEL_6P.md)
 - [BACKLOG.md](./BACKLOG.md)
 - [USO_IA.md](./USO_IA.md)
+- [OCI_DEPLOY_READINESS.md](./OCI_DEPLOY_READINESS.md)
 
 ## Comandos rápidos de demostración
 
