@@ -27,10 +27,9 @@ spec:
     spec:
       containers:
         - name: hotel-api
-          # Sustituir <OBJECT_STORAGE_NAMESPACE> por el namespace OCIR del tenancy
-          # (oci os ns get). Ejemplo de registro regional Bogotá: bog.ocir.io
-          image: bog.ocir.io/REPLACE_OBJECT_STORAGE_NAMESPACE/hotel-api:1.1.0
-          imagePullPolicy: IfNotPresent
+          # Imagen publicada en OCIR (repo público del laboratorio).
+          image: bog.ocir.io/axtqtuusylqm/hotel-api:1.1.0
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 3000
