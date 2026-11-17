@@ -1,0 +1,46 @@
+RUN_ID=hotel503-r0-retry-20261117-004150
+k6_inicio=2026-11-17 00:43:35.795 -05:00 / 2026-11-17T05:43:35.795Z / ms=1794894215795
+k6_fin=2026-11-17 00:44:52.060 -05:00 / 2026-11-17T05:44:52.060Z / ms=1794894292060
+k6_total=320 completas=0 parciales=0 fallidas=320 p95_ms=224.13
+
+Pod hotel-api-5c4b965cf6-glg2z
+enable_log=2026-11-17 00:43:31.338 -05:00 / 2026-11-17T05:43:31.338Z / ms=1794894211338 durationSeconds=120
+until=2026-11-17 00:45:31.338 -05:00 / 2026-11-17T05:45:31.338Z / ms=1794894331338
+probe_503=2026-11-17 00:43:31.345 -05:00 / ms=1794894211345 (antes de k6)
+primera_503_run=2026-11-17 00:43:43.939 -05:00 / ms=1794894223939
+ultima_503_run=2026-11-17 00:44:51.023 -05:00 / ms=1794894291023
+disable_log=2026-11-17 00:44:58.542 -05:00 / 2026-11-17T05:44:58.542Z / ms=1794894298542
+run_503=145 inyecciones_nuevas=146 (400-254)
+
+Pod hotel-api-5c4b965cf6-tmqlg
+enable_log=2026-11-17 00:43:34.143 -05:00 / 2026-11-17T05:43:34.143Z / ms=1794894214143 durationSeconds=120
+until=2026-11-17 00:45:34.143 -05:00 / 2026-11-17T05:45:34.143Z / ms=1794894334143
+probe_503=2026-11-17 00:43:34.149 -05:00 / ms=1794894214149 (antes de k6)
+primera_503_run=2026-11-17 00:43:51.297 -05:00 / ms=1794894231297
+ultima_503_run=2026-11-17 00:44:47.303 -05:00 / ms=1794894287303
+disable_log=2026-11-17 00:45:01.345 -05:00 / 2026-11-17T05:45:01.345Z / ms=1794894301345
+run_503=175 inyecciones_nuevas=176 (184-8)
+
+Margen
+pod1_enable_antes_de_k6_ms=4457
+pod2_enable_antes_de_k6_ms=1652
+pod1_disable_despues_de_k6_ms=6482
+pod2_disable_despues_de_k6_ms=9285
+pod1_ttl_despues_de_k6_ms=39278
+pod2_ttl_despues_de_k6_ms=42083
+suma_503_del_run=320
+
+Cobertura
+A_ttl=el temporizador de ambos pods vencia despues del fin de k6
+B_logs=enable anterior al inicio en los dos pods; disable posterior al fin en los dos pods; las 320 fallas de k6 tienen 503 source=temporal
+C_no_comprobable=no hay linea de log del primer HTTP 200 tras el disable; el status actual si muestra habitacion 200
+disable_manual=no corto la ventana; ocurrio despues del fin de k6
+
+Recuperacion actual
+activo=false habitacionStatus=200 liveStatus=200 en ambos
+injections=400 y 184 activations=2
+
+Conclusion
+cobertura_temporal=CONFIRMADA
+r0_apta_para_comparar_con_r1=SI
+no se usa solo el 100% de errores de k6
