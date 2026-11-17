@@ -30,46 +30,57 @@ Jarrison reporta además k6 230/230 OK y p95 ~320 ms (mocks **no** sustituyen OC
 | Capa | Estado |
 |------|--------|
 | **Integración HTTP multicloud** | **Funciona** (Sports orquesta Hotel+Cine → 200 completo) |
-| **Observabilidad OTel E2E** | **Parcial**: solo `hotel-api` en Tempo/Prometheus del collector OCI |
+| **Export OTLP por servicio** | **OK** los tres (`service_name` en Prometheus) |
+| **Trazabilidad W3C E2E (un solo Trace ID)** | **NO completa** — ver sección siguiente |
 
-HTTP 200 E2E **no implica** que las tres APIs ya exporten spans al collector compartido.
+HTTP 200 E2E **≠** traza W3C compartida con SERVER spans de Hotel y Cine.
+
+## W3C Trace ID real (Jarrison) — verificación Tempo
+
+| Campo | Valor |
+|-------|--------|
+| Trace ID | `ad97747b16a40a3c738b6591e1f59309` |
+| `x-trace-id` | `otel-oci-live-20261116230837-flujo-1` |
+| Root Sports span | `354377a4a5339766` · `GET /api/v2/flujo/...` · ~264 ms |
+
+| Servicio en **esa** traza | ¿Presente? | Notas |
+|---------------------------|------------|--------|
+| `sports-api` | **SÍ** | server + internal + **CLIENT** a Hotel/Cine |
+| `hotel-api` (SERVER del flujo) | **NO** | no hay span Hotel ~177 ms hijo del CLIENT Sports |
+| `cine-api` (SERVER del flujo) | **NO** | ausente |
+
+Padre-hijo **dentro de Sports** (sí, secuencial):
+
+1. `flujo.multicloud` → `hotel.get_habitacion` → CLIENT `GET /api/v2/habitacion/:id` (~177 ms)
+2. luego → `cine.get_pelicula` → CLIENT `GET /api/v2/peliculas/:id` (~52 ms)
+
+**Hotel sí propaga** cuando recibe `traceparent` (probe Samuel: log `otelTraceId=ad97747b...`).  
+Pendiente típico: Sports debe **inyectar `traceparent`** en el HTTP real a Hotel/Cine; Cine debe **extraer** y exportar el SERVER span al mismo Trace ID.
+
+Evidencias: `92-tempo-trace-*.json`, `92-spans-*.txt`, `92-e2e-verdict.txt`.
 
 ## Observabilidad compartida (OKE)
 
 Collector: `https://157.137.233.183:31443` (TLS + Basic).  
 Grafana: `kubectl -n observability port-forward svc/grafana 3001:3000`
 
-| service.name | Tempo | Prometheus (label) |
-|--------------|-------|--------------------|
-| `hotel-api` | **sí** | **sí** |
-| `sports-api` | **no** (pendiente Jarrison) | **no** |
-| `cine-api` | **sí** (confirmado) | **sí** (`service_name=cine-api`) |
+| service.name | Tempo (traces sueltas) | Prometheus `service_name` | Misma traza W3C E2E |
+|--------------|------------------------|---------------------------|---------------------|
+| `hotel-api` | **sí** | **sí** | **no** (en traza de Jarrison) |
+| `sports-api` | **sí** | **sí** | **sí** (raíz) |
+| `cine-api` | **sí** | **sí** | **no** (en traza de Jarrison) |
 
-Evidencias: `90-*` (flujo HTTP); `91-*` (Cine OTLP en Tempo/Prometheus).
+Evidencias: `90-*` HTTP; `91-*` Cine OTLP; `92-*` W3C E2E.
 
-### Cuando lleguen spans AWS/GCP — correlacionar Trace ID
-
-Tras un `GET /api/v2/flujo/...`, anotar `x-trace-id` (negocio) y, si Sports propaga W3C, el Trace ID OTel:
+### Comando Tempo (Trace ID conocido)
 
 ```powershell
-# 1) Llamar flujo y guardar headers
-curl.exe -sS -D headers.txt -o body.json "http://3.21.120.51:30080/api/v2/flujo/1/1/1"
-# Leer x-trace-id del header / traceId del body
-
-# 2) Port-forward Tempo
 kubectl -n observability port-forward svc/tempo 13200:3200
-
-# 3) Buscar por servicio (debe devolver traces > 0)
-curl.exe -sS "http://127.0.0.1:13200/api/search?tags=service.name%3Dsports-api&limit=5"
-curl.exe -sS "http://127.0.0.1:13200/api/search?tags=service.name%3Dcine-api&limit=5"
-curl.exe -sS "http://127.0.0.1:13200/api/search?tags=service.name%3Dhotel-api&limit=5"
-
-# 4) Si se conoce el Trace ID OTel (32 hex), abrir traza completa:
-# curl.exe -sS "http://127.0.0.1:13200/api/traces/<TRACE_ID_OTEL>"
-# En Grafana Explore → Tempo: pegar Trace ID; comprobar spans hotel-api + sports-api + cine-api
+curl.exe -sS "http://127.0.0.1:13200/api/traces/ad97747b16a40a3c738b6591e1f59309"
+# Éxito E2E = batches con service.name sports-api + hotel-api + cine-api y parents cruzados
 ```
 
-`x-trace-id` de negocio y Trace ID OTel son distintos; la unión E2E en Tempo exige propagación `traceparent` desde Sports.
+`x-trace-id` (negocio) ≠ Trace ID OTel; la unión en Tempo exige `traceparent` de punta a punta.
 
 ## Hotel OCI
 
