@@ -66,7 +66,7 @@ El 503 sostenido sí tumba el flujo cuando Sports no se protege, y el mismo fall
 
 ## 10. Backlog
 
-Sigue pendiente un chaos gate que ejecute el experimento declarativo y falle el job si el umbral no se cumple. El workflow `.github/workflows/chaos-hotel-manual.yml` valida tests y no inyecta el fallo. Falta el dashboard que muestre a la vez la ventana del 503 y la métrica de parciales, el JSON del baseline, la evidencia de latencia de Jarrison, la evidencia de agotamiento de Daniel y el release del tag de entrega. `v1.1.0` no se mueve: apunta a un commit anterior a estas corridas.
+El chaos gate ya corrió en el runner. La corrida 44189190442 quedó roja porque `habitacion_503_rate=0`, y la 44189597682 quedó verde. El dashboard versionado está en `observability/grafana-dashboard-experimento-a.json`: las cifras de k6 van como archivo y las ventanas salen de Prometheus. Grafana de OKE no lo tiene cargado; la API anónima respondió 403. La captura real del dashboard provisionado está en `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. Siguen pendientes el JSON del baseline, la latencia de Jarrison, el agotamiento de Daniel y el release. `v1.1.0` no se mueve.
 
 ## Uso de IA
 

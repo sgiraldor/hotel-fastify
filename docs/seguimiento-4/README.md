@@ -43,6 +43,7 @@ El 100 % de R1 no significa que Hotel se haya recuperado. Las dos réplicas sigu
 - [RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md) — procedimiento ya usado en Baseline, R0 y R1
 - [CONTRATOS_MULTICLOUD.md](./CONTRATOS_MULTICLOUD.md)
 - [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md)
+- [grafana-dashboard-experimento-a.json](../../observability/grafana-dashboard-experimento-a.json) — comparación de Baseline, R0 y R1; no está cargado en Grafana de OKE
 - [EXPERIMENTO_SAMUEL.md](./EXPERIMENTO_SAMUEL.md)
 - [RESILIENCIA.md](./RESILIENCIA.md)
 - [KUBERNETES.md](./KUBERNETES.md)
@@ -55,6 +56,8 @@ El 100 % de R1 no significa que Hotel se haya recuperado. Las dos réplicas sigu
 URL OCI lab: `http://149.130.165.30` (NLB).  
 OTLP compartido: `https://157.137.233.183:31443` (TLS + Basic) — ver [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md).  
 Grafana OKE: `kubectl -n observability port-forward svc/grafana 3001:3000`. Local Docker: Prometheus `:9090`, Grafana `:3001`.
+
+El 17 de noviembre de 2026 Prometheus todavía tenía `hotel_chaos_active` y `hotel_chaos_503_total` de R0 y de la R1 definitiva. Las 289, 320 y 349, y los tres p95, salen de k6 y están escritos en el dashboard como resultados archivados. La captura real es del dashboard ya provisionado, uid `seguimiento-4-multicloud`, ventana 00:40 a 01:20 -05: `evidencias/seguimiento-4-local/97-grafana-5xx.png` y `97-grafana-chaos-503.png`. Guardar el dashboard nuevo respondió 403. No se leyó el secreto de Grafana.
 
 ## Comandos rápidos de demostración
 

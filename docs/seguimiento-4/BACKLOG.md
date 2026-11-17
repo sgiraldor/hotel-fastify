@@ -9,11 +9,13 @@
 - [x] Recuperación a habitación 200 y `/live` 200 después del disable
 - [x] Fail-fast local (`50-*`) y bulkhead local (`60-*`), separados del resultado E2E
 - [x] Informe, resultados y sustentación alineados con Baseline, R0 y R1
+- [x] Dashboard versionado del 503: `observability/grafana-dashboard-experimento-a.json`. Prometheus conserva las ventanas; k6 queda marcado como archivo. Capturas del dashboard ya cargado en `97-grafana-5xx.png` y `97-grafana-chaos-503.png`
+- [x] Chaos gate en el runner, sin OCI. Negativa roja: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442. Positiva verde: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682. Los zip no se descargaron.
 
 ## Pendiente de Samuel
 
-1. **Chaos gate real.** Hecho en el runner, sin OCI. La corrida negativa quedó roja por `habitacion_503_rate=0` frente al umbral 1: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442. La positiva quedó verde con tasa 1, `/live` en 1 y recuperación de 0,067 s: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682. En ambas el disable devolvió 200 y Compose se apagó. Detalle en `evidencias/chaos-gate/acciones.txt`.
-2. **Dashboard de la ventana de inyección.** Grafana está en OKE y hay JSON local de paneles. Falta la vista que muestre a la vez el intervalo del 503 y la métrica de parciales o fallidas, más la captura para la entrega.
+1. **Descargar los zip del chaos gate.** La API anónima respondió 401 el 2026-11-17. Ids 14374349534 y 14374764944. Hace falta una sesión de GitHub. `gh` no está instalado.
+2. **Importar `experimento-a-503` en Grafana de OKE.** El JSON está en el repo y la API anónima respondió 403 (`dashboards:write`). El dashboard provisionado no se modificó y no se leyó `grafana-admin`.
 3. **Baseline archivado.** La comparación usa 289 completas, disponibilidad 100 % y p95 312,02 ms. El JSON de k6 no está en `load/results/` ni en `evidencias/`.
 4. **Release.** `v1.1.0` queda donde está: apunta a un commit anterior a R0 y R1. Hace falta un tag nuevo y el release creado desde ese tag. Todavía no se crean.
 

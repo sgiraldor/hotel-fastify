@@ -1,0 +1,120 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "type": "text",
+      "title": "Comparación archivada de k6",
+      "gridPos": { "h": 9, "w": 14, "x": 0, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "Estos tres resultados **no son series de Prometheus**. Salen del perfil k6 del flujo. El JSON del baseline no está en el repositorio.\n\n| Ronda | Resultado | Disponibilidad | p95 |\n|---|---|---|---|\n| Baseline | 289 completas | 100 % completa | 312,02 ms |\n| R0 | 320 fallidas | 0 % | 224,13 ms |\n| R1 definitiva | 349 parciales y 0 fallidas | 100 % degradada | 234,60 ms |\n\nEl 100 % de R1 son respuestas parciales con fallback de Sports. Hotel no volvió a 200 durante esa carga.\n\nFuentes: `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `96-r1-retry-cobertura.txt`. La primera R1 está en `95-r1-cobertura.txt` y no entra en la tabla."
+      }
+    },
+    {
+      "type": "text",
+      "title": "Ventanas de inyección y trazas",
+      "gridPos": { "h": 9, "w": 10, "x": 14, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "Horas de los logs, zona -05. El gráfico de abajo es el scrape de Prometheus, cada 15 s, y no reemplaza estos timestamps.\n\n**R0** `hotel503-r0-retry-20261117-004150`\n- k6: 00:43:35.795 a 00:44:52.060\n- glg2z: enable 00:43:31.338, disable 00:44:58.542\n- tmqlg: enable 00:43:34.143, disable 00:45:01.345\n\n**R1** `hotel503-r1-retry-20261117-011303`\n- fin de k6: 01:15:13.590. El inicio de 01:13:58.590 es una estimación de 75 s, no un reloj medido.\n- glg2z: enable 01:13:53.967, disable 01:15:20.737\n- tmqlg: enable 01:13:56.647, disable 01:15:23.433\n\nTraza del parcial: `68adbcf21b960acf374c54886c56d681` (Sports 200, Hotel 503, Cine 200). Traza sana: `4f8140a18fbaa1f98caaa8990d14341c`."
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP 503 activo por réplica",
+      "description": "Consulta real a Prometheus: hotel_chaos_active. 1 significa el interruptor encendido en ese pod. El scrape es de 15 s. El pico de las 01:00 es la primera R1, descartada en 95-r1-cobertura.txt.",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "custom": { "drawStyle": "bars", "fillOpacity": 40, "spanNulls": false }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "hotel_chaos_active",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Contador de 503 por réplica",
+      "description": "Consulta real: hotel_chaos_503_total. En R0, Prometheus pasa de 254 a 400 en glg2z y de 8 a 184 en tmqlg. En la R1 definitiva, de 409 a 420 y de 193 a 202. Esas lecturas coinciden con 94 y 96.",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "spanNulls": false }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "hotel_chaos_503_total",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Peticiones OTLP actuales por API",
+      "description": "Telemetría en vivo de otel_http_server_requests_total. No es la disponibilidad ni el p95 de k6.",
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 17 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "sum by (service_name) (rate(otel_http_server_requests_total[5m]))",
+          "legendFormat": "{{service_name}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["hotel", "seguimiento-4", "chaos", "oci"],
+  "templating": { "list": [] },
+  "time": {
+    "from": "2026-11-17T05:40:00.000Z",
+    "to": "2026-11-17T06:20:00.000Z"
+  },
+  "timezone": "America/Bogota",
+  "title": "Experimento A — HTTP 503 Hotel",
+  "uid": "experimento-a-503",
+  "version": 1
+}

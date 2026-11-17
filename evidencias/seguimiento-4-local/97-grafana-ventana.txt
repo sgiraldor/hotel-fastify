@@ -1,0 +1,28 @@
+Consulta de solo lectura el 2026-11-17. No se activó el 503 ni se ejecutó k6.
+
+Prometheus, port-forward 127.0.0.1:19090, retención del manifiesto 24 h.
+hotel_chaos_active==1, step 15 s, ventana 2026-11-17T05:40:00Z a 06:20:00Z.
+glg2z: 05:43:45Z–05:45:00Z, 06:00:00Z–06:01:45Z, 06:14:15Z–06:15:15Z.
+tmqlg: las dos primeras iguales y 06:14:15Z–06:15:30Z.
+El tramo de las 06:00Z es la primera R1, descartada en 95-r1-cobertura.txt.
+hotel_chaos_503_total:
+05:43:00Z glg2z=254 tmqlg=8
+05:46:00Z glg2z=400 tmqlg=184
+06:13:30Z glg2z=409 tmqlg=193
+06:16:00Z glg2z=420 tmqlg=202
+Esas cuatro lecturas coinciden con 94-r0-retry-cobertura.txt y 96-r1-retry-cobertura.txt.
+289, 320, 349 y los p95 312,02 / 224,13 / 234,60 no son series de Prometheus.
+
+Tempo, port-forward 127.0.0.1:13201.
+GET /api/traces/68adbcf21b960acf374c54886c56d681 respondió 200, 10912 bytes.
+El cuerpo trae sports-api, hotel-api y cine-api, con códigos 503 y 200.
+
+Grafana OKE, port-forward 127.0.0.1:13001, usuario anónimo.
+El dashboard provisionado es uid seguimiento-4-multicloud.
+Capturas de la ventana 2026-11-17 00:40:00 a 01:20:00 -05:
+97-grafana-5xx.png muestra tres picos de 5xx/s, cerca de 00:45, 01:00 y 01:15.
+97-grafana-chaos-503.png muestra el salto de hotel_chaos_503_total en las dos réplicas.
+En ese panel chaos_active comparte eje con el contador y queda aplastado en la base.
+POST /api/dashboards/db del uid experimento-a-503 respondió 403, dashboards:write.
+No se leyó el secreto grafana-admin. El dashboard nuevo no quedó cargado en OKE.
+JSON versionado: observability/grafana-dashboard-experimento-a.json.

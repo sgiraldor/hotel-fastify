@@ -100,7 +100,7 @@ Evidencias: `60-hypothesis-bulkhead.json`, `60-k6-bulkhead-*`, `60-bulkhead.csv`
 
 Local: Prometheus `:9090` y Grafana `:3001`, dashboard `hotel-seguimiento-4`. Métricas de activación: `hotel_db_failfast_timeouts_total`, `hotel_db_bulkhead_rejections_total`, `hotel_db_inflight`, `hotel_db_peak_inflight`.
 
-OCI: Tempo y Prometheus en el namespace `observability`. `93-prom-summary.txt` lista `cine-api`, `hotel-api` y `sports-api`. Falta un dashboard que muestre, en la misma vista, la ventana del 503 y la tasa de parciales del flujo. No hay captura de esa vista en el repositorio.
+OCI: Tempo y Prometheus en el namespace `observability`. `93-prom-summary.txt` lista `cine-api`, `hotel-api` y `sports-api`. El 17 de noviembre de 2026 Prometheus seguía teniendo `hotel_chaos_active` y los saltos de `hotel_chaos_503_total` de `94-*` y `96-*`. Esas series no son las 289, 320, 349 ni los p95 de k6. Esas cifras están en `observability/grafana-dashboard-experimento-a.json`, marcadas como archivo de k6. La captura de Grafana OKE, ventana 00:40 a 01:20 -05, está en `97-grafana-5xx.png` y `97-grafana-chaos-503.png`. El dashboard nuevo no se importó: la API anónima respondió 403.
 
 ## Matriz verificada en este repositorio
 

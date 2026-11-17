@@ -32,3 +32,10 @@ habitacion_despues=200
 live_despues=200
 compose_down=0
 artefacto=chaos-gate-44189597682-1
+
+Segundo intento de descarga, 2026-11-17, sin leer credenciales.
+API anónima: artefacto negativo id=14374349534, 3635 bytes, sha256 d3b4347fab7ead0c42d966363df91362f744e65b0e6993127112822244db631d, no expirado.
+API anónima: artefacto positivo id=14374764944, 3837 bytes, sha256 b802c1a7199ac7df32a9d3c6ed594e3c2f659aa93defb1fa8f5b9e09f3649533, no expirado.
+GET del zip de ambos respondió 401.
+El navegador, sin sesión, muestra "Sign in to view logs" en la corrida 44189190442.
+gh no está instalado. Los zip no se guardaron porque no se descargaron.

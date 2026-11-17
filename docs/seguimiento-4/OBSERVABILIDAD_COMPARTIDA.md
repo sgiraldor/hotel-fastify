@@ -101,6 +101,8 @@ OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <BASE64>   # Secret K8s
 ```powershell
 kubectl -n observability port-forward svc/grafana 3001:3000
 # http://127.0.0.1:3001 — dashboard "Seguimiento #4 — Multicloud Observability"
+# El JSON observability/grafana-dashboard-experimento-a.json no está provisionado.
+# Guardarlo exige dashboards:write. El 2026-11-17 la API anónima respondió 403.
 ```
 
 ---

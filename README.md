@@ -20,6 +20,8 @@ El experimento obligatorio ya se ejecutó contra las dos réplicas. No se repite
 
 Ese 100 % de R1 son respuestas parciales. Hotel siguió respondiendo 503 durante toda la carga. Las evidencias son `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `evidencias/seguimiento-4-local/96-r1-retry-cobertura.txt`. La traza del parcial es `96-tempo-68adbcf21b960acf374c54886c56d681.json`.
 
+La comparación para Grafana está en `observability/grafana-dashboard-experimento-a.json`. Las cifras de k6 van marcadas como archivo. La captura real del dashboard ya cargado en OKE, ventana 00:40 a 01:20 -05, está en `evidencias/seguimiento-4-local/97-grafana-5xx.png` y `97-grafana-chaos-503.png`. Ese JSON nuevo no se importó: Grafana respondió 403.
+
 Fail-fast y bulkhead están en Hotel y se midieron en local. No explican la diferencia entre R0 y R1. El informe de seis páginas está en [docs/seguimiento-4/INFORME_SAMUEL_6P.md](docs/seguimiento-4/INFORME_SAMUEL_6P.md).
 
 ## Tecnologías usadas
