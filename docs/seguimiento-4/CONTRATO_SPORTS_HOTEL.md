@@ -89,7 +89,8 @@ Header: x-chaos-token: <CHAOS_LAB_TOKEN>
 Body: {"action":"enable"|"disable","durationSeconds":60}
 ```
 
-Solo con ventana autorizada. No contra OCI sin permiso explícito.
+Solo con ventana autorizada. No contra OCI sin permiso explícito.  
+En OCI un POST al NLB cambia un solo pod. La corrida de las dos réplicas está en el runbook del experimento A.
 
 ## 10. Relación con evidencias Hotel
 

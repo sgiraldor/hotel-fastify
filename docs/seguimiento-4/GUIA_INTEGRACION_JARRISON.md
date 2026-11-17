@@ -88,7 +88,8 @@ Header: x-chaos-token: <CHAOS_LAB_TOKEN>
 Body: {"action":"enable"|"disable","durationSeconds":60}
 ```
 
-Máximo temporal del API: 300 s. `/live` y `/ready` no se inyectan.
+Máximo temporal del API: 300 s. `/live` y `/ready` no se inyectan.  
+En OCI ese POST al NLB cambia un solo proceso. Las dos réplicas se cubren con `chaos/chaos-replicas.ps1` ([runbook](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md)).
 
 ## Qué ya demostró Hotel (no duplicar en Sports)
 

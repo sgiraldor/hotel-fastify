@@ -1,105 +1,100 @@
 # Runbook — Experimento A (Hotel OCI + mitigación Sports)
 
-**NO EJECUTAR** hasta ventana autorizada del equipo.  
-No saturar Sports/Cine sin coordinación. No tocar MySQL ni réplicas.
+**NO EJECUTAR** la inyección ni k6 hasta la ventana autorizada con Jarrison.  
+No saturar Sports/Cine. No tocar MySQL, réplicas, credenciales ni el tag `v1.1.0`.
 
-## Hipótesis
+## Interruptor
 
-Ante 503 total de Hotel (`CHAOS_DEPENDENCY_DOWN`):
+`chaosUntilMs` vive en la memoria de cada proceso (`src/plugins/chaos-dependency.plugin.ts`).  
+Un POST a `http://149.130.165.30` entra por el NLB y cambia **un solo** pod.
 
-- **R0** (Sports sin mitigación / CB forzado cerrado o bypass): el flujo E2E falla o no degrada de forma controlada.
-- **R1** (Sports con timeout + CB + fallback `partial`/`degraded`): Sports responde degradado sin martillar Hotel; Hotel `/live` sigue 200; al disable, recuperación.
+Para las dos réplicas, cada ronda usa `chaos/chaos-replicas.ps1`, que hace `kubectl exec` a **cada** pod Ready y llama a `127.0.0.1:3000` con el token que ya está en el contenedor. El script no imprime el token.
 
-Hotel callee **no** mejora success rate ante 503 total (evidencia LOCAL A: R0=R1=100% error en Hotel). La mejora E2E, si existe, es de **Sports**.
+| Pieza | Comportamiento |
+|---|---|
+| `action=enable` | 503 solo en ese proceso, entre 1 y 300 s |
+| Caducidad | el proceso vuelve a 200 aunque se caiga k6 o esta sesión |
+| `action=disable` | apaga el temporizador de ese proceso; no toca MySQL |
+| `CHAOS_DEPENDENCY_DOWN=true` | **no usar** en esta ventana: no caduca y solo entra tras recrear el pod |
+| `/live` y `/ready` | siguen 200 |
 
-## Perfil de carga (idéntico Baseline / R0 / R1)
+`enable` sin `-ConfirmExperiment` se rechaza.
 
-Acordar con Jarrison **antes** de correr (no inventar VU altos):
+## Perfil de carga (idéntico en Baseline, R0 y R1)
 
-| Parámetro | Valor sugerido lab |
-|-----------|--------------------|
-| Target | `http://3.21.120.51:30080/api/v2/flujo/1/1/1` |
-| k6 | mismo script y stages en las 3 rondas |
-| Duración hold | p. ej. 30–60 s (corta; coordinada) |
-| VUs | bajo (p. ej. 2–5) hasta autorización de carga |
-| Aborto | error_rate sostenida no planificada en Sports; o chaos > duración |
+Archivo de Jarrison: `load/k6/flujo-profile-shared.js`.  
+**No está en este repositorio.** No sustituirlo por otro script.
 
-## Métricas y umbrales
+| Parámetro | Valor |
+|---|---|
+| Target | `http://3.21.120.51:30080` |
+| Ruta | `GET /api/v2/flujo/1/1/1` |
+| Stages | 15 s → 2 VU, 45 s → 4 VU, 15 s → 0 VU (75 s) |
+| Sleep | 0.3 s |
+| Variables | `BASE_URL`, `TORNEO_ID=1`, `HABITACION_ID=1`, `PELICULA_ID=1`, `RUN_ID` (el mismo en las tres rondas), `ROUND=baseline\|r0\|r1` |
 
-| Métrica | Baseline | R0 (Hotel 503, Sports sin mitigación útil) | R1 (Hotel 503, Sports mitigado) |
-|---------|----------|--------------------------------------------|----------------------------------|
-| Hotel `GET /habitacion/1` | 200 | **503** `CHAOS_DEPENDENCY_DOWN` | **503** |
-| Hotel `/live` | 200 | **200** | **200** |
-| Sports flujo HTTP | 200 `success` | fallo o no-partial (según R0) | **200** con `degraded=true` / `status=partial` (o semántica acordada) |
-| Sports success_rate E2E “completo” | ~100% | ↓ | puede seguir bajo en “completo”; **sí** debe evitar cascada |
-| p95 Sports | baseline | anotar | anotar (no fabricar mejora) |
-| CB Sports | cerrado | — | abierto tras umbral |
+Sports, en las dos réplicas Ready, antes de arrancar k6:
 
-No contar 503 de Hotel como éxito de negocio.
+| Ronda | Hotel | `RESILIENCE_ENABLED` | `HOTEL_FALLBACK_ENABLED` |
+|---|---|---|---|
+| Baseline | normal | `true` | `true` |
+| R0 | HTTP 503 en las dos réplicas | `false` | `false` |
+| R1 | el mismo HTTP 503 | `true` | `true` |
 
-## Procedimiento (PowerShell)
+Duración del interruptor en R0 y R1: **120 s** (cubre los 75 s de k6). Arrancar k6 en los 30 s siguientes a la verificación 503. La misma duración y los mismos pods en las dos rondas.
 
-```powershell
-$env:HOTEL_BASE_URL = "http://149.130.165.30"
-$env:SPORTS_BASE_URL = "http://3.21.120.51:30080"
-$env:CHAOS_LAB_TOKEN = "<token-lab>"   # no versionar
-$Duration = 60
+## Métricas (separadas; la parcial no cuenta como completa)
 
-function Assert-Steady {
-  curl.exe -sS -o NUL -w "live=%{http_code}`n" "$env:HOTEL_BASE_URL/live"
-  curl.exe -sS -o NUL -w "hab=%{http_code}`n" "$env:HOTEL_BASE_URL/api/v2/habitacion/1"
-  curl.exe -sS -D - -o steady-flujo.json "$env:SPORTS_BASE_URL/api/v2/flujo/1/1/1" | Select-String "HTTP/|x-trace"
-}
+Clasificar cada respuesta de Sports. No sumar parciales dentro de completas.
 
-function Enable-Chaos {
-  curl.exe -sS -X POST "$env:HOTEL_BASE_URL/api/v2/chaos/dependency" `
-    -H "x-chaos-token: $env:CHAOS_LAB_TOKEN" -H "content-type: application/json" `
-    -d "{\"action\":\"enable\",\"durationSeconds\":$Duration}"
-}
+| Métrica | Definición |
+|---|---|
+| Respuesta completa | HTTP 200, `status=success`, `degraded=false` y Hotel disponible |
+| Respuesta parcial | HTTP 200 con `status=partial` o `degraded=true` |
+| Respuesta fallida | HTTP distinto de 200, timeout o cuerpo sin ese contrato |
+| p95 | `http_req_duration` p95 de esa ronda, sin mezclar rondas |
+| Throughput completas | completas / 75 s |
+| Throughput parciales | parciales / 75 s |
+| Recuperación Hotel | segundos desde `disable` hasta que **las dos** réplicas devuelven habitación 200 |
+| Recuperación E2E | segundos desde `disable` hasta un flujo Sports completo |
+| Hotel 503 | en cada pod: `habitacion` 503 `CHAOS_DEPENDENCY_DOWN`, `/live` 200, delta de `injections` |
+| Trazas | un Trace ID W3C por ronda con spans de `sports-api`, `hotel-api` y `cine-api` |
 
-function Disable-Chaos {
-  curl.exe -sS -X POST "$env:HOTEL_BASE_URL/api/v2/chaos/dependency" `
-    -H "x-chaos-token: $env:CHAOS_LAB_TOKEN" -H "content-type: application/json" `
-    -d '{"action":"disable"}'
-}
+Baseline debe salir en completas. R0 y R1 deben salir en parciales o fallidas, no en completas. Hotel, en R0 y R1, debe seguir en 503 en las dos réplicas.
 
-# --- Baseline (sin caos) ---
-Assert-Steady
-# k6 baseline → results/baseline.json   (coordinar con Jarrison)
-
-# --- R0: caos Hotel + Sports SIN mitigación (flag/config que Jarrison defina) ---
-try {
-  Enable-Chaos
-  curl.exe -sS -i "$env:HOTEL_BASE_URL/api/v2/habitacion/1"   # expect 503
-  curl.exe -sS -i "$env:HOTEL_BASE_URL/live"                  # expect 200
-  # k6 R0 misma carga → results/r0.json
-  # capturar 1 respuesta Sports (degraded? status?)
-} finally {
-  Disable-Chaos
-}
-Start-Sleep -Seconds 2
-Assert-Steady   # recuperación Hotel + flujo
-
-# --- R1: caos Hotel + Sports CON timeout/CB/partial ---
-try {
-  Enable-Chaos
-  # k6 R1 misma carga → results/r1.json
-  # verificar Sports degraded/partial + CB
-} finally {
-  Disable-Chaos
-}
-Assert-Steady
-```
-
-## Rollback (obligatorio)
-
-Siempre `disable` en `finally`. Si persiste 503: repetir disable; comprobar que no quede `CHAOS_DEPENDENCY_DOWN=true` en env del Deployment.
+## Procedimiento
 
 ```powershell
-.\chaos\revert-chaos.ps1   # con HOTEL_BASE_URL=http://149.130.165.30
+# Estado normal. No activa el fallo.
+./chaos/chaos-replicas.ps1 -Action status
+
+# R0 y R1, solo tras el visto bueno de Jarrison (flags y 2 réplicas Sports Ready).
+./chaos/chaos-replicas.ps1 -Action enable -DurationSeconds 120 -ConfirmExperiment
+
+# Siempre, también si k6 o la red fallan.
+./chaos/chaos-replicas.ps1 -Action disable
 ```
+
+Secuencia:
+
+1. `status`: 2 pods Ready, `activo=false`, `envDown=false`, habitación 200, `/live` 200.
+2. Jarrison confirma Baseline (`RESILIENCE_ENABLED=true`, `HOTEL_FALLBACK_ENABLED=true`) y lanza k6 `ROUND=baseline`.
+3. Jarrison pone R0 (`false` / `false`) y confirma las dos réplicas de Sports.
+4. `enable` 120 s. Las dos líneas JSON deben traer `temporalActivo=true`, habitación 503 y `/live` 200. Si una falla, el script hace `disable` en todas y no se lanza k6.
+5. Jarrison lanza k6 `ROUND=r0` con el mismo perfil.
+6. `disable` y anotar la hora. Repetir `status` hasta habitación 200 en los dos pods.
+7. Repetir los pasos 4–6 para R1 con flags `true` / `true` y `ROUND=r1`. Misma inyección de 120 s.
+
+## Recuperación
+
+El `disable` del script habla con cada pod. No borra datos ni cambia réplicas.  
+Si esta sesión muere después del `enable`, cada proceso cumple su temporizador (120 s) y vuelve a servir 200. Al reconectar, ejecutar igual `disable` y `status`.
+
+`./chaos/revert-chaos.ps1` contra el NLB se niega: ese POST no apaga las dos réplicas.
+
+No poner `CHAOS_DEPENDENCY_DOWN=true` en el ConfigMap. Si `status` muestra `envDown=true`, detenerse; ese modo no caduca.
 
 ## Relación con evidencias LOCAL
 
-Experimento A LOCAL (`40-*`, `42-*`): R0=R1=100% error en Hotel bajo 503.  
-Esta corrida OCI+Sports mide **mitigación del caller**, no inventa disponibilidad en Hotel.
+Experimento A LOCAL (`40-*`, `42-*`): con 503, Hotel falla igual en R0 y R1.  
+Esta corrida mide la mitigación de Sports. No inventa disponibilidad de Hotel ni reejecuta el experimento MySQL.

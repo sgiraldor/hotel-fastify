@@ -38,7 +38,7 @@ Solo archivos generados en `scripts/experiments/results/` o capturas cloud autor
 
 ## Demo OCI (preparada, no ejecutada)
 
-Comandos exactos con `try/finally`, duración limitada y verificación de recuperación:  
-[`DEMO_OCI_EXPERIMENTO_A.md`](./DEMO_OCI_EXPERIMENTO_A.md).
+Procedimiento de las dos réplicas, carga y métricas:  
+[`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
 
 B (MySQL) y C (bulkhead) son **complementarios** en LOCAL y **no** reemplazan este experimento A.

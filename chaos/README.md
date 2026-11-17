@@ -45,7 +45,7 @@ Notas Chaos Toolkit:
 .\.venv-chaos\Scripts\chaos.exe run --journal-path evidencias/seguimiento-4-local/40-chaostoolkit-journal.json chaos/experiment-hotel-dependency.json
 ```
 
-## Revertir
+## Revertir (un solo proceso local)
 
 ```bash
 ./chaos/revert-chaos.ps1
@@ -54,6 +54,16 @@ curl -X POST "$HOTEL_BASE_URL/api/v2/chaos/dependency" \
   -H "x-chaos-token: $CHAOS_LAB_TOKEN" \
   -H "content-type: application/json" \
   -d "{\"action\":\"disable\"}"
+```
+
+## Dos réplicas en OCI
+
+El temporizador es por proceso. El NLB no alcanza los dos pods. Procedimiento, métricas y reversión con caducidad: [`docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](../docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
+
+```powershell
+./chaos/chaos-replicas.ps1 -Action status
+./chaos/chaos-replicas.ps1 -Action enable -DurationSeconds 120 -ConfirmExperiment
+./chaos/chaos-replicas.ps1 -Action disable
 ```
 
 ## No ejecutar en OCI compartida sin autorización
