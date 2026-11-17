@@ -128,6 +128,8 @@ jobs:
           while IFS= read -r linea; do
             case "$linea" in
               CAUSA:*) echo "::error::$linea" ;;
+              "") ;;
+              *) echo "::notice::$linea" ;;
             esac
           done < chaos-gate-results/evaluacion.txt
           exit "$codigo"
@@ -154,6 +156,9 @@ jobs:
             echo "## Reversion"
             cat chaos-gate-results/reversion.txt
           } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^(disable_status|habitacion_despues|live_despues|compose_down)=' chaos-gate-results/reversion.txt | while IFS= read -r linea; do
+            echo "::notice::$linea"
+          done
 
       - name: Publicar evidencias
         if: always()
