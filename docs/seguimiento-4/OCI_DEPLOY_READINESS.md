@@ -67,10 +67,12 @@ Para un despliegue real mínimo académico, en este orden:
 
 **Recomendación de costo:** no crear OKE nuevo si el curso ofrece uno compartido; evitar MySQL managed nuevo si hay DB de laboratorio; considerar `ClusterIP` + port-forward/`kubectl proxy` solo para demos internas (no sirve para Sports públicos).
 
-## F. Comandos que requieren autorización (NO ejecutar aún)
+## F. Comandos históricos (no volver a ejecutarlos)
+
+El clúster, la imagen `hotel-api:1.1.0` y el experimento 503 ya existen. Estos comandos quedan como registro de cómo se desplegó. No se repiten en este cierre.
 
 ```bash
-# 1) Renovar kubeconfig cuando exista cluster
+# 1) Renovar kubeconfig solo si el API deja de responder. El clúster ya existe.
 oci ce cluster create-kubeconfig --cluster-id <CLUSTER_OCID> --file $HOME/.kube/config --region sa-bogota-1 --overwrite-config
 
 # 2) Build + push OCIR (cuando exista repo)

@@ -6,6 +6,22 @@ La aplicación permite registrar huéspedes, habitaciones y check-ins. También 
 
 El proyecto fue realizado usando Fastify, TypeScript y MySQL. Durante el desarrollo también se incorporaron pruebas automatizadas, Docker, GitHub Actions y una estrategia de despliegue Canary sobre Google Cloud Run.
 
+## Seguimiento #4 — Ingeniería del Caos
+
+En el flujo del grupo, Hotel corre en Oracle Kubernetes Engine y Sports, en AWS, lo llama con `GET /api/v2/habitacion/:id`. Hotel no llama a Cine. El detalle está en [docs/seguimiento-4/README.md](docs/seguimiento-4/README.md).
+
+El experimento obligatorio ya se ejecutó contra las dos réplicas. No se repite. Con el perfil `load/k6/flujo-profile-shared.js`:
+
+| Ronda | Resultado | p95 |
+|---|---|---|
+| Baseline | 289 completas, disponibilidad 100 % | 312,02 ms |
+| R0, sin resiliencia de Sports | 320 fallidas, disponibilidad 0 % | 224,13 ms |
+| R1, con fallback de Sports | 349 parciales y 0 fallidas, disponibilidad degradada 100 % | 234,60 ms |
+
+Ese 100 % de R1 son respuestas parciales. Hotel siguió respondiendo 503 durante toda la carga. Las evidencias son `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `evidencias/seguimiento-4-local/96-r1-retry-cobertura.txt`. La traza del parcial es `96-tempo-68adbcf21b960acf374c54886c56d681.json`.
+
+Fail-fast y bulkhead están en Hotel y se midieron en local. No explican la diferencia entre R0 y R1. El informe de seis páginas está en [docs/seguimiento-4/INFORME_SAMUEL_6P.md](docs/seguimiento-4/INFORME_SAMUEL_6P.md).
+
 ## Tecnologías usadas
 
 - Node.js

@@ -84,4 +84,4 @@ curl.exe -sS "http://127.0.0.1:13200/api/traces/4f8140a18fbaa1f98caaa8990d14341c
 
 ## Experimento A (indisponibilidad Hotel)
 
-Runbook listo, **sin ejecutar**: [`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
+Ejecutado. R0 y la R1 definitiva están en [`RESULTADOS_EXPERIMENTOS.md`](./RESULTADOS_EXPERIMENTOS.md). El procedimiento queda en [`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).

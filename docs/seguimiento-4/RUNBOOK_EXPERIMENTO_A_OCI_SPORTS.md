@@ -1,9 +1,9 @@
 # Runbook — Experimento A (Hotel OCI + mitigación Sports)
 
-**NO EJECUTAR** R0/R1 hasta que Jarrison confirme la imagen nueva de Sports en AWS.  
+**Ya ejecutado.** R0 y la R1 definitiva quedaron cubiertas. No se repiten. Este archivo conserva el procedimiento que se usó.  
 No saturar Sports/Cine. No tocar MySQL, réplicas, credenciales ni el tag `v1.1.0`.
 
-`RUN_ID` de esta corrida: `hotel-503-prueba-01`. El baseline de ese id ya está medido. No se repite.
+La comparación definitiva no usa el `RUN_ID` de preparación `hotel-503-prueba-01`. Usa R0 `hotel503-r0-retry-20261117-004150` y R1 `hotel503-r1-retry-20261117-011303`. Evidencias: `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `96-r1-retry-cobertura.txt`.
 
 ## Interruptor
 
@@ -67,7 +67,7 @@ El JSON de `load/results/<ROUND>-hotel-503-prueba-01.json` separa:
 | Recuperación | segundos desde `disable` hasta hábito 200 en las dos réplicas, y hasta un flujo Sports full |
 | Trazas | `x-trace-id` de una respuesta y un Trace ID W3C con `sports-api`, `hotel-api` y `cine-api` |
 
-La parcial no entra en `full`. Baseline ya reportado para este `RUN_ID`: 302 completas, 0 fallidas, p95 313.39 ms.
+La parcial no entra en `full`. El baseline definitivo del grupo es 289 completas, 0 fallidas y p95 312,02 ms. Su JSON de k6 todavía no está archivado. Una medición anterior del `RUN_ID` `hotel-503-prueba-01` reportó 302 completas y p95 313,39 ms, y no entra en la tabla final.
 
 ## Comandos
 

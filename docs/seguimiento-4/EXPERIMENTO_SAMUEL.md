@@ -17,17 +17,21 @@ Si Hotel no está disponible, las llamadas de Sports a `GET /api/v2/habitacion/:
 
 No modifica MySQL. No afecta Cine/Sports. Probes `/live` excluidos.
 
-## Baseline / R0 / R1
+## Baseline / R0 / R1 del callee local
 
-Ver `scripts/experiments/README.md`.
+Ver `scripts/experiments/README.md`. Ahí `RESILIENCE_MODE` cambia fail-fast y bulkhead de Hotel. Esa pareja local no es la R0/R1 del flujo con Sports.
 
-- Baseline: sin caos.
-- R0: caos + `RESILIENCE_MODE=unprotected`.
-- R1: caos + `RESILIENCE_MODE=protected` (mismos requests/intensidad).
+## Corrida definitiva con Sports
+
+Baseline: 289 completas, disponibilidad 100 %, p95 312,02 ms.  
+R0: 320 fallidas, disponibilidad 0 %, p95 224,13 ms.  
+R1: 349 parciales, 0 fallidas, disponibilidad degradada 100 %, p95 234,60 ms.
+
+El 100 % de R1 son parciales. Hotel no se recuperó durante k6. Detalle y trazas: [`RESULTADOS_EXPERIMENTOS.md`](./RESULTADOS_EXPERIMENTOS.md).
 
 ## Evidencias
 
-Solo archivos generados en `scripts/experiments/results/` o capturas cloud autorizadas. Pendiente de OKE/OTLP real = no inventar.
+Las cifras OCI salen de `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `96-r1-retry-cobertura.txt`. Las cifras locales salen de `scripts/experiments/results/` y de `50-*` / `60-*`. No se inventan métricas de Jarrison ni de Daniel.
 
 ## Reversión
 
@@ -36,9 +40,10 @@ Solo archivos generados en `scripts/experiments/results/` o capturas cloud autor
 # o POST action=disable
 ```
 
-## Demo OCI (preparada, no ejecutada)
+## Demo OCI (ejecutada)
 
 Procedimiento de las dos réplicas, carga y métricas:  
-[`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
+[`RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](./RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).  
+No repetir el 503.
 
 B (MySQL) y C (bulkhead) son **complementarios** en LOCAL y **no** reemplazan este experimento A.

@@ -1,7 +1,6 @@
 # Contrato técnico exacto Sports → Hotel (Jarrison)
 
-Hotel **no** mitiga sola la indisponibilidad total (experimento A: R0=R1=100% error).  
-Sports, como caller/coordinador, debe implementar la resiliencia E2E.
+Hotel no convierte un 503 total en una habitación real. En el laboratorio local, R0 y R1 del callee quedan en 100 % de error. En el flujo ya medido, R0 queda en 0 % de disponibilidad y R1 en 349 parciales: esa mejora es de Sports.
 
 Guía compacta de arranque: [`GUIA_INTEGRACION_JARRISON.md`](./GUIA_INTEGRACION_JARRISON.md).
 
@@ -96,7 +95,7 @@ En OCI un POST al NLB cambia un solo pod. La corrida de las dos réplicas está 
 
 | Experimento | Qué prueba Hotel | Qué debe probar Sports |
 |-------------|------------------|------------------------|
-| **A** — 503 total (**obligatorio**) | Blast radius + contrato 503; R0=R1=100% error | CB + timeout + partial status |
+| **A** — 503 total (**obligatorio**) | 503 sostenido en las dos réplicas. En local, R0 y R1 del callee quedan en 100 % de error. En el flujo, R0 queda en 0 % y R1 en 349 parciales | Fallback observado en Tempo. El circuit breaker no está medido en este repo |
 | B — MySQL lenta (**complementario**) | Fail-fast callee; no reemplaza A | Timeout caller alineado; no reintentos agresivos |
 | C — Bulkhead (**complementario**) | Aislamiento concurrency; success ↓ | No martillar tras 503 rápidos |
 
@@ -104,5 +103,5 @@ En OCI un POST al NLB cambia un solo pod. La corrida de las dos réplicas está 
 
 - API OCI operativa (2 réplicas + MySQL).
 - Contrato `GET /api/v2/habitacion/:id` estable.
-- Chaos Gate listo; demo OCI documentada y **no ejecutada** hasta autorización.
-- Pendiente exclusivo Sports: timeout, CB, `partial`, propagación de traza E2E y métricas.
+- Demo OCI del 503 ejecutada (`94-*` y `96-*`). El chaos gate de CI todavía no ejecuta el experimento.
+- La traza E2E y el parcial de R1 ya se observaron en Tempo. Siguen en Sports el experimento de latencia y la métrica del circuit breaker.

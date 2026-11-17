@@ -95,7 +95,7 @@ En OCI ese POST al NLB cambia un solo proceso. Las dos réplicas se cubren con `
 
 | Exp. | Resultado Hotel | Qué falta en Sports |
 |------|-----------------|---------------------|
-| **A** (obligatorio 503) | R0=R1=**100% error** | CB + timeout + `partial` + métricas E2E |
+| **A** (obligatorio 503) | OCI: R0 320 fallidas; R1 349 parciales y 0 fallidas. Local: R0=R1 en 100 % de error | Métrica del circuit breaker y el experimento de latencia. El parcial ya se vio en Tempo |
 | B (MySQL lenta, LOCAL) | fail-fast acota p95; success ↓ | timeout caller alineado |
 | C (bulkhead, LOCAL) | aislamiento sí; success ↓ | no martillar tras 503 rápidos |
 
