@@ -24,6 +24,9 @@ Hotel **no** es coordinador y **no** llama a Cine.
 
 ## Índice
 
+- [RESULTADOS_EXPERIMENTOS.md](./RESULTADOS_EXPERIMENTOS.md) — métricas reales LOCAL/OCI
+- [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo
+- [CONTRATO_SPORTS_HOTEL.md](./CONTRATO_SPORTS_HOTEL.md) — contrato final para Jarrison
 - [CONTRATOS_MULTICLOUD.md](./CONTRATOS_MULTICLOUD.md)
 - [OBSERVABILIDAD_COMPARTIDA.md](./OBSERVABILIDAD_COMPARTIDA.md)
 - [EXPERIMENTO_SAMUEL.md](./EXPERIMENTO_SAMUEL.md)
@@ -34,6 +37,8 @@ Hotel **no** es coordinador y **no** llama a Cine.
 - [USO_IA.md](./USO_IA.md)
 - [OCI_DEPLOY_READINESS.md](./OCI_DEPLOY_READINESS.md)
 - [OCI_COST_OPTIMIZATION.md](./OCI_COST_OPTIMIZATION.md)
+
+URL OCI lab: `http://149.130.165.30` (NLB). Observabilidad local: Prometheus `:9090`, Grafana `:3001`.
 
 ## Comandos rápidos de demostración
 

@@ -40,3 +40,19 @@ Paneles: RPS, p95, 5xx, chaos active, resilience mode.
 ## Stack sugerido (simple)
 
 OpenTelemetry Collector + Prometheus + Grafana + Tempo/Jaeger.
+
+## Stack LOCAL Hotel (sin costo cloud) — activo
+
+```powershell
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d prometheus grafana
+```
+
+| Componente | URL |
+|------------|-----|
+| Prometheus | http://127.0.0.1:9090 |
+| Grafana | http://127.0.0.1:3001 (dashboard `hotel-seguimiento-4`) |
+| Scrape | `host.docker.internal:3000/metrics/prometheus` |
+
+Evidencia real: `evidencias/seguimiento-4-local/41-prometheus-snapshot.json`.
+
+Tempo/Jaeger no se duplicó localmente; correlación demostrada con `x-trace-id` en HTTP. OTLP compartido del grupo queda pendiente de Jarrison/Daniel.

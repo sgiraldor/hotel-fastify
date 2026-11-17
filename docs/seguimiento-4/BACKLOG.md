@@ -1,11 +1,18 @@
-# Backlog pendiente (cloud / integración)
+# Backlog pendiente
 
-1. Obtener acceso a OKE de laboratorio **o** autorización para crear infraestructura (hoy el tenancy consultado aparece sin OKE/MySQL/OCIR/VCN).
-2. Renovar kubeconfig (`oci ce cluster create-kubeconfig`) hasta que `kubectl get nodes` responda.
-3. Push imagen a OCIR y `kubectl apply -f k8s/` (con autorización).
-4. MySQL reachable desde OKE (reutilizar instancia existente; evitar MySQL managed nuevo si hay alternativa).
-5. Collector OTLP + Grafana compartidos con evidencia real.
-6. Sustituir perfil LOCAL por k6 común de Jarrison.
-7. Ejecutar Baseline/R0/R1 en ambiente autorizado y archivar resultados.
-8. Cablear Chaos Gate de Sports contra Hotel lab token.
-9. Push remoto de la rama `feat/seguimiento-4-chaos` (manual).
+## Hecho por Samuel (no bloquear)
+
+- [x] OKE Basic + Hotel 2 réplicas + MySQL lab + NLB + OCIR
+- [x] Chaos Toolkit real en LOCAL (journal)
+- [x] Prometheus/Grafana locales + scrape real
+- [x] k6 provisional Baseline/R0/R1 + diffs honestos
+- [x] Validación fail-fast/bulkhead + contrato Sports→Hotel
+- [x] Docs/evidencias de sustentación
+
+## Pendiente de terceros / autorización
+
+1. **Jarrison**: perfil k6 común; timeouts/CB/retry en Sports; Chaos Gate E2E; cliente AWS→`http://149.130.165.30`
+2. **Daniel**: Cine GCP + correlación multicloud completa
+3. Ventana autorizada de **caos en OKE** (no ejecutar aún)
+4. Collector OTLP/Tempo compartido del grupo (opcional; métricas Hotel ya vía Prometheus local)
+5. Push remoto de `feat/seguimiento-4-chaos` (manual; tag `v1.1.0` intacto)
