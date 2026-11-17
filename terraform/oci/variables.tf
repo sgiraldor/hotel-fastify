@@ -45,23 +45,30 @@ variable "create_oke" {
   default     = false
 }
 
+variable "oke_cluster_type" {
+  type        = string
+  description = "BASIC (gratis control plane) o ENHANCED (US$0.10/h). Lab: BASIC."
+  default     = "BASIC"
+}
+
 variable "node_pool_size" {
   type        = number
-  description = "Nodos del pool academico (mantener bajo)"
-  default     = 2
+  description = "Nodos del pool academico. Lab minimo: 1 (2 replicas de app en el mismo nodo)."
+  default     = 1
 }
 
 variable "node_shape" {
   type        = string
-  default     = "VM.Standard.E4.Flex"
+  description = "Preferir A1.Flex por free Ampere / menor costo"
+  default     = "VM.Standard.A1.Flex"
 }
 
 variable "node_ocpus" {
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "node_memory_gb" {
   type        = number
-  default     = 8
+  default     = 12
 }

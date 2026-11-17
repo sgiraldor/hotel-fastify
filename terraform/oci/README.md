@@ -6,8 +6,9 @@ Separado del Terraform AWS histórico (`terraform/` en `main`).
 
 1. `create_oke = false` por defecto → **no crea recursos** ni genera costo.
 2. Preferir **reutilizar** un OKE/MySQL ya existentes del laboratorio.
-3. Nunca versionar claves, `terraform.tfvars` real ni state con secretos.
-4. **No ejecutar `terraform apply` sin autorización explícita.**
+3. Plan de costo mínimo: OKE **BASIC**, **1** worker `VM.Standard.A1.Flex` 2 OCPU/12 GB, MySQL en PVC, NLB free. Ver `docs/seguimiento-4/OCI_COST_OPTIMIZATION.md`.
+4. Nunca versionar claves, `terraform.tfvars` real ni state con secretos.
+5. **No ejecutar `terraform apply` sin autorización explícita.**
 
 ## Verificar infraestructura existente (antes de provisionar)
 

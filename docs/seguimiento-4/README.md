@@ -33,6 +33,7 @@ Hotel **no** es coordinador y **no** llama a Cine.
 - [BACKLOG.md](./BACKLOG.md)
 - [USO_IA.md](./USO_IA.md)
 - [OCI_DEPLOY_READINESS.md](./OCI_DEPLOY_READINESS.md)
+- [OCI_COST_OPTIMIZATION.md](./OCI_COST_OPTIMIZATION.md)
 
 ## Comandos rápidos de demostración
 

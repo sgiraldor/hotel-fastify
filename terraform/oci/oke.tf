@@ -8,7 +8,8 @@ resource "oci_containerengine_cluster" "hotel" {
   name               = "${var.project_name}-oke"
   vcn_id             = oci_core_vcn.hotel[0].id
   kubernetes_version       = "v1.31.1"
-  type               = "ENHANCED_CLUSTER"
+  # BASIC evita el cargo de control plane (US$0.10/h de Enhanced).
+  type               = var.oke_cluster_type == "ENHANCED" ? "ENHANCED_CLUSTER" : "BASIC_CLUSTER"
 
   options {
     service_lb_subnet_ids = [oci_core_subnet.public[0].id]

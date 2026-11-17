@@ -12,7 +12,9 @@ Plan completo: [`docs/seguimiento-4/OCI_DEPLOY_READINESS.md`](../docs/seguimient
 3. Secret `ocirsecret` (pull) y `hotel-api-secrets` (DB + token lab).
 4. ConfigMap con `DB_HOST` real (no `REPLACE_MYSQL_HOST`).
 5. Descomentar `imagePullSecrets` en el Deployment si el repo es privado.
-6. Acordar exposición: `LoadBalancer` (costo) vs mecanismo del laboratorio.
+6. Exposición recomendada: Service `LoadBalancer` con annotation NLB (**gratis** en Price List OCI). Evitar Flexible LB salvo necesidad L7.
+7. MySQL lab: `k8s/mysql-lab.yaml` (Pod+PVC), no MySQL managed.
+8. Costos: ver `docs/seguimiento-4/OCI_COST_OPTIMIZATION.md` — **no aprovisionar sin autorización**.
 
 ## Aplicar (cuando exista cluster y haya autorización)
 

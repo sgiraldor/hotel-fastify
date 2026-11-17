@@ -6,6 +6,9 @@ metadata:
     app: hotel-api
     service: hotel
     owner: samuel
+  annotations:
+    # Network Load Balancer = Free en la Price List de OCI (más barato que Flexible LB).
+    oci.oraclecloud.com/load-balancer-type: "nlb"
 spec:
   type: LoadBalancer
   selector:
@@ -15,3 +18,4 @@ spec:
       protocol: TCP
       port: 80
       targetPort: http
+
