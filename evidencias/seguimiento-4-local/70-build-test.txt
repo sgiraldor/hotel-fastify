@@ -1,0 +1,2 @@
+﻿npm run build: OK
+npm test: 12 files / 68 tests passed
