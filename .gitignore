@@ -30,4 +30,6 @@ evidencias/**/*.env
 
 chaostoolkit.log
 chaos-gate-results/
+__pycache__/
+*.py[cod]
 

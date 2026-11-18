@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "title": "Hotel OCI — HTTP 503 en las dos réplicas (declarativo)",
-  "description": "Chaos Toolkit orquesta el interruptor por pod vía chaos/replicas-toolkit.ps1 → chaos/chaos-replicas.ps1. No usa el NLB para activar ni para comprobar cobertura. Enable exige CHAOS_OCI_CONFIRM=YES. TTL por defecto 60 s (máximo de la API 300 s). validate o dry-run no demuestran ejecución real en OCI.",
+  "description": "Chaos Toolkit orquesta el interruptor por pod vía oci_replicas_provider.py → replicas-toolkit.ps1 → chaos-replicas.ps1. No usa el NLB para activar ni para comprobar cobertura. Enable exige CHAOS_OCI_CONFIRM=YES. TTL por defecto 60 s (máximo de la API 300 s). El provider Python lanza ActivityFailed si el script sale distinto de 0. validate o dry-run no demuestran ejecución real en OCI.",
   "tags": ["hotel", "oci", "replicas", "seguimiento-4", "declarative"],
   "configuration": {
     "observation_window_seconds": {
@@ -16,18 +16,14 @@
       {
         "type": "probe",
         "name": "both-replicas-healthy",
-        "tolerance": 0,
+        "tolerance": true,
         "provider": {
-          "type": "process",
-          "path": "powershell",
-          "arguments": [
-            "-NoProfile",
-            "-File",
-            "chaos/replicas-toolkit.ps1",
-            "-Action",
-            "status"
-          ],
-          "timeout": 90
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "status",
+          "arguments": {
+            "timeout": 90
+          }
         }
       }
     ]
@@ -37,32 +33,24 @@
       "type": "action",
       "name": "enable-both-replicas",
       "provider": {
-        "type": "process",
-        "path": "powershell",
-        "arguments": [
-          "-NoProfile",
-          "-File",
-          "chaos/replicas-toolkit.ps1",
-          "-Action",
-          "enable"
-        ],
-        "timeout": 120
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "enable",
+        "arguments": {
+          "timeout": 120
+        }
       }
     },
     {
       "type": "probe",
       "name": "both-replicas-return-503",
       "provider": {
-        "type": "process",
-        "path": "powershell",
-        "arguments": [
-          "-NoProfile",
-          "-File",
-          "chaos/replicas-toolkit.ps1",
-          "-Action",
-          "verify-active"
-        ],
-        "timeout": 90
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "verify_active",
+        "arguments": {
+          "timeout": 90
+        }
       }
     },
     {
@@ -82,32 +70,24 @@
       "type": "action",
       "name": "disable-both-replicas",
       "provider": {
-        "type": "process",
-        "path": "powershell",
-        "arguments": [
-          "-NoProfile",
-          "-File",
-          "chaos/replicas-toolkit.ps1",
-          "-Action",
-          "disable"
-        ],
-        "timeout": 90
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "disable",
+        "arguments": {
+          "timeout": 90
+        }
       }
     },
     {
       "type": "probe",
       "name": "both-replicas-recovered",
       "provider": {
-        "type": "process",
-        "path": "powershell",
-        "arguments": [
-          "-NoProfile",
-          "-File",
-          "chaos/replicas-toolkit.ps1",
-          "-Action",
-          "status"
-        ],
-        "timeout": 90
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "status",
+        "arguments": {
+          "timeout": 90
+        }
       }
     }
   ],
@@ -116,16 +96,12 @@
       "type": "action",
       "name": "emergency-disable-both-replicas",
       "provider": {
-        "type": "process",
-        "path": "powershell",
-        "arguments": [
-          "-NoProfile",
-          "-File",
-          "chaos/replicas-toolkit.ps1",
-          "-Action",
-          "disable"
-        ],
-        "timeout": 90
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "disable",
+        "arguments": {
+          "timeout": 90
+        }
       }
     }
   ]

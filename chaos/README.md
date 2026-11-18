@@ -60,15 +60,17 @@ curl -X POST "$HOTEL_BASE_URL/api/v2/chaos/dependency" \
 
 El temporizador es por proceso. El NLB no alcanza los dos pods. Chaos Toolkit orquesta el mismo mecanismo por pod, sin duplicar la inyección:
 
-`experiment-hotel-oci-replicas.json` → `replicas-toolkit.ps1` → `chaos-replicas.ps1` → `pod-switch.js` dentro de cada réplica.
+`experiment-hotel-oci-replicas.json` → `oci_replicas_provider.py` → `replicas-toolkit.ps1` → `chaos-replicas.ps1` → `pod-switch.js` dentro de cada réplica.
+
+El provider Python lanza `ActivityFailed` si el script sale distinto de 0. El provider `process` de chaostoolkit-lib 1.45.1 solo avisa ante exit ≠ 0 y no basta para fallar el method.
 
 | Paso | Qué hace |
 |---|---|
-| Steady-state | `status` en las dos: habitación 200 y `/live` 200. Tolerancia `0` = exit code del process provider (dict `{status,stdout,stderr}` en chaostoolkit-lib 1.45.1) |
+| Steady-state | `status` en las dos: habitación 200 y `/live` 200. Tolerancia `true` (el provider devuelve `True` o lanza) |
 | Method enable | Exige `CHAOS_OCI_CONFIRM=YES`, TTL 1–300 s |
 | verify-active | GET en cada pod: 503 + `/live` 200 |
 | disable + recovery | Apaga las dos y vuelve a exigir 200 |
-| rollbacks | Vuelve a llamar `disable` en ambas |
+| rollbacks | Vuelve a llamar `disable` en ambas. El wrapper también hace `disable` en `finally` |
 
 ```powershell
 # Solo lectura / dry-run. NO activa el 503. No demuestra ejecución real en OCI.
