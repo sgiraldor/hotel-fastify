@@ -1,0 +1,9 @@
+tenancy_ocid     = "ocid1.tenancy.oc1..REPLACE"
+user_ocid        = "ocid1.user.oc1..REPLACE"
+fingerprint      = "REPLACE"
+private_key_path = "C:/path/to/oci_api_key.pem"
+region           = "sa-bogota-1"
+compartment_ocid = "ocid1.compartment.oc1..REPLACE"
+project_name     = "hotel"
+create_oke       = false
+node_pool_size   = 2

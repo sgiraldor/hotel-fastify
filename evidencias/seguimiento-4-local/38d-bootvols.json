@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "auto-tuned-vpus-per-gb": null,
+      "autotune-policies": [],
+      "availability-domain": "IASl:SA-BOGOTA-1-AD-1",
+      "boot-volume-replicas": null,
+      "cluster-placement-group-id": null,
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "ocid1.nodepool.oc1.sa-bogota-1.aaaaaaaatandoxo3qm7nzq7w4wjhgia6oc6fgfetqfag4cqsdnsg4y2tsuja",
+          "CreatedOn": "2026-11-17T00:29:54.405Z"
+        }
+      },
+      "display-name": "oke-cc3levwtx6a-nsg4y2tsuja-soxvvdatdwq-0 (Boot Volume)",
+      "freeform-tags": {},
+      "id": "ocid1.bootvolume.oc1.sa-bogota-1.abrgcljriewocz7mmxykinafhtc3ygehur3th5s3mquxrsip26xfxohquroa",
+      "image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+      "is-auto-tune-enabled": false,
+      "is-hydrated": true,
+      "kms-key-id": null,
+      "lifecycle-state": "AVAILABLE",
+      "size-in-gbs": 50,
+      "size-in-mbs": 51200,
+      "source-details": null,
+      "system-tags": {
+        "orcl-cloud": {
+          "free-tier-retained": "true"
+        }
+      },
+      "time-created": "2026-11-17T00:29:59.481000+00:00",
+      "volume-group-id": null,
+      "vpus-per-gb": 10
+    }
+  ]
+}

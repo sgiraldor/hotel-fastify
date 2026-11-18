@@ -1,0 +1,48 @@
+﻿{
+    "experiment":  "C_BULKHEAD_HIGH_CONCURRENCY",
+    "scope":  "LOCAL",
+    "load":  "24 VU, 50s, Toxiproxy latency 3000ms, GET /api/v2/habitacion/1",
+    "r0":  {
+               "poolLimit":  50,
+               "status_200":  326,
+               "successful_rps":  6.28,
+               "status_503":  0,
+               "peak_inflight":  24,
+               "rps":  6.28,
+               "p95_success_ms":  8993.985,
+               "p95_total_ms":  8993.985,
+               "error_rate":  0,
+               "reqs":  326,
+               "success_rate":  1,
+               "mode":  "unprotected",
+               "bulkhead_rejections":  0,
+               "concurrencyLimit":  50
+           },
+    "r1":  {
+               "poolLimit":  10,
+               "status_200":  62,
+               "successful_rps":  1.19,
+               "status_503":  190454,
+               "peak_inflight":  4,
+               "rps":  3670.84,
+               "p95_success_ms":  3132.985,
+               "p95_total_ms":  7.859,
+               "error_rate":  0.9997,
+               "reqs":  190516,
+               "success_rate":  0.0003,
+               "mode":  "protected",
+               "bulkhead_rejections":  190454,
+               "concurrencyLimit":  4
+           },
+    "recovery":  {
+                     "recovered":  true,
+                     "recovery_ms":  14
+                 },
+    "hypothesis_result":  {
+                              "peak_inflight_bounded_r1":  true,
+                              "bulkhead_activated_r1":  true,
+                              "success_rate_improved":  false,
+                              "tradeoff":  "R1 aísla MySQL (peak_inflight\u003c=4, miles de 503 bulkhead rápidos) pero REDUCE success_rate y successful_rps. Los 503 no son éxitos.",
+                              "r0_no_bulkhead":  true
+                          }
+}

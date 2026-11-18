@@ -1,0 +1,9 @@
+﻿{
+    "name":  "05-chaos-live-still-200",
+    "url":  "http://127.0.0.1:3000/live",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"status\":\"alive\",\"service\":\"hotel-api\"}"
+}

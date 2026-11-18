@@ -1,0 +1,45 @@
+# Ejemplo alineado al collector OKE (k8s/observability/otel-collector.yaml).
+# En cluster: auth Basic + export Tempo + Prometheus exporter :8889.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+        max_request_body_size: 4194304
+
+processors:
+  batch:
+    timeout: 2s
+  memory_limiter:
+    check_interval: 2s
+    limit_mib: 180
+    spike_limit_mib: 40
+  resource:
+    attributes:
+      - key: team
+        value: seguimiento-4
+        action: upsert
+
+exporters:
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: otel
+    resource_to_telemetry_conversion:
+      enabled: true
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlphttp/tempo, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [prometheus, debug]

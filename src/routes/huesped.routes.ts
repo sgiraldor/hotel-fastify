@@ -1,12 +1,14 @@
 import { FastifyInstance } from 'fastify';
+import { AppDataSource } from '../config/database';
+import { Huesped } from '../entities/huesped.entity';
 import { validarHuesped } from '../utils/huesped.utils';
-import { HuespedService } from '../services/huesped.service';
 
 interface HuespedBody {
   identificacion: string;
   nombre: string;
   apellido: string;
   telefono: string;
+  email: string;
   tipoDocumento: string;
   fechaNacimiento: string;
 }
@@ -16,12 +18,13 @@ interface ActualizarHuespedBody {
   nombre?: string;
   apellido?: string;
   telefono?: string;
+  email?: string;
   tipoDocumento?: string;
   fechaNacimiento?: string;
 }
 
 export async function huespedRoutes(app: FastifyInstance) {
-  const huespedService = new HuespedService();
+  const huespedRepository = AppDataSource.getRepository(Huesped);
 
   // Crear un huésped
   app.post<{ Body: HuespedBody }>(
@@ -33,6 +36,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento,
         } = request.body;
@@ -42,6 +46,7 @@ export async function huespedRoutes(app: FastifyInstance) {
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
           fechaNacimiento,
         });
@@ -52,14 +57,17 @@ export async function huespedRoutes(app: FastifyInstance) {
           });
         }
 
-        const huespedGuardado = await huespedService.crear({
+        const nuevoHuesped = huespedRepository.create({
           identificacion,
           nombre,
           apellido,
           telefono,
+          email,
           tipoDocumento,
-          fechaNacimiento,
+          fechaNacimiento: new Date(fechaNacimiento),
         });
+
+        const huespedGuardado = await huespedRepository.save(nuevoHuesped);
 
         return reply.code(201).send(huespedGuardado);
       } catch (error) {
@@ -75,7 +83,7 @@ export async function huespedRoutes(app: FastifyInstance) {
   // Consultar todos los huéspedes
   app.get('/huesped', async (request, reply) => {
     try {
-      const huespedes = await huespedService.obtenerTodos();
+      const huespedes = await huespedRepository.find();
 
       return reply.code(200).send(huespedes);
     } catch (error) {
@@ -94,7 +102,7 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const huesped = await huespedService.obtenerPorId(id);
+        const huesped = await huespedRepository.findOneBy({ id });
 
         if (!huesped) {
           return reply.code(404).send({
@@ -123,16 +131,53 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const huespedActualizado = await huespedService.actualizar(
-          id,
-          request.body,
-        );
+        const huesped = await huespedRepository.findOneBy({ id });
 
-        if (!huespedActualizado) {
+        if (!huesped) {
           return reply.code(404).send({
             message: 'Huésped no encontrado',
           });
         }
+
+        const {
+          identificacion,
+          nombre,
+          apellido,
+          telefono,
+          email,
+          tipoDocumento,
+          fechaNacimiento,
+        } = request.body;
+
+        if (identificacion !== undefined) {
+          huesped.identificacion = identificacion;
+        }
+
+        if (nombre !== undefined) {
+          huesped.nombre = nombre;
+        }
+
+        if (apellido !== undefined) {
+          huesped.apellido = apellido;
+        }
+
+        if (telefono !== undefined) {
+          huesped.telefono = telefono;
+        }
+
+        if (email !== undefined) {
+          huesped.email = email;
+        }
+
+        if (tipoDocumento !== undefined) {
+          huesped.tipoDocumento = tipoDocumento;
+        }
+
+        if (fechaNacimiento !== undefined) {
+          huesped.fechaNacimiento = new Date(fechaNacimiento);
+        }
+
+        const huespedActualizado = await huespedRepository.save(huesped);
 
         return reply.code(200).send(huespedActualizado);
       } catch (error) {
@@ -152,13 +197,15 @@ export async function huespedRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const eliminado = await huespedService.eliminar(id);
+        const huesped = await huespedRepository.findOneBy({ id });
 
-        if (!eliminado) {
+        if (!huesped) {
           return reply.code(404).send({
             message: 'Huésped no encontrado',
           });
         }
+
+        await huespedRepository.remove(huesped);
 
         return reply.code(200).send({
           message: 'Huésped eliminado correctamente',

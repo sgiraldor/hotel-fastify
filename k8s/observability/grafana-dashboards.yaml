@@ -1,0 +1,150 @@
+apiVersion: v1
+data:
+  experimento-a.json: "{\r\n  \"annotations\": {\r\n    \"list\": [\r\n      {\r\n
+    \       \"builtIn\": 1,\r\n        \"datasource\": { \"type\": \"grafana\", \"uid\":
+    \"-- Grafana --\" },\r\n        \"enable\": true,\r\n        \"hide\": true,\r\n
+    \       \"iconColor\": \"rgba(0, 211, 255, 1)\",\r\n        \"name\": \"Annotations
+    & Alerts\",\r\n        \"type\": \"dashboard\"\r\n      }\r\n    ]\r\n  },\r\n
+    \ \"editable\": true,\r\n  \"fiscalYearStartMonth\": 0,\r\n  \"graphTooltip\":
+    1,\r\n  \"id\": null,\r\n  \"links\": [],\r\n  \"panels\": [\r\n    {\r\n      \"type\":
+    \"text\",\r\n      \"title\": \"Comparación archivada de k6\",\r\n      \"gridPos\":
+    { \"h\": 9, \"w\": 14, \"x\": 0, \"y\": 0 },\r\n      \"options\": {\r\n        \"mode\":
+    \"markdown\",\r\n        \"content\": \"Archivo de k6. Estos tres resultados **no
+    son series de Prometheus**. El JSON del baseline de este 503 está en evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json.\\n\\n|
+    Ronda | Resultado | Disponibilidad | p95 |\\n|---|---|---|---|\\n| Baseline |
+    289/289 completas | 100 % completa | 312,02 ms |\\n| R0 | 320/320 fallidas | 0
+    % | 224,13 ms |\\n| R1 definitiva | 349/349 parciales y 0 fallidas | 100 % degradada
+    | 234,60 ms |\\n\\nEl 100 % de R1 son respuestas parciales con fallback de Sports.
+    Hotel no volvió a 200 durante esa carga.\\n\\nFuentes: `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt`
+    y `96-r1-retry-cobertura.txt`. La primera R1 está en `95-r1-cobertura.txt` y no
+    entra en la tabla.\"\r\n      }\r\n    },\r\n    {\r\n      \"type\": \"text\",\r\n
+    \     \"title\": \"Ventanas de inyección y trazas\",\r\n      \"gridPos\": { \"h\":
+    9, \"w\": 10, \"x\": 14, \"y\": 0 },\r\n      \"options\": {\r\n        \"mode\":
+    \"markdown\",\r\n        \"content\": \"Evidencia de trazas y de logs. No es una
+    serie de Prometheus. Horas en zona -05. El scrape de abajo es de 15 s y no reemplaza
+    estos timestamps.\\n\\n**R0** `hotel503-r0-retry-20261117-004150`\\n- k6: 00:43:35.795
+    a 00:44:52.060\\n- glg2z: enable 00:43:31.338, disable 00:44:58.542\\n- tmqlg:
+    enable 00:43:34.143, disable 00:45:01.345\\n\\n**R1** `hotel503-r1-retry-20261117-011303`\\n-
+    fin de k6: 01:15:13.590. El inicio de 01:13:58.590 es una estimación de 75 s,
+    no un reloj medido.\\n- glg2z: enable 01:13:53.967, disable 01:15:20.737\\n- tmqlg:
+    enable 01:13:56.647, disable 01:15:23.433\\n\\nTraza del parcial: `68adbcf21b960acf374c54886c56d681`
+    (Sports 200, Hotel 503, Cine 200). Traza sana: `4f8140a18fbaa1f98caaa8990d14341c`.\"\r\n
+    \     }\r\n    },\r\n    {\r\n      \"type\": \"timeseries\",\r\n      \"title\":
+    \"HTTP 503 activo por réplica\",\r\n      \"description\": \"Consulta real a Prometheus:
+    hotel_chaos_active. 1 significa el interruptor encendido en ese pod. El scrape
+    es de 15 s. El pico de las 01:00 es la primera R1, descartada en 95-r1-cobertura.txt.\",\r\n
+    \     \"gridPos\": { \"h\": 8, \"w\": 12, \"x\": 0, \"y\": 9 },\r\n      \"datasource\":
+    { \"type\": \"prometheus\", \"uid\": \"prometheus\" },\r\n      \"fieldConfig\":
+    {\r\n        \"defaults\": {\r\n          \"min\": 0,\r\n          \"max\": 1,\r\n
+    \         \"custom\": { \"drawStyle\": \"bars\", \"fillOpacity\": 40, \"spanNulls\":
+    false }\r\n        },\r\n        \"overrides\": []\r\n      },\r\n      \"options\":
+    {\r\n        \"legend\": { \"displayMode\": \"list\", \"placement\": \"bottom\"
+    },\r\n        \"tooltip\": { \"mode\": \"multi\" }\r\n      },\r\n      \"targets\":
+    [\r\n        {\r\n          \"expr\": \"hotel_chaos_active\",\r\n          \"legendFormat\":
+    \"{{pod}}\",\r\n          \"refId\": \"A\"\r\n        }\r\n      ]\r\n    },\r\n
+    \   {\r\n      \"type\": \"timeseries\",\r\n      \"title\": \"Contador de 503
+    por réplica\",\r\n      \"description\": \"Consulta real: hotel_chaos_503_total.
+    En R0, Prometheus pasa de 254 a 400 en glg2z y de 8 a 184 en tmqlg. En la R1 definitiva,
+    de 409 a 420 y de 193 a 202. Esas lecturas coinciden con 94 y 96.\",\r\n      \"gridPos\":
+    { \"h\": 8, \"w\": 12, \"x\": 12, \"y\": 9 },\r\n      \"datasource\": { \"type\":
+    \"prometheus\", \"uid\": \"prometheus\" },\r\n      \"fieldConfig\": {\r\n        \"defaults\":
+    {\r\n          \"custom\": { \"drawStyle\": \"line\", \"fillOpacity\": 10, \"spanNulls\":
+    false }\r\n        },\r\n        \"overrides\": []\r\n      },\r\n      \"options\":
+    {\r\n        \"legend\": { \"displayMode\": \"list\", \"placement\": \"bottom\"
+    },\r\n        \"tooltip\": { \"mode\": \"multi\" }\r\n      },\r\n      \"targets\":
+    [\r\n        {\r\n          \"expr\": \"hotel_chaos_503_total\",\r\n          \"legendFormat\":
+    \"{{pod}}\",\r\n          \"refId\": \"A\"\r\n        }\r\n      ]\r\n    },\r\n
+    \   {\r\n      \"type\": \"timeseries\",\r\n      \"title\": \"Peticiones OTLP
+    actuales por API\",\r\n      \"description\": \"Telemetría en vivo de otel_http_server_requests_total.
+    No es la disponibilidad ni el p95 de k6.\",\r\n      \"gridPos\": { \"h\": 7,
+    \"w\": 24, \"x\": 0, \"y\": 17 },\r\n      \"datasource\": { \"type\": \"prometheus\",
+    \"uid\": \"prometheus\" },\r\n      \"fieldConfig\": { \"defaults\": {}, \"overrides\":
+    [] },\r\n      \"options\": {\r\n        \"legend\": { \"displayMode\": \"list\",
+    \"placement\": \"bottom\" },\r\n        \"tooltip\": { \"mode\": \"multi\" }\r\n
+    \     },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"sum by
+    (service_name) (rate(otel_http_server_requests_total[5m]))\",\r\n          \"legendFormat\":
+    \"{{service_name}}\",\r\n          \"refId\": \"A\"\r\n        }\r\n      ]\r\n
+    \   }\r\n  ],\r\n  \"schemaVersion\": 39,\r\n  \"tags\": [\"hotel\", \"seguimiento-4\",
+    \"chaos\", \"oci\"],\r\n  \"templating\": { \"list\": [] },\r\n  \"time\": {\r\n
+    \   \"from\": \"2026-11-17T05:40:00.000Z\",\r\n    \"to\": \"2026-11-17T06:20:00.000Z\"\r\n
+    \ },\r\n  \"timezone\": \"America/Bogota\",\r\n  \"title\": \"Experimento A —
+    HTTP 503 Hotel\",\r\n  \"uid\": \"experimento-a-503\",\r\n  \"version\": 1\r\n}\r\n"
+  multicloud.json: "{\r\n  \"annotations\": {\r\n    \"list\": [\r\n      {\r\n        \"builtIn\":
+    1,\r\n        \"datasource\": { \"type\": \"grafana\", \"uid\": \"-- Grafana --\"
+    },\r\n        \"enable\": true,\r\n        \"hide\": true,\r\n        \"iconColor\":
+    \"rgba(0, 211, 255, 1)\",\r\n        \"name\": \"Annotations & Alerts\",\r\n        \"type\":
+    \"dashboard\"\r\n      }\r\n    ]\r\n  },\r\n  \"editable\": true,\r\n  \"fiscalYearStartMonth\":
+    0,\r\n  \"graphTooltip\": 1,\r\n  \"id\": null,\r\n  \"links\": [],\r\n  \"panels\":
+    [\r\n    {\r\n      \"title\": \"Throughput por servicio (Hotel scrape)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\":
+    0, \"y\": 0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_http_throughput_rps\",\r\n
+    \         \"legendFormat\": \"hotel-api\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Latencia p95 Hotel (ms)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\":
+    8, \"y\": 0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_http_p95_ms\",\r\n
+    \         \"legendFormat\": \"hotel p95\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Error rate 5xx Hotel\",\r\n      \"type\":
+    \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\": 16, \"y\":
+    0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"rate(hotel_http_errors_5xx_total[1m])\",\r\n
+    \         \"legendFormat\": \"5xx/s\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Estado experimento (chaos / resilience)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    0, \"y\": 8 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_chaos_active\",\r\n
+    \         \"legendFormat\": \"chaos_active\",\r\n          \"refId\": \"A\"\r\n
+    \       },\r\n        {\r\n          \"expr\": \"hotel_resilience_protected\",\r\n
+    \         \"legendFormat\": \"protected\",\r\n          \"refId\": \"B\"\r\n        },\r\n
+    \       {\r\n          \"expr\": \"hotel_chaos_503_total\",\r\n          \"legendFormat\":
+    \"chaos_503_total\",\r\n          \"refId\": \"C\"\r\n        }\r\n      ]\r\n
+    \   },\r\n    {\r\n      \"title\": \"Bulkhead / fail-fast\",\r\n      \"type\":
+    \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\": 12, \"y\":
+    8 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_db_bulkhead_rejections_total\",\r\n
+    \         \"legendFormat\": \"bulkhead_rej\",\r\n          \"refId\": \"A\"\r\n
+    \       },\r\n        {\r\n          \"expr\": \"hotel_db_failfast_timeouts_total\",\r\n
+    \         \"legendFormat\": \"failfast\",\r\n          \"refId\": \"B\"\r\n        },\r\n
+    \       {\r\n          \"expr\": \"hotel_db_inflight\",\r\n          \"legendFormat\":
+    \"inflight\",\r\n          \"refId\": \"C\"\r\n        }\r\n      ]\r\n    },\r\n
+    \   {\r\n      \"title\": \"OTLP metrics recibidas (collector ??? Prometheus)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    0, \"y\": 15 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\":
+    \"prometheus\" },\r\n      \"targets\": [\r\n        {\r\n          \"expr\":
+    \"count({job=\\\"otel-collector\\\"}) or vector(0)\",\r\n          \"legendFormat\":
+    \"series otel-collector\",\r\n          \"refId\": \"A\"\r\n        }\r\n      ]\r\n
+    \   },\r\n    {\r\n      \"title\": \"Comparaci??n R0 vs R1 (anotar ventanas)\",\r\n
+    \     \"type\": \"text\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    12, \"y\": 15 },\r\n      \"options\": {\r\n        \"mode\": \"markdown\",\r\n
+    \       \"content\": \"## R0 / R1\\nUsar **Annotations** de Grafana para marcar:\\n-
+    Baseline\\n- **R0** unprotected + fallo\\n- **R1** protected + mismo fallo\\n\\nHotel
+    (LOCAL):\\n- A 503: R0=R1=100% error\\n- B MySQL: p95??? success???\\n- C bulkhead:
+    aislamiento s??, success???\\n\\nSports/Cine: paneles OTLP se llenan cuando exporten
+    con `service.name` correcto.\"\r\n      }\r\n    },\r\n    {\r\n      \"title\":
+    \"Buscar traza (Tempo) ??? pegar Trace ID OTel\",\r\n      \"type\": \"traces\",\r\n
+    \     \"gridPos\": { \"h\": 10, \"w\": 24, \"x\": 0, \"y\": 22 },\r\n      \"datasource\":
+    { \"type\": \"tempo\", \"uid\": \"tempo\" },\r\n      \"targets\": [\r\n        {\r\n
+    \         \"queryType\": \"traceqlSearch\",\r\n          \"refId\": \"A\",\r\n
+    \         \"filters\": [\r\n            {\r\n              \"id\": \"service-name\",\r\n
+    \             \"tag\": \"service.name\",\r\n              \"operator\": \"=\",\r\n
+    \             \"scope\": \"resource\",\r\n              \"value\": [\"hotel-api\",
+    \"sports-api\", \"cine-api\"],\r\n              \"valueType\": \"string\"\r\n
+    \           }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"title\":
+    \"Servicios esperados\",\r\n      \"type\": \"text\",\r\n      \"gridPos\": {
+    \"h\": 4, \"w\": 24, \"x\": 0, \"y\": 32 },\r\n      \"options\": {\r\n        \"mode\":
+    \"markdown\",\r\n        \"content\": \"| service.name | Cloud | Estado |\\n|---|---|---|\\n|
+    `hotel-api` | OCI | exporta OTLP + scrape Prometheus |\\n| `sports-api` | AWS
+    | pendiente env??o Jarrison |\\n| `cine-api` | GCP | pendiente env??o Daniel |\\n\\nCorrelaci??n
+    negocio: header `x-trace-id`. Correlaci??n OTel: `traceparent` / Trace ID en Tempo.\"\r\n
+    \     }\r\n    }\r\n  ],\r\n  \"schemaVersion\": 39,\r\n  \"tags\": [\"seguimiento-4\",
+    \"hotel\", \"sports\", \"cine\", \"otel\"],\r\n  \"templating\": { \"list\": []
+    },\r\n  \"time\": { \"from\": \"now-30m\", \"to\": \"now\" },\r\n  \"timezone\":
+    \"browser\",\r\n  \"title\": \"Seguimiento #4 ??? Multicloud Observability\",\r\n
+    \ \"uid\": \"seguimiento-4-multicloud\",\r\n  \"version\": 1\r\n}\r\n"
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: observability
+  labels:
+    app: grafana

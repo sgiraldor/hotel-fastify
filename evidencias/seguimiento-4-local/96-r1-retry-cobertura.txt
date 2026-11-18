@@ -1,0 +1,40 @@
+RUN_ID=hotel503-r1-retry-20261117-011303
+k6_fin_powershell=2026-11-17 01:15:14,021 -05:00 / 2026-11-17T06:15:14.021Z / ms=1794896114021
+k6_generatedAt=2026-11-17 01:15:13,590 -05:00 / 2026-11-17T06:15:13.590Z / ms=1794896113590
+k6_inicio_estimado_75s_antes_de_generatedAt=2026-11-17 01:13:58,590 -05:00 / 2026-11-17T06:13:58.590Z / ms=1794896038590
+primera_solicitud_RUN_ID=2026-11-17 01:14:06,252 -05:00 / 2026-11-17T06:14:06.252Z / ms=1794896046252 status=503 pod=glg2z trace=hotel503-r1-retry-20261117-011303-r1-3-0 otel=68adbcf21b960acf374c54886c56d681
+ultima_solicitud_RUN_ID=2026-11-17 01:15:08,842 -05:00 / 2026-11-17T06:15:08.842Z / ms=1794896108842 status=503 pod=glg2z trace=hotel503-r1-retry-20261117-011303-r1-3-136 otel=c52a4df94b73fb6810d1573d90659b97
+k6 total=349 completas=0 parciales=349 fallidas=0 p95_ms=234.60 exit=0
+
+Pod glg2z enable=2026-11-17 01:13:53,967 -05:00 / 2026-11-17T06:13:53.967Z / ms=1794896033967 durationSeconds=120
+Pod glg2z ttl=2026-11-17 01:15:53,967 -05:00 / 2026-11-17T06:15:53.967Z / ms=1794896153967
+Pod glg2z disable=2026-11-17 01:15:20,737 -05:00 / 2026-11-17T06:15:20.737Z / ms=1794896120737
+Pod glg2z probe_503=2026-11-17 01:13:53,972 -05:00 / 2026-11-17T06:13:53.972Z / ms=1794896033972 source=temporal
+Pod glg2z probe_200_disable=2026-11-17 01:15:20,743 -05:00 / 2026-11-17T06:15:20.743Z / ms=1794896120743
+Pod glg2z probe_200_status=2026-11-17 01:15:28,934 -05:00 / 2026-11-17T06:15:28.934Z / ms=1794896128934
+Pod glg2z run_503=10 run_200=0 inyecciones 409->420 delta=11
+
+Pod tmqlg enable=2026-11-17 01:13:56,647 -05:00 / 2026-11-17T06:13:56.647Z / ms=1794896036647 durationSeconds=120
+Pod tmqlg ttl=2026-11-17 01:15:56,647 -05:00 / 2026-11-17T06:15:56.647Z / ms=1794896156647
+Pod tmqlg disable=2026-11-17 01:15:23,433 -05:00 / 2026-11-17T06:15:23.433Z / ms=1794896123433
+Pod tmqlg probe_503=2026-11-17 01:13:56,653 -05:00 / 2026-11-17T06:13:56.653Z / ms=1794896036653 source=temporal
+Pod tmqlg probe_200_disable=2026-11-17 01:15:23,439 -05:00 / 2026-11-17T06:15:23.439Z / ms=1794896123439
+Pod tmqlg probe_200_status=2026-11-17 01:15:31,732 -05:00 / 2026-11-17T06:15:31.732Z / ms=1794896131732
+Pod tmqlg run_503=8 run_200=0 inyecciones 193->202 delta=9
+
+disable_despues_de_fin_powershell_ms pod1=6716 pod2=9412
+ttl_despues_de_fin_powershell_ms pod1=39946 pod2=42626
+inicio_estimado_despues_de_enable_pod2_ms=1943
+cierre_inyeccion=disable manual posterior al fin; el TTL no se cumplio durante k6
+http_200_del_RUN_ID_durante_k6=0
+chaos_dependency_down_del_RUN_ID source=temporal en las 18
+
+tempo 68adbcf21b960acf374c54886c56d681
+sports_server_http=200 flujo.status=partial flujo.outcome=partial degraded=hotel
+hotel_server_http=503 parent=sports CLIENT habitacion
+cine_server_http=200 parent=sports CLIENT peliculas
+
+comparacion_R0 320/320 fallidas p95=224.13 cobertura_503=completa
+comparacion_R1 0 completas 349 parciales 0 fallidas p95=234.60 cobertura_503=completa
+validez=CONFIRMADA
+recuperacion_actual activo=false habitacion=200 live=200 injections=420 y 202 activations=4

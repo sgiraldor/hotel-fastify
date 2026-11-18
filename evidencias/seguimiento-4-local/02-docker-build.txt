@@ -1,0 +1,140 @@
+﻿docker :  Image hotel-fastify-api Building 
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-749cd85b-1776-4322-8ca7-40cca205999e.ps1: 106 Carácter: 183
++ ... :RESILIENCE_MODE = 'protected'; docker compose build api 2>&1 | Out-F ...
++                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Image hotel-fastify-api Building :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+#1 [internal] load local bake definitions
+#1 reading from stdin 533B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 495B done
+#2 DONE 0.0s
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#4 [internal] load metadata for docker.io/library/node:24-alpine
+#4 DONE 2.0s
+
+#5 [build 1/7] FROM docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
+#5 resolve docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 0.0s done
+#5 sha256:7bb632bc9bd793a348866a7dd7920cf89dfc87205c6d38cda182ea6d8065b8e5 442B / 442B 0.1s done
+#5 sha256:7eb569707982863466c2b0bcfddda86fb4842fccfaec088d1354f6a29e2856bb 1.26MB / 1.26MB 1.4s done
+#5 sha256:86781d25d3989ead8f09c45716da0159c1dd0be2c753a51f15b6c60f4b9a97db 57.42MB / 57.42MB 110.5s done
+#5 extracting sha256:86781d25d3989ead8f09c45716da0159c1dd0be2c753a51f15b6c60f4b9a97db 1.2s done
+#5 extracting sha256:7eb569707982863466c2b0bcfddda86fb4842fccfaec088d1354f6a29e2856bb 0.0s done
+#5 extracting sha256:7bb632bc9bd793a348866a7dd7920cf89dfc87205c6d38cda182ea6d8065b8e5 0.0s done
+#5 DONE 111.8s
+
+#6 [build 2/7] WORKDIR /app
+#6 DONE 0.3s
+
+#7 [build 3/7] COPY package*.json ./
+#7 DONE 0.0s
+
+#8 [stage-1 3/6] RUN addgroup -S hotel && adduser -S hotel -G hotel
+#8 DONE 0.3s
+
+#9 [stage-1 4/6] COPY package*.json ./
+#9 DONE 0.0s
+
+#10 [build 4/7] RUN npm ci
+#10 58.82 npm warn deprecated @opentelemetry/sdk-trace-node@2.11.0: Use @opentelemetry/sdk-trace package
+#10 62.55 npm warn deprecated @opentelemetry/propagator-jaeger@2.11.0: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
+#10 82.65 npm warn deprecated @opentelemetry/sdk-trace-base@2.11.0: Use @opentelemetry/sdk-trace package
+#10 84.66 npm warn deprecated @opentelemetry/sdk-trace-base@2.11.0: Use @opentelemetry/sdk-trace package
+#10 405.8 
+#10 405.8 added 232 packages, and audited 233 packages in 7m
+#10 405.8 
+#10 405.8 56 packages are looking for funding
+#10 405.8   run `npm fund` for details
+#10 405.8 
+#10 405.8 7 vulnerabilities (3 moderate, 4 high)
+#10 405.8 
+#10 405.8 To address all issues, run:
+#10 405.8   npm audit fix
+#10 405.8 
+#10 405.8 Run `npm audit` for details.
+#10 405.8 npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+#10 405.8 npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+#10 405.8 npm warn install-scripts   protobufjs@7.6.6 (postinstall: node scripts/postinstall)
+#10 405.8 npm warn install-scripts
+#10 405.8 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+#10 405.8 npm notice
+#10 405.8 npm notice New major version of npm available! 11.19.1 -> 12.2.2
+#10 405.8 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+#10 405.8 npm notice To update run: npm install -g npm@12.2.2
+#10 405.8 npm notice
+#10 DONE 406.0s
+
+#11 [build 5/7] COPY tsconfig.json ./
+#11 DONE 0.2s
+
+#12 [build 6/7] COPY src ./src
+#12 DONE 0.0s
+
+#13 [build 7/7] RUN npm run build
+#13 0.303 
+#13 0.303 > hotel@1.1.0 build
+#13 0.303 > tsc
+#13 0.303 
+#13 DONE 2.9s
+
+#14 [internal] load .dockerignore
+#14 transferring context: 295B done
+#14 DONE 0.0s
+
+#15 [internal] load build context
+#15 transferring context: 207.46kB 0.0s done
+#15 DONE 0.0s
+
+#16 [stage-1 5/6] RUN npm ci --omit=dev && npm cache clean --force
+#16 23.97 npm warn deprecated @opentelemetry/sdk-trace-node@2.11.0: Use @opentelemetry/sdk-trace package
+#16 25.83 npm warn deprecated @opentelemetry/propagator-jaeger@2.11.0: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
+#16 32.63 npm warn deprecated @opentelemetry/sdk-trace-base@2.11.0: Use @opentelemetry/sdk-trace package
+#16 33.23 npm warn deprecated @opentelemetry/sdk-trace-base@2.11.0: Use @opentelemetry/sdk-trace package
+#16 1153.0 
+#16 1153.0 added 167 packages, and audited 168 packages in 19m
+#16 1153.0 
+#16 1153.0 38 packages are looking for funding
+#16 1153.0   run `npm fund` for details
+#16 1153.0 
+#16 1153.0 2 high severity vulnerabilities
+#16 1153.0 
+#16 1153.0 To address all issues, run:
+#16 1153.0   npm audit fix
+#16 1153.0 
+#16 1153.0 Run `npm audit` for details.
+#16 1153.0 npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+#16 1153.0 npm warn install-scripts   protobufjs@7.6.6 (postinstall: node scripts/postinstall)
+#16 1153.0 npm warn install-scripts
+#16 1153.0 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+#16 1153.0 npm notice
+#16 1153.0 npm notice New major version of npm available! 11.19.1 -> 12.2.2
+#16 1153.0 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+#16 1153.0 npm notice To update run: npm install -g npm@12.2.2
+#16 1153.0 npm notice
+#16 1153.2 npm warn using --force Recommended protections disabled.
+#16 DONE 1153.8s
+
+#17 [stage-1 6/6] COPY --from=build /app/dist ./dist
+#17 DONE 0.5s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 6.1s done
+#18 exporting manifest sha256:98e8c4baf523a060a1e93f8f4d5a01ece33bb468d3bc1da49fa6befb2fef4895 0.0s done
+#18 exporting config sha256:0780c9ccc5967985b68d9b70f52e73dd0eb8244ca1dab132654b6b16f7c25d28 0.0s done
+#18 exporting attestation manifest sha256:f67e070da7c540eee31b4ca892e0052f5fb2a4da19e611ac198e8524efc9bb47 0.0s done
+#18 exporting manifest list sha256:faf211f74e8f659b0bc8a97cb5827d9930bc25dbf872ea4f9c321f6e373e15c7 0.0s done
+#18 naming to docker.io/library/hotel-fastify-api:latest done
+#18 unpacking to docker.io/library/hotel-fastify-api:latest
+#18 unpacking to docker.io/library/hotel-fastify-api:latest 3.3s done
+#18 DONE 9.6s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image hotel-fastify-api Built 

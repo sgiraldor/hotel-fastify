@@ -1,0 +1,22 @@
+﻿# HELP hotel_http_requests_total Total HTTP requests
+# TYPE hotel_http_requests_total counter
+hotel_http_requests_total 660
+# HELP hotel_http_errors_5xx_total Total HTTP 5xx
+# TYPE hotel_http_errors_5xx_total counter
+hotel_http_errors_5xx_total 82
+# HELP hotel_chaos_503_total Chaos injections counted via metrics hook companion
+# TYPE hotel_chaos_503_total counter
+hotel_chaos_503_total 82
+# HELP hotel_http_p95_ms Approximate p95 latency ms (per pod)
+# TYPE hotel_http_p95_ms gauge
+hotel_http_p95_ms 1.24
+# HELP hotel_http_throughput_rps Approximate throughput
+# TYPE hotel_http_throughput_rps gauge
+hotel_http_throughput_rps 0.1318
+# HELP hotel_chaos_active Chaos switch active
+# TYPE hotel_chaos_active gauge
+hotel_chaos_active 0
+# HELP hotel_resilience_protected 1 if RESILIENCE_MODE=protected
+# TYPE hotel_resilience_protected gauge
+hotel_resilience_protected 1
+

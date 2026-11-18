@@ -1,0 +1,16 @@
+traceId=4f8140a18fbaa1f98caaa8990d14341c
+found=True
+rawSize=10879
+services=cine-api,hotel-api,sports-api
+span_count=8
+sports_server=True
+hotel_server=True
+cine_server=True
+sports_client_hotel=True
+sports_client_cine=True
+parent_child_hotel=True
+parent_child_cine=True
+sequence_hotel_then_cine=True
+sports_server_spans=23c4b3b33ca12a2e:GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId:278.492ms
+hotel_server_spans=2c3cb8f686787eca:1.659ms:parent=ee9f09d7a04a1788
+cine_server_spans=b76594a36c80eebc:GET:18.422ms:parent=bc21953c3ab7f36b

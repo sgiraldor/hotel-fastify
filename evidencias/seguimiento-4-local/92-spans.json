@@ -1,0 +1,68 @@
+[
+    {
+        "service":  "sports-api",
+        "spanId":  "doVgH1PGY/4=",
+        "parentSpanId":  "o2YiYtpwRTE=",
+        "name":  "hotel.get_habitacion",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794888521304000000",
+        "endNs":  "1794888521304370155",
+        "durationMs":  0.37,
+        "status":  "UNSET/OK"
+    },
+    {
+        "service":  "sports-api",
+        "spanId":  "Wo0QXzpV4wI=",
+        "parentSpanId":  "o2YiYtpwRTE=",
+        "name":  "cine.get_pelicula",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794888521504000000",
+        "endNs":  "1794888521557537619",
+        "durationMs":  53.538,
+        "status":  "UNSET/OK"
+    },
+    {
+        "service":  "sports-api",
+        "spanId":  "o2YiYtpwRTE=",
+        "parentSpanId":  "NUN3pKUzl2Y=",
+        "name":  "flujo.multicloud",
+        "kind":  "SPAN_KIND_INTERNAL",
+        "startNs":  "1794888521297000000",
+        "endNs":  "1794888521557419796",
+        "durationMs":  260.42,
+        "status":  "UNSET/OK"
+    },
+    {
+        "service":  "sports-api",
+        "spanId":  "lOpjY+GFhk0=",
+        "parentSpanId":  "doVgH1PGY/4=",
+        "name":  "GET /api/v2/habitacion/:id",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794888521322000000",
+        "endNs":  "1794888521499514515",
+        "durationMs":  177.515,
+        "status":  "UNSET/OK"
+    },
+    {
+        "service":  "sports-api",
+        "spanId":  "gAOXwR81lUo=",
+        "parentSpanId":  "Wo0QXzpV4wI=",
+        "name":  "GET /api/v2/peliculas/:id",
+        "kind":  "SPAN_KIND_CLIENT",
+        "startNs":  "1794888521504000000",
+        "endNs":  "1794888521555936731",
+        "durationMs":  51.937,
+        "status":  "UNSET/OK"
+    },
+    {
+        "service":  "sports-api",
+        "spanId":  "NUN3pKUzl2Y=",
+        "parentSpanId":  "",
+        "name":  "GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId",
+        "kind":  "SPAN_KIND_SERVER",
+        "startNs":  "1794888521295000000",
+        "endNs":  "1794888521558745657",
+        "durationMs":  263.746,
+        "status":  "UNSET/OK"
+    }
+]

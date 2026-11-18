@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "title": "Hotel OCI — HTTP 503 en las dos réplicas (declarativo)",
+  "description": "Chaos Toolkit orquesta el interruptor por pod vía oci_replicas_provider.py → replicas-toolkit.ps1 → chaos-replicas.ps1. No usa el NLB para activar ni para comprobar cobertura. Enable exige CHAOS_OCI_CONFIRM=YES. TTL por defecto 60 s (máximo de la API 300 s). El provider Python lanza ActivityFailed si el script sale distinto de 0. validate o dry-run no demuestran ejecución real en OCI.",
+  "tags": ["hotel", "oci", "replicas", "seguimiento-4", "declarative"],
+  "configuration": {
+    "observation_window_seconds": {
+      "type": "env",
+      "key": "CHAOS_OCI_OBSERVE_SEC",
+      "default": "5"
+    }
+  },
+  "steady-state-hypothesis": {
+    "title": "Las dos réplicas Ready responden habitación 200 y /live 200",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "both-replicas-healthy",
+        "tolerance": true,
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "status",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "action",
+      "name": "enable-both-replicas",
+      "provider": {
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "enable",
+        "arguments": {
+          "timeout": 120
+        }
+      }
+    },
+    {
+      "type": "probe",
+      "name": "both-replicas-return-503",
+      "provider": {
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "verify_active",
+        "arguments": {
+          "timeout": 90
+        }
+      }
+    },
+    {
+      "type": "action",
+      "name": "wait-observation-window",
+      "provider": {
+        "type": "process",
+        "path": "node",
+        "arguments": [
+          "-e",
+          "const s=Number(process.env.CHAOS_OCI_OBSERVE_SEC||5); setTimeout(()=>{}, Math.max(1,s)*1000)"
+        ],
+        "timeout": 60
+      }
+    },
+    {
+      "type": "action",
+      "name": "disable-both-replicas",
+      "provider": {
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "disable",
+        "arguments": {
+          "timeout": 90
+        }
+      }
+    },
+    {
+      "type": "probe",
+      "name": "both-replicas-recovered",
+      "provider": {
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "status",
+        "arguments": {
+          "timeout": 90
+        }
+      }
+    }
+  ],
+  "rollbacks": [
+    {
+      "type": "action",
+      "name": "emergency-disable-both-replicas",
+      "provider": {
+        "type": "python",
+        "module": "oci_replicas_provider",
+        "func": "disable",
+        "arguments": {
+          "timeout": 90
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+﻿RUN_ID: aws-intercloud-live-20261117191113
+
+No se registraron timestamps absolutos exactos de
+inicio y fin de k6.
+
+La cobertura temporal se sustenta mediante:
+- Activacion en ambas replicas antes de k6.
+- Orden de ejecucion del orquestador.
+- Duracion relativa de k6.
+- generatedAt como cota superior cercana, no fin exacto.
+- Desactivacion posterior a k6 y anterior al TTL.
+
+No atribuir los resultados de fallback exclusivamente
+al circuit breaker sin evidencia directa de su estado.

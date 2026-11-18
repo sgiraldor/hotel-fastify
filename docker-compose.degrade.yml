@@ -1,0 +1,23 @@
+# Latencia MySQL controlada vía Toxiproxy (solo laboratorio local).
+# Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.degrade.yml up -d --build
+#   .\scripts\experiments\mysql-latency.ps1 -LatencyMs 2500
+services:
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.9.0
+    container_name: hotel-toxiproxy
+    ports:
+      - "8474:8474"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  api:
+    environment:
+      DB_HOST: toxiproxy
+      DB_PORT: "3306"
+    depends_on:
+      toxiproxy:
+        condition: service_started
+      mysql:
+        condition: service_healthy

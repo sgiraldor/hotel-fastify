@@ -38,10 +38,34 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: hotel_db
+      OTEL_SERVICE_NAME: hotel-api
+      OTEL_TRACES_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      CHAOS_LAB_TOKEN: ${CHAOS_LAB_TOKEN:-}
+      RESILIENCE_MODE: ${RESILIENCE_MODE:-protected}
+      DB_POOL_LIMIT: ${DB_POOL_LIMIT:-10}
+      DB_POOL_LIMIT_UNPROTECTED: ${DB_POOL_LIMIT_UNPROTECTED:-50}
+      DB_CONCURRENCY_LIMIT: ${DB_CONCURRENCY_LIMIT:-}
+      DB_CONCURRENCY_LIMIT_UNPROTECTED: ${DB_CONCURRENCY_LIMIT_UNPROTECTED:-50}
+      DB_QUERY_TIMEOUT_MS: ${DB_QUERY_TIMEOUT_MS:-2000}
+      DB_QUERY_TIMEOUT_MS_UNPROTECTED: ${DB_QUERY_TIMEOUT_MS_UNPROTECTED:-30000}
+      REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-3000}
+      REQUEST_TIMEOUT_MS_UNPROTECTED: ${REQUEST_TIMEOUT_MS_UNPROTECTED:-0}
 
     depends_on:
       mysql:
         condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3000/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
 
     restart: on-failure
 

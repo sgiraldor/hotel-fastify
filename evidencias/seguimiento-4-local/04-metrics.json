@@ -1,0 +1,9 @@
+﻿{
+    "name":  "04-metrics",
+    "url":  "http://127.0.0.1:3000/metrics",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"requests_total\":5,\"requests_2xx\":5,\"requests_4xx\":0,\"requests_5xx\":0,\"requests_503_chaos\":0,\"average_response_time_ms\":3.7,\"p50_response_time_ms\":0.79,\"p95_response_time_ms\":14.52,\"p99_response_time_ms\":14.52,\"throughput_rps_approx\":0.2759,\"resilience_mode\":\"protected\",\"db\":{\"mode\":\"protected\",\"poolLimit\":10,\"queryTimeoutMs\":2000},\"chaos\":{\"active\":false,\"activations\":0,\"injections\":0},\"note\":\"Metricas in-process por pod; usar OTLP/Prometheus para multi-replica\"}"
+}

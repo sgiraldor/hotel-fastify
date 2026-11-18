@@ -8,6 +8,7 @@ describe('Pruebas unitarias para el huesped', () => {
       nombre: 'Samuel',
       apellido: 'Giraldo',
       telefono: '3001234567',
+      email: 'samuel@gmail.com',
       tipoDocumento: 'CC',
       fechaNacimiento: '2002-05-15',
     });
@@ -21,6 +22,7 @@ describe('Pruebas unitarias para el huesped', () => {
       nombre: '',
       apellido: 'Giraldo',
       telefono: '3001234567',
+      email: 'samuel@gmail.com',
       tipoDocumento: 'CC',
       fechaNacimiento: '2002-05-15',
     });
@@ -34,6 +36,7 @@ describe('Pruebas unitarias para el huesped', () => {
       nombre: 'Samuel',
       apellido: 'Giraldo',
       telefono: '3001234567',
+      email: 'samuel@gmail.com',
       tipoDocumento: 'CC',
       fechaNacimiento: '2002-05-15',
     });

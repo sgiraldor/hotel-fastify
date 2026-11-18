@@ -1,0 +1,19 @@
+﻿docker :  Network hotel-fastify_default Creating 
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-67c19de0-3f70-408c-b1bc-02fe1a60cb09.ps1: 108 Carácter: 86
++ ... $env:RESILIENCE_MODE = 'protected'; docker compose up -d 2>&1 | Out-F ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Network hotel-fastify_default Creating :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network hotel-fastify_default Creating 
+ Network hotel-fastify_default Created 
+ Network hotel-fastify_default Created 
+ Container hotel-mysql Creating 
+ Container hotel-mysql Created 
+ Container hotel-api Creating 
+ service:api:1 Error response from daemon: Conflict. The container name "/hotel-api" is already in use by container 
+"16331bcdb6c43875214f1ea04cca5a79740e16d96b3227519448482c2413d7b0". You have to remove (or rename) that container to 
+be able to reuse that name. 
+Error response from daemon: Conflict. The container name "/hotel-api" is already in use by container 
+"16331bcdb6c43875214f1ea04cca5a79740e16d96b3227519448482c2413d7b0". You have to remove (or rename) that container to 
+be able to reuse that name.

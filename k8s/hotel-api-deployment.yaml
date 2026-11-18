@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-api
+  labels:
+    app: hotel-api
+    service: hotel
+    tier: backend
+    owner: samuel
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hotel-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: hotel-api
+        service: hotel
+        tier: backend
+        owner: samuel
+    spec:
+      containers:
+        - name: hotel-api
+          # Imagen publicada en OCIR (repo público del laboratorio).
+          image: bog.ocir.io/axtqtuusylqm/hotel-api:1.1.0
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: hotel-api-config
+            - secretRef:
+                name: hotel-api-secrets
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      # Descomentar cuando exista el secret de pull a OCIR:
+      # imagePullSecrets:
+      #   - name: ocirsecret
+

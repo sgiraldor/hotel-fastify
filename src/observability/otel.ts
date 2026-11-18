@@ -1,7 +1,7 @@
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+﻿import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { NoopSpanProcessor } from '@opentelemetry/sdk-trace';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { asegurarSpansDeServidorHttp } from './http-instrumentation';
 import {
   exportacionDeMetricasConfigurada,

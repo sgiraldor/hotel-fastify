@@ -1,6 +1,6 @@
 {
   "name": "hotel",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "API REST para sistema de gestion hotelera",
   "main": "dist/server.js",
   "scripts": {
@@ -20,7 +20,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1152.0",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.222.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.222.0",
@@ -28,6 +27,7 @@
     "@opentelemetry/instrumentation-undici": "^0.32.0",
     "@opentelemetry/sdk-metrics": "^2.11.0",
     "@opentelemetry/sdk-node": "^0.222.0",
+    "@opentelemetry/sdk-trace-base": "^2.11.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.7.4",
     "mysql2": "^3.23.3",
@@ -35,7 +35,6 @@
     "typeorm": "^1.1.0"
   },
   "devDependencies": {
-    "@opentelemetry/sdk-trace-base": "^2.11.0",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.1.11",
     "tsx": "^4.20.6",

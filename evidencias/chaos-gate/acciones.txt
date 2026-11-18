@@ -1,0 +1,46 @@
+Corridas reales del chaos gate. Las cifras salen de las anotaciones públicas de GitHub Actions.
+El zip del artefacto exige sesión; la API anónima respondió 401 al descargarlo.
+
+Negativa
+url=https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442
+sha=3bc9d12
+conclusion=failure
+paso_fallido=Evaluar umbrales
+habitacion_503_rate=0
+muestras_habitacion=3
+live_200_rate=1
+muestras_live=1
+recuperacion_s=0.063
+CAUSA: habitacion_503_rate=0 umbral=1
+disable_status=200
+habitacion_despues=200
+live_despues=200
+compose_down=0
+artefacto=chaos-gate-44189190442-1
+
+Positiva
+url=https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682
+sha=6c79e25
+conclusion=success
+habitacion_503_rate=1
+muestras_habitacion=3
+live_200_rate=1
+muestras_live=1
+recuperacion_s=0.067
+disable_status=200
+habitacion_despues=200
+live_despues=200
+compose_down=0
+artefacto=chaos-gate-44189597682-1
+
+Segundo intento de descarga, 2026-11-17, sin leer credenciales.
+API anónima: artefacto negativo id=14374349534, 3635 bytes, sha256 d3b4347fab7ead0c42d966363df91362f744e65b0e6993127112822244db631d, no expirado.
+API anónima: artefacto positivo id=14374764944, 3837 bytes, sha256 b802c1a7199ac7df32a9d3c6ed594e3c2f659aa93defb1fa8f5b9e09f3649533, no expirado.
+GET del zip de ambos respondió 401.
+El navegador, sin sesión, muestra "Sign in to view logs" en la corrida 44189190442.
+gh no está instalado. Los zip no se guardaron en ese intento.
+
+Descarga posterior con la sesión Git ya existente de sgiraldor. Los scopes devueltos fueron gist, repo y workflow. El token no se escribió en el repositorio.
+Los dos zip se extrajeron y se revisaron. No contienen tokens de GitHub, Bearer ni el valor de CHAOS_LAB_TOKEN. El journal conserva el marcador ${chaos_lab_token}.
+Negativa archivada en evidencias/chaos-gate/44189190442. evaluacion.txt confirma habitacion_503_rate=0, live_200_rate=1 y recuperacion_s=0.063. reversion.txt confirma disable_status=200, habitacion_despues=200, live_despues=200 y compose_down=0.
+Positiva archivada en evidencias/chaos-gate/44189597682. evaluacion.txt confirma habitacion_503_rate=1, live_200_rate=1 y recuperacion_s=0.067. La reversión tiene los mismos cuatro resultados en 200 y 0.

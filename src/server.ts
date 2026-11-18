@@ -5,12 +5,20 @@ import { AppDataSource } from './config/database';
 import { huespedRoutes } from './routes/huesped.routes';
 import { habitacionRoutes } from './routes/habitacion.routes';
 import { checkinRoutes } from './routes/checkin.routes';
-import { huespedV2Routes } from './routes/v2/huesped-v2.routes';
 import { habitacionV2Routes } from './routes/v2/habitacion-v2.routes';
-import { checkinV2Routes } from './routes/v2/checkin-v2.routes';
-import { traceIdHook } from './plugins/trace-id.plugin';
-import { camposDeCorrelacion } from './observability/log-context';
+import { healthRoutes } from './routes/health.routes';
+import { registrarMetricas, incrementarChaos503 } from './observability/metrics';
 import { registrarMetricasHttp } from './observability/http-metrics';
+import { registrarPrometheus } from './observability/prometheus-metrics';
+import { camposDeCorrelacion } from './observability/log-context';
+import { traceIdHook } from './plugins/trace-id.plugin';
+import {
+  chaosControlRoutes,
+  chaosDependencyHook,
+} from './plugins/chaos-dependency.plugin';
+import { obtenerRequestTimeoutMs } from './config/resilience';
+
+const requestTimeoutMs = obtenerRequestTimeoutMs();
 
 const app = fastify({
   logger: {
@@ -19,20 +27,46 @@ const app = fastify({
       return camposDeCorrelacion();
     },
   },
+  ...(requestTimeoutMs > 0
+    ? { requestTimeout: requestTimeoutMs }
+    : {}),
 });
 
 app.addHook('onRequest', traceIdHook);
+app.addHook('onRequest', async (request, reply) => {
+  await chaosDependencyHook(request, reply);
+
+  if (reply.sent) {
+    incrementarChaos503();
+  }
+});
+
+registrarMetricas(app);
 registrarMetricasHttp(app, 'hotel-api');
+registrarPrometheus(app);
+
+app.register(healthRoutes);
 app.register(huespedRoutes);
 app.register(habitacionRoutes);
 app.register(checkinRoutes);
-
-app.register(huespedV2Routes);
 app.register(habitacionV2Routes);
-app.register(checkinV2Routes);
+app.register(chaosControlRoutes);
+
+// Endpoint de falla controlada exclusivo para pruebas Canary
+app.get('/canary/failure', async (_request, reply) => {
+  return reply.code(500).send({
+    message: 'Falla controlada de Canary',
+    version: '4.0.0',
+    track: 'canary',
+  });
+});
 
 app.get('/', async () => {
-  return { message: 'Hotel funcionando' };
+  return {
+    message: 'Hotel funcionando',
+    version: '4.0.0',
+    track: 'canary',
+  };
 });
 
 const start = async () => {
@@ -49,6 +83,7 @@ const start = async () => {
 
     console.log(`Servidor ejecutándose en el puerto ${port}`);
   } catch (error) {
+    console.error('ERROR AL INICIAR LA API:', error);
     app.log.error(error);
     process.exit(1);
   }

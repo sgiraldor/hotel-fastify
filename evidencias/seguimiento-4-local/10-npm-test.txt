@@ -1,0 +1,21 @@
+﻿node.exe : npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm 
+help npmrc` for supported config options.
+En línea: 1 Carácter: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+> hotel@1.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/SamuelPortatil/hotel-fastify
+
+
+ Test Files  12 passed (12)
+      Tests  66 passed (66)
+   Start at  18:55:51
+   Duration  1.57s (transform 1.73s, setup 0ms, import 6.56s, tests 1.31s, environment 4ms)
+

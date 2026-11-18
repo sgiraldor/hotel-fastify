@@ -1,0 +1,8 @@
+cine_trace_count_in_response=20
+example_trace_id=5bb8b36c398d4f270d24f6d7f609398
+latest_startTimeUnixNano=1794888049808000000
+latest_utc_approx=2026-11-17T04:00:49.8080000Z
+rootServiceName=cine-api
+rootTraceName=GET
+durationMs=5
+tempo_limit50_count=50; inspectedTraces=117

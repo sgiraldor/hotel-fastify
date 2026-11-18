@@ -1,0 +1,1 @@
+prom_services=cine-api,hotel-api,sports-api

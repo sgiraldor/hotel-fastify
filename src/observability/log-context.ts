@@ -1,4 +1,4 @@
-import { context, trace } from '@opentelemetry/api';
+﻿import { context, trace } from '@opentelemetry/api';
 import { almacenamientoTrazaFuncional } from '../plugins/trace-id.plugin';
 
 export function camposDeCorrelacion(): Record<string, string> {

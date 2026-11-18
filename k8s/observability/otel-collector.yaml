@@ -1,0 +1,154 @@
+# OpenTelemetry Collector compartido (Hotel / Sports / Cine)
+# OTLP HTTP/protobuf :4318 — Basic Auth (usuario otel-lab)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: observability
+  labels:
+    app: otel-collector
+data:
+  config.yaml: |
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+      basicauth/server:
+        htpasswd:
+          file: /etc/otel-basicauth/htpasswd
+
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+            max_request_body_size: 4194304
+            auth:
+              authenticator: basicauth/server
+
+    processors:
+      batch:
+        timeout: 2s
+        send_batch_size: 256
+      memory_limiter:
+        check_interval: 2s
+        limit_mib: 180
+        spike_limit_mib: 40
+      resource:
+        attributes:
+          - key: team
+            value: seguimiento-4
+            action: upsert
+          - key: deployment.environment
+            value: oke-lab
+            action: upsert
+
+    exporters:
+      otlphttp/tempo:
+        endpoint: http://tempo:4318
+        tls:
+          insecure: true
+      prometheus:
+        endpoint: 0.0.0.0:8889
+        namespace: otel
+        resource_to_telemetry_conversion:
+          enabled: true
+      debug:
+        verbosity: basic
+
+    service:
+      extensions: [health_check, basicauth/server]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, resource, batch]
+          exporters: [otlphttp/tempo, debug]
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, resource, batch]
+          exporters: [prometheus, debug]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: observability
+  labels:
+    app: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+        - name: otel-collector
+          image: docker.io/otel/opentelemetry-collector-contrib:0.120.0
+          args: ["--config=/etc/otelcol/config.yaml"]
+          ports:
+            - name: otlp-http
+              containerPort: 4318
+            - name: prom
+              containerPort: 8889
+            - name: health
+              containerPort: 13133
+          env:
+            - name: GOMEMLIMIT
+              value: "160MiB"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otelcol
+              readOnly: true
+            - name: basicauth
+              mountPath: /etc/otel-basicauth
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: config
+          configMap:
+            name: otel-collector-config
+        - name: basicauth
+          secret:
+            secretName: otel-lab-basicauth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: observability
+  labels:
+    app: otel-collector
+spec:
+  type: ClusterIP
+  selector:
+    app: otel-collector
+  ports:
+    - name: otlp-http
+      port: 4318
+      targetPort: otlp-http
+    - name: prom
+      port: 8889
+      targetPort: prom
+# Ingesta pública: SOLO HTTPS vía otel-tls-proxy (NodePort 31443).
+# El Service otel-collector-public HTTP quedó eliminado para no enviar Basic en claro.

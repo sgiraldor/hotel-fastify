@@ -1,6 +1,9 @@
 import { FastifyInstance } from 'fastify';
+import { AppDataSource } from '../config/database';
+import { CheckIn } from '../entities/checkin.entity';
+import { Huesped } from '../entities/huesped.entity';
+import { Habitacion } from '../entities/habitacion.entity';
 import { validarCheckIn } from '../utils/checkin.utils';
-import { CheckInService } from '../services/checkin.service';
 
 interface CheckInBody {
   huespedId: number;
@@ -10,6 +13,7 @@ interface CheckInBody {
   pagoTotalHabitacion: number;
   pagoRealizado: number;
   estadoPago: string;
+  estado: string;
 }
 
 interface ActualizarCheckInBody {
@@ -20,10 +24,13 @@ interface ActualizarCheckInBody {
   pagoTotalHabitacion?: number;
   pagoRealizado?: number;
   estadoPago?: string;
+  estado?: string;
 }
 
 export async function checkinRoutes(app: FastifyInstance) {
-  const checkinService = new CheckInService();
+  const checkinRepository = AppDataSource.getRepository(CheckIn);
+  const huespedRepository = AppDataSource.getRepository(Huesped);
+  const habitacionRepository = AppDataSource.getRepository(Habitacion);
 
   app.post<{ Body: CheckInBody }>(
     '/checkin',
@@ -37,6 +44,7 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         } = request.body;
 
         const datosValidos = validarCheckIn({
@@ -47,6 +55,7 @@ export async function checkinRoutes(app: FastifyInstance) {
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         });
 
         if (!datosValidos) {
@@ -55,31 +64,41 @@ export async function checkinRoutes(app: FastifyInstance) {
           });
         }
 
-        const resultado = await checkinService.crear({
-          huespedId,
-          habitacionId,
-          fechaIngreso,
-          fechaSalida,
+        const huesped = await huespedRepository.findOneBy({
+          id: huespedId,
+        });
+
+        if (!huesped) {
+          return reply.code(404).send({
+            message: 'Huésped no encontrado',
+          });
+        }
+
+        const habitacion = await habitacionRepository.findOneBy({
+          id: habitacionId,
+        });
+
+        if (!habitacion) {
+          return reply.code(404).send({
+            message: 'Habitación no encontrada',
+          });
+        }
+
+        const nuevoCheckIn = checkinRepository.create({
+          huesped,
+          habitacion,
+          fechaIngreso: new Date(fechaIngreso),
+          fechaSalida: new Date(fechaSalida),
           pagoTotalHabitacion,
           pagoRealizado,
           estadoPago,
+          estado,
         });
 
-        if ('error' in resultado) {
-          if (resultado.error === 'HUESPED_NO_ENCONTRADO') {
-            return reply.code(404).send({
-              message: 'Huésped no encontrado',
-            });
-          }
+        const checkInGuardado =
+          await checkinRepository.save(nuevoCheckIn);
 
-          if (resultado.error === 'HABITACION_NO_ENCONTRADA') {
-            return reply.code(404).send({
-              message: 'Habitación no encontrada',
-            });
-          }
-        }
-
-        return reply.code(201).send(resultado.checkin);
+        return reply.code(201).send(checkInGuardado);
       } catch (error) {
         console.error('ERROR AL CREAR CHECKIN:', error);
 
@@ -92,7 +111,12 @@ export async function checkinRoutes(app: FastifyInstance) {
 
   app.get('/checkin', async (request, reply) => {
     try {
-      const checkins = await checkinService.obtenerTodos();
+      const checkins = await checkinRepository.find({
+        relations: {
+          huesped: true,
+          habitacion: true,
+        },
+      });
 
       return reply.code(200).send(checkins);
     } catch (error) {
@@ -110,7 +134,13 @@ export async function checkinRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const checkin = await checkinService.obtenerPorId(id);
+        const checkin = await checkinRepository.findOne({
+          where: { id },
+          relations: {
+            huesped: true,
+            habitacion: true,
+          },
+        });
 
         if (!checkin) {
           return reply.code(404).send({
@@ -138,32 +168,87 @@ export async function checkinRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const resultado = await checkinService.actualizar(
-          id,
-          request.body,
-        );
+        const checkin = await checkinRepository.findOne({
+          where: { id },
+          relations: {
+            huesped: true,
+            habitacion: true,
+          },
+        });
 
-        if ('error' in resultado) {
-          if (resultado.error === 'CHECKIN_NO_ENCONTRADO') {
-            return reply.code(404).send({
-              message: 'Check-in no encontrado',
-            });
-          }
+        if (!checkin) {
+          return reply.code(404).send({
+            message: 'Check-in no encontrado',
+          });
+        }
 
-          if (resultado.error === 'HUESPED_NO_ENCONTRADO') {
+        const {
+          huespedId,
+          habitacionId,
+          fechaIngreso,
+          fechaSalida,
+          pagoTotalHabitacion,
+          pagoRealizado,
+          estadoPago,
+          estado,
+        } = request.body;
+
+        if (huespedId !== undefined) {
+          const huesped = await huespedRepository.findOneBy({
+            id: huespedId,
+          });
+
+          if (!huesped) {
             return reply.code(404).send({
               message: 'Huésped no encontrado',
             });
           }
 
-          if (resultado.error === 'HABITACION_NO_ENCONTRADA') {
+          checkin.huesped = huesped;
+        }
+
+        if (habitacionId !== undefined) {
+          const habitacion = await habitacionRepository.findOneBy({
+            id: habitacionId,
+          });
+
+          if (!habitacion) {
             return reply.code(404).send({
               message: 'Habitación no encontrada',
             });
           }
+
+          checkin.habitacion = habitacion;
         }
 
-        return reply.code(200).send(resultado.checkin);
+        if (fechaIngreso !== undefined) {
+          checkin.fechaIngreso = new Date(fechaIngreso);
+        }
+
+        if (fechaSalida !== undefined) {
+          checkin.fechaSalida = new Date(fechaSalida);
+        }
+
+        if (pagoTotalHabitacion !== undefined) {
+          checkin.pagoTotalHabitacion = pagoTotalHabitacion;
+        }
+
+        if (pagoRealizado !== undefined) {
+          checkin.pagoRealizado = pagoRealizado;
+        }
+
+        if (estadoPago !== undefined) {
+          checkin.estadoPago = estadoPago;
+        }
+
+        if (estado !== undefined) {
+          checkin.estado = estado;
+        }
+
+        const checkinActualizado =
+          await checkinRepository.save(checkin);
+
+        return reply.code(200).send(checkinActualizado);
       } catch (error) {
         console.error('ERROR AL ACTUALIZAR CHECKIN:', error);
 
@@ -180,13 +265,15 @@ export async function checkinRoutes(app: FastifyInstance) {
       try {
         const id = Number(request.params.id);
 
-        const eliminado = await checkinService.eliminar(id);
+        const checkin = await checkinRepository.findOneBy({ id });
 
-        if (!eliminado) {
+        if (!checkin) {
           return reply.code(404).send({
             message: 'Check-in no encontrado',
           });
         }
+
+        await checkinRepository.remove(checkin);
 
         return reply.code(200).send({
           message: 'Check-in eliminado correctamente',

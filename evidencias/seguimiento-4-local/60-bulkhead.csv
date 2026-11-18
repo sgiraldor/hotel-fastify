@@ -1,0 +1,3 @@
+﻿round,mode,concurrencyLimit,poolLimit,reqs,rps,success_rate,error_rate,p95_total_ms,p95_success_ms,status_200,status_503,bulkhead_rejections,peak_inflight,successful_rps
+r0,unprotected,50,50,326,6.28,1,0,8993.985,8993.985,326,0,0,24,6.28
+r1,protected,4,10,190516,3670.84,0.0003,0.9997,7.859,3132.985,62,190454,190454,4,1.19

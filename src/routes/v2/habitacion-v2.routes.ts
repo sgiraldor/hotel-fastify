@@ -1,6 +1,11 @@
-import { FastifyInstance } from 'fastify';
+﻿import { FastifyInstance } from 'fastify';
+import {
+  AppDataSource,
+  conConsultaResiliente,
+} from '../../config/database';
+import { Habitacion } from '../../entities/habitacion.entity';
 import { validarHabitacion } from '../../utils/habitacion.utils';
-import { HabitacionService } from '../../services/habitacion.service';
+import { traceIdDeLaPeticion } from '../../plugins/trace-id.plugin';
 
 interface HabitacionBody {
   numeroHabitacion: string;
@@ -16,130 +21,241 @@ interface ActualizarHabitacionBody {
   tipoHabitacion?: string;
 }
 
+/**
+ * Contrato V2 para Sports (coordinador E2E).
+ * Endpoint principal de integracion: GET /api/v2/habitacion/:id
+ */
 export async function habitacionV2Routes(app: FastifyInstance) {
-  const habitacionService = new HabitacionService();
+  const habitacionRepository = AppDataSource.getRepository(Habitacion);
 
-  // Crear habitación V2
   app.post<{ Body: HabitacionBody }>(
     '/api/v2/habitacion',
     async (request, reply) => {
+      const traceId = traceIdDeLaPeticion(request);
+
       try {
         const datosValidos = validarHabitacion(request.body);
 
         if (!datosValidos) {
           return reply.code(400).send({
             message: 'los datos de la habitacion estan incompletos',
+            traceId,
           });
         }
 
+        const nuevaHabitacion = habitacionRepository.create({
+          numeroHabitacion: request.body.numeroHabitacion,
+          precioHabitacion: request.body.precioHabitacion,
+          estadoHabitacion: request.body.estadoHabitacion,
+          tipoHabitacion: request.body.tipoHabitacion,
+        });
+
         const habitacionGuardada =
-          await habitacionService.crear(request.body);
+          await habitacionRepository.save(nuevaHabitacion);
 
         return reply.code(201).send(habitacionGuardada);
       } catch (error) {
-        console.error('ERROR AL CREAR HABITACION V2:', error);
+        request.log.error({ error, traceId }, 'ERROR AL CREAR HABITACION V2');
 
         return reply.code(500).send({
-          message: 'Error al crear la habitación',
+          message: 'Error al crear la habitacion',
+          traceId,
         });
       }
     },
   );
 
-  // Consultar todas las habitaciones V2
   app.get('/api/v2/habitacion', async (request, reply) => {
-    try {
-      const habitaciones = await habitacionService.obtenerTodos();
+    const traceId = traceIdDeLaPeticion(request);
 
+    try {
+      const habitaciones = await habitacionRepository.find();
       return reply.code(200).send(habitaciones);
     } catch (error) {
-      console.error('ERROR AL CONSULTAR HABITACIONES V2:', error);
+      request.log.error({ error, traceId }, 'ERROR AL CONSULTAR HABITACIONES V2');
 
       return reply.code(500).send({
         message: 'Error al consultar las habitaciones',
+        traceId,
       });
     }
   });
 
-  // Consultar habitación por ID V2
   app.get<{ Params: { id: string } }>(
     '/api/v2/habitacion/:id',
     async (request, reply) => {
+      const traceId = traceIdDeLaPeticion(request);
+
       try {
         const id = Number(request.params.id);
 
-        const habitacion = await habitacionService.obtenerPorId(id);
+        if (!Number.isFinite(id) || id <= 0) {
+          return reply.code(400).send({
+            message: 'id de habitacion invalido',
+            traceId,
+          });
+        }
+
+        const habitacion = await conConsultaResiliente(() =>
+          habitacionRepository.findOneBy({ id }),
+        );
 
         if (!habitacion) {
           return reply.code(404).send({
-            message: 'Habitación no encontrada',
+            message: 'Habitacion no encontrada',
+            traceId,
           });
         }
 
         return reply.code(200).send(habitacion);
       } catch (error) {
-        console.error('ERROR AL CONSULTAR HABITACION V2:', error);
+        const mensaje =
+          error instanceof Error ? error.message : 'Error desconocido';
+
+        if (mensaje.startsWith('DB_QUERY_TIMEOUT_')) {
+          request.log.warn(
+            { error, traceId },
+            'Fail-fast: timeout de consulta habitacion V2',
+          );
+
+          return reply.code(504).send({
+            message: 'Timeout consultando habitacion (fail-fast)',
+            code: 'DB_QUERY_TIMEOUT',
+            available: false,
+            traceId,
+          });
+        }
+
+        if (mensaje.startsWith('DB_BULKHEAD_REJECTED_')) {
+          request.log.warn(
+            { error, traceId },
+            'Bulkhead: rechazo por exceso de concurrencia DB',
+          );
+
+          return reply.code(503).send({
+            message: 'Hotel saturado en dependencia DB (bulkhead)',
+            code: 'DB_BULKHEAD_REJECTED',
+            available: false,
+            traceId,
+          });
+        }
+
+        if (/Queue limit reached/i.test(mensaje)) {
+          request.log.warn(
+            { error, traceId },
+            'Bulkhead pool: cola de conexiones agotada',
+          );
+
+          return reply.code(503).send({
+            message: 'Pool MySQL saturado (queue limit)',
+            code: 'DB_POOL_QUEUE_LIMIT',
+            available: false,
+            traceId,
+          });
+        }
+
+        request.log.error(
+          { error, traceId },
+          'ERROR AL CONSULTAR HABITACION V2',
+        );
 
         return reply.code(500).send({
-          message: 'Error al consultar la habitación',
+          message: 'Error al consultar la habitacion',
+          available: false,
+          traceId,
         });
       }
     },
   );
 
-  // Actualizar habitación V2
   app.patch<{
     Params: { id: string };
     Body: ActualizarHabitacionBody;
-  }>(
-    '/api/v2/habitacion/:id',
-    async (request, reply) => {
-      try {
-        const id = Number(request.params.id);
+  }>('/api/v2/habitacion/:id', async (request, reply) => {
+    const traceId = traceIdDeLaPeticion(request);
 
-        const habitacionActualizada =
-          await habitacionService.actualizar(id, request.body);
+    try {
+      const id = Number(request.params.id);
+      const habitacion = await habitacionRepository.findOneBy({ id });
 
-        if (!habitacionActualizada) {
-          return reply.code(404).send({
-            message: 'Habitación no encontrada',
-          });
-        }
-
-        return reply.code(200).send(habitacionActualizada);
-      } catch (error) {
-        console.error('ERROR AL ACTUALIZAR HABITACION V2:', error);
-
-        return reply.code(500).send({
-          message: 'Error al actualizar la habitación',
+      if (!habitacion) {
+        return reply.code(404).send({
+          message: 'Habitacion no encontrada',
+          traceId,
         });
       }
-    },
-  );
 
-  // Eliminar habitación V2
+      const {
+        numeroHabitacion,
+        precioHabitacion,
+        estadoHabitacion,
+        tipoHabitacion,
+      } = request.body;
+
+      if (numeroHabitacion !== undefined) {
+        habitacion.numeroHabitacion = numeroHabitacion;
+      }
+
+      if (precioHabitacion !== undefined) {
+        habitacion.precioHabitacion = precioHabitacion;
+      }
+
+      if (estadoHabitacion !== undefined) {
+        habitacion.estadoHabitacion = estadoHabitacion;
+      }
+
+      if (tipoHabitacion !== undefined) {
+        habitacion.tipoHabitacion = tipoHabitacion;
+      }
+
+      const habitacionActualizada =
+        await habitacionRepository.save(habitacion);
+
+      return reply.code(200).send(habitacionActualizada);
+    } catch (error) {
+      request.log.error(
+        { error, traceId },
+        'ERROR AL ACTUALIZAR HABITACION V2',
+      );
+
+      return reply.code(500).send({
+        message: 'Error al actualizar la habitacion',
+        traceId,
+      });
+    }
+  });
+
   app.delete<{ Params: { id: string } }>(
     '/api/v2/habitacion/:id',
     async (request, reply) => {
+      const traceId = traceIdDeLaPeticion(request);
+
       try {
         const id = Number(request.params.id);
+        const habitacion = await habitacionRepository.findOneBy({ id });
 
-        const eliminada = await habitacionService.eliminar(id);
-
-        if (!eliminada) {
+        if (!habitacion) {
           return reply.code(404).send({
-            message: 'Habitación no encontrada',
+            message: 'Habitacion no encontrada',
+            traceId,
           });
         }
 
+        await habitacionRepository.remove(habitacion);
+
         return reply.code(200).send({
-          message: 'Habitación eliminada correctamente',
+          message: 'Habitacion eliminada correctamente',
+          traceId,
         });
       } catch (error) {
-        console.error('ERROR AL ELIMINAR HABITACION V2:', error);
+        request.log.error(
+          { error, traceId },
+          'ERROR AL ELIMINAR HABITACION V2',
+        );
 
         return reply.code(500).send({
-          message: 'Error al eliminar la habitación',
+          message: 'Error al eliminar la habitacion',
+          traceId,
         });
       }
     },

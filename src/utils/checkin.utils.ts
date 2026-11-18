@@ -6,7 +6,8 @@ export interface DatosCheckIn {
     pagoTotalHabitacion: number;
     pagoRealizado: number;
     estadoPago: string;
-    }
+    estado: string;
+}
 
 export function validarCheckIn(datos: DatosCheckIn): boolean {
   const fechaIngreso = new Date(datos.fechaIngreso);
@@ -21,6 +22,7 @@ export function validarCheckIn(datos: DatosCheckIn): boolean {
     datos.pagoTotalHabitacion > 0 &&
     datos.pagoRealizado >= 0 &&
     datos.pagoRealizado <= datos.pagoTotalHabitacion &&
-    datos.estadoPago
+    datos.estadoPago &&
+    datos.estado
   );
 }

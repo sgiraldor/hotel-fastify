@@ -1,0 +1,9 @@
+﻿{
+    "name":  "04-root",
+    "url":  "http://127.0.0.1:3000/",
+    "status":  200,
+    "headers":  {
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"message\":\"Hotel funcionando\",\"version\":\"4.0.0\",\"track\":\"canary\"}"
+}

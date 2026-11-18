@@ -1,0 +1,9 @@
+services:
+  mysql:
+    container_name: hotel-gate-mysql
+  api:
+    container_name: hotel-gate-api
+    healthcheck:
+      start_period: 40s
+      retries: 12
+      interval: 10s

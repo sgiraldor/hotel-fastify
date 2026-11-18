@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hotel-api-config
+  labels:
+    app: hotel-api
+    owner: samuel
+data:
+  PORT: "3000"
+  # Con mysql-lab.yaml: usar hotel-mysql. Con DB externa: poner el host real.
+  DB_HOST: "hotel-mysql"
+  DB_PORT: "3306"
+  DB_NAME: "hotel_db"
+  OTEL_SERVICE_NAME: "hotel-api"
+  OTEL_TRACES_EXPORTER: "otlp"
+  OTEL_METRICS_EXPORTER: "otlp"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  # Auth Basic: OTEL_EXPORTER_OTLP_HEADERS vive en Secret hotel-api-secrets (no en Git)
+  # Laboratorio: caos desactivado por defecto
+  CHAOS_DEPENDENCY_DOWN: "false"
+  RESILIENCE_MODE: "protected"
+  DB_POOL_LIMIT: "10"
+  DB_QUERY_TIMEOUT_MS: "2000"
+  REQUEST_TIMEOUT_MS: "3000"

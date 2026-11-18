@@ -1,0 +1,31 @@
+﻿{
+    "scope":  "LOCAL",
+    "profile":  "LOCAL_PROVISIONAL_K6_V5_35S",
+    "same_fault":  "POST /api/v2/chaos/dependency enable durationSeconds=40",
+    "baseline":  {
+                     "error_rate":  0,
+                     "rps":  2033.00,
+                     "reqs":  71158,
+                     "p95_ms":  2.778
+                 },
+    "r0_unprotected":  {
+                           "error_rate":  1,
+                           "rps":  4096.99,
+                           "reqs":  143395,
+                           "p95_ms":  1.580
+                       },
+    "r1_protected":  {
+                         "error_rate":  1,
+                         "rps":  4010.00,
+                         "reqs":  140352,
+                         "p95_ms":  1.583
+                     },
+    "diff_r1_vs_r0":  {
+                          "p95_pct_change":  0.1899,
+                          "interpretation":  "Para indisponibilidad total (503 por interruptor), R1 no mejora success rate frente a R0. Ambos fallan ~100%. La mitigacion debe residir en Sports (reintentos/circuit breaker/fallback). Los timeouts/bulkhead de Hotel aplican a DB lenta/saturada, no a este fallo.",
+                          "error_rate_pct_change":  0,
+                          "error_rate_pp":  0,
+                          "rps_pct_change":  -2.1233,
+                          "p95_ms_delta":  0.003
+                      }
+}

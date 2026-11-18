@@ -14,6 +14,8 @@ export class Huesped {
     @Column({type: 'varchar'})
     telefono!: string;
     @Column({type: 'varchar'})
+    email!: string;
+    @Column({type: 'varchar'})
     tipoDocumento!: string;
     @Column({type: 'date'})
     fechaNacimiento!: Date;

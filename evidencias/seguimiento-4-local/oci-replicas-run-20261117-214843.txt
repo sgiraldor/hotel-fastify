@@ -1,0 +1,39 @@
+﻿Experimento: C:\Users\SamuelPortatil\hotel-fastify\chaos\experiment-hotel-oci-replicas.json
+Journal:     evidencias\seguimiento-4-local\oci-replicas-journal-20261117-214843.json
+TTL:         60 s (mÃ¡ximo API 300 s)
+ObservaciÃ³n: 5 s
+PYTHONPATH:  C:\Users\SamuelPortatil\hotel-fastify\chaos;C:\Users\SamuelPortatil\hotel-fastify\chaos
+ADVERTENCIA: EJECUCIÃ"N REAL: se activarÃ¡ HTTP 503 en las dos rÃ©plicas de Hotel OCI.
+Parada de emergencia si hace falta: powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action disable
+powershell : [2026-11-17 21:48:43 INFO] Validating the experiment's syntax
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-12a439f1-9ff0-43a2-8100-578c61191aa4.ps1: 110 Carácter: 345
++ ... ))"; $out = powershell -NoProfile -File .\chaos\run-oci-replicas-expe ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([2026-11-17 21:...riment's syntax:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[2026-11-17 21:48:43 INFO] Experiment looks valid
+[2026-11-17 21:48:43 INFO] Running experiment: Hotel OCI ÔÇö HTTP 503 en las dos r├®plicas (declarativo)
+[2026-11-17 21:48:43 INFO] Steady-state strategy: default
+[2026-11-17 21:48:43 INFO] Rollbacks strategy: always
+[2026-11-17 21:48:43 INFO] Steady state hypothesis: Las dos r├®plicas Ready responden habitaci├│n 200 y /live 200
+[2026-11-17 21:48:43 INFO] Probe: both-replicas-healthy
+[2026-11-17 21:48:48 INFO] Steady state hypothesis is met!
+[2026-11-17 21:48:48 INFO] Playing your experiment's method now...
+[2026-11-17 21:48:48 INFO] Action: enable-both-replicas
+[2026-11-17 21:48:53 INFO] Probe: both-replicas-return-503
+[2026-11-17 21:48:57 INFO] Action: wait-observation-window
+[2026-11-17 21:49:02 INFO] Action: disable-both-replicas
+[2026-11-17 21:49:07 INFO] Probe: both-replicas-recovered
+[2026-11-17 21:49:13 INFO] Steady state hypothesis: Las dos r├®plicas Ready responden habitaci├│n 200 y /live 200
+[2026-11-17 21:49:13 INFO] Probe: both-replicas-healthy
+[2026-11-17 21:49:18 INFO] Steady state hypothesis is met!
+[2026-11-17 21:49:18 WARNING] Rollbacks were explicitly requested to be played
+[2026-11-17 21:49:18 INFO] Let's rollback...
+[2026-11-17 21:49:18 INFO] Rollback: emergency-disable-both-replicas
+[2026-11-17 21:49:18 INFO] Action: emergency-disable-both-replicas
+[2026-11-17 21:49:23 INFO] Experiment ended with status: completed
+Post-check de seguridad: disable en ambas rÃ©plicas.
+{"pod":"hotel-api-5c4b965cf6-glg2z","action":"disable","controlStatus":200,"chaos":{"envDown":false,"temporalActivo":false,"activo":false,"until":null,"activations":5,"injections":422},"habitacionStatus":200,"habitacionCode":null,"liveStatus":200,"exitCode":0}
+{"pod":"hotel-api-5c4b965cf6-tmqlg","action":"disable","controlStatus":200,"chaos":{"envDown":false,"temporalActivo":false,"activo":false,"until":null,"activations":5,"injections":204},"habitacionStatus":200,"habitacionCode":null,"liveStatus":200,"exitCode":0}
+ok action=disable replicas=2 pods=hotel-api-5c4b965cf6-glg2z,hotel-api-5c4b965cf6-tmqlg

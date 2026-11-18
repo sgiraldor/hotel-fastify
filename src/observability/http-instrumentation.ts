@@ -1,4 +1,4 @@
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+﻿import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import * as http from 'node:http';
 import * as https from 'node:https';
 

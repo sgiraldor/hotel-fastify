@@ -1,0 +1,1 @@
+{"status":"error","errorType":"bad_data","error":"invalid parameter \"match[]\": 1:6: parse error: unexpected identifier \"otel\" in label matching, expected string"}

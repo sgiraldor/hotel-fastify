@@ -1,0 +1,11 @@
+checked_at_note=ver 93-meta.txt
+jarrison_trace=4d2c23ebdfcb130da2473261057148f1
+daniel_trace=4f8140a18fbaa1f98caaa8990d14341c
+
+# Ambas trazas: sports-api + hotel-api + cine-api SERVER spans
+# Parent-child: Sports CLIENT habitacion -> Hotel SERVER; Sports CLIENT peliculas -> Cine SERVER
+# Secuencia: Hotel CLIENT start < Cine CLIENT start
+# Hotel SERVER ~1.5ms es latencia in-process; CLIENT Sports ~180-230ms incluye RTT multicloud (flujo original, no probe)
+
+e2e_w3c_complete=YES
+prometheus_three_services=YES

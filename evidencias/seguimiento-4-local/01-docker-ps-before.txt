@@ -1,0 +1,4 @@
+﻿NAMES           IMAGE                 STATUS                     PORTS
+hotel-v4-test   a9a6b5f0055a          Exited (1) 12 days ago     
+hotel-mysql     mysql:8.4             Exited (255) 10 days ago   33060/tcp, 0.0.0.0:3307->3306/tcp
+hotel-api       hotel-fastify-1-api   Up 1 second                0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp

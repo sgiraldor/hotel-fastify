@@ -1,0 +1,101 @@
+{
+  "data": {
+    "items": [
+      {
+        "backend-sets": {
+          "TCP-80": {
+            "are-operationally-active-backends-preferred": false,
+            "backends": [
+              {
+                "ip-address": "10.20.2.52",
+                "is-backup": false,
+                "is-drain": false,
+                "is-offline": false,
+                "name": "10.20.2.52:30845",
+                "port": 30845,
+                "target-id": "ocid1.instance.oc1.sa-bogota-1.anrgcljrqx43bsqcwemsklp4gmmvlx7dner54g32bs2aydkdbqzkwt67w4nq",
+                "weight": 1
+              }
+            ],
+            "health-checker": {
+              "dns": null,
+              "interval-in-millis": 10000,
+              "port": 10256,
+              "protocol": "HTTP",
+              "request-data": null,
+              "response-body-regex": "",
+              "response-data": null,
+              "retries": 3,
+              "return-code": 200,
+              "timeout-in-millis": 3000,
+              "url-path": "/healthz"
+            },
+            "ip-version": "IPV4",
+            "is-fail-open": false,
+            "is-instant-failover-enabled": false,
+            "is-instant-failover-tcp-reset-enabled": true,
+            "is-preserve-source": false,
+            "name": "TCP-80",
+            "policy": "FIVE_TUPLE"
+          }
+        },
+        "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+        "defined-tags": {
+          "Oracle-Tags": {
+            "CreatedBy": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+            "CreatedOn": "2026-11-17T00:50:23.045Z"
+          }
+        },
+        "display-name": "default/hotel-api/ac1b87a7-ab40-48bb-bfae-028347440ba6",
+        "freeform-tags": {},
+        "id": "ocid1.networkloadbalancer.oc1.sa-bogota-1.amaaaaaaqx43bsqaditxsjapdlmvvhtcbt23o7qfxuk7cvth47vysdevndya",
+        "ip-addresses": [
+          {
+            "ip-address": "149.130.165.30",
+            "ip-version": "IPV4",
+            "is-public": true,
+            "reserved-ip": null
+          },
+          {
+            "ip-address": "10.20.1.195",
+            "ip-version": "IPV4",
+            "is-public": false,
+            "reserved-ip": null
+          }
+        ],
+        "is-preserve-source-destination": false,
+        "is-private": false,
+        "is-symmetric-hash-enabled": false,
+        "lifecycle-details": null,
+        "lifecycle-state": "ACTIVE",
+        "listeners": {
+          "TCP-80": {
+            "default-backend-set-name": "TCP-80",
+            "ip-version": "IPV4",
+            "is-ppv2-enabled": false,
+            "l3-ip-idle-timeout": null,
+            "name": "TCP-80",
+            "port": 80,
+            "protocol": "TCP",
+            "tcp-idle-timeout": 360,
+            "udp-idle-timeout": null
+          }
+        },
+        "network-security-group-ids": [],
+        "nlb-ip-version": "IPV4",
+        "security-attributes": {},
+        "subnet-id": "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaafc65lc3yjrs6w6vax53uf5muwiaqkyzxmu5vnxqv23thm5wkfmwa",
+        "system-tags": {
+          "orcl-cloud": {
+            "free-tier-retained": "true"
+          },
+          "orcl-containerengine": {
+            "Cluster": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a"
+          }
+        },
+        "time-created": "2026-11-17T00:50:23+00:00",
+        "time-updated": "2026-11-17T00:50:33+00:00"
+      }
+    ]
+  }
+}

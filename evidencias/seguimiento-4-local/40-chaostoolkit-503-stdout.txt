@@ -1,0 +1,5 @@
+{
+  "status": 0,
+  "stdout": "{\"message\":\"Hotel temporalmente indisponible (experimento de caos)\",\"code\":\"CHAOS_DEPENDENCY_DOWN\",\"traceId\":\"chaos-toolkit-inject\",\"retryAfterSeconds\":5}\n",
+  "stderr": ""
+}

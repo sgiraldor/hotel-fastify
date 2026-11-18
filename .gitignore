@@ -2,14 +2,34 @@ node_modules/
 dist/
 .env
 coverage/
+.venv-chaos/
+.venv*/
 
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.*
-*.tfvars
-*.tfvars.json
-hotel-key.pem
-hotel-github-actions.pem
-hotel-github-actions.pem
-hotel-github-actions-fixed.pem
+*.pem
+hotel_db.sql
+
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/oci/.terraform/
+terraform/oci/*.tfvars
+terraform/oci/*.tfstate*
+terraform/oci/.ocir-*
+terraform/oci/*token*
+terraform/oci/tfplan*
+scripts/experiments/results/*.json
+!scripts/experiments/results/.gitkeep
+load/results/*
+!load/results/.gitkeep
+
+# no versionar secretos locales sueltos
+evidencias/**/*.pem
+evidencias/**/*secret*
+evidencias/**/*.env
+
+
+chaostoolkit.log
+chaos-gate-results/
+__pycache__/
+*.py[cod]
+

@@ -1,0 +1,33 @@
+{
+  "data": [
+    {
+      "byoipv6-cidr-blocks": null,
+      "cidr-block": "10.20.0.0/16",
+      "cidr-blocks": [
+        "10.20.0.0/16"
+      ],
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "default-dhcp-options-id": "ocid1.dhcpoptions.oc1.sa-bogota-1.aaaaaaaanxmr55wiqxm3ohd7rmlzgaimuklhwidagtjcfgtbbpk5fztlw4sq",
+      "default-route-table-id": "ocid1.routetable.oc1.sa-bogota-1.aaaaaaaaytw5yvhl2tlgkcihv2kkrw37a2d6svhoanvvevfxi5qoqr7vwxeq",
+      "default-security-list-id": "ocid1.securitylist.oc1.sa-bogota-1.aaaaaaaaknyoixgp4lrn7oj2isc3dydsxtngbfjqkdjwztjduaukht6lileq",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/samuelgiraldoroldan51@gmail.com",
+          "CreatedOn": "2026-11-17T00:19:23.120Z"
+        }
+      },
+      "display-name": "hotel-vcn",
+      "dns-label": "hotel",
+      "freeform-tags": {},
+      "id": "ocid1.vcn.oc1.sa-bogota-1.amaaaaaaqx43bsqadrnnjbvw3uwre7jyseb3t7ejuipweqqpxhhnmaqfcv5a",
+      "ipv6-cidr-blocks": null,
+      "ipv6-private-cidr-blocks": null,
+      "is-zpr-only": null,
+      "lifecycle-state": "AVAILABLE",
+      "security-attributes": {},
+      "system-tags": {},
+      "time-created": "2026-11-17T00:19:23.165000+00:00",
+      "vcn-domain-name": "hotel.oraclevcn.com"
+    }
+  ]
+}

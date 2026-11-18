@@ -1,0 +1,10 @@
+﻿{
+    "resilience_mode":  "unprotected",
+    "db":  {
+               "mode":  "unprotected",
+               "poolLimit":  50,
+               "queryTimeoutMs":  30000
+           },
+    "p95":  6.25,
+    "note":  "API recreada con RESILIENCE_MODE=unprotected. Fail-fast timeout desactivado (queryTimeout alto / requestTimeout 0)."
+}

@@ -1,0 +1,81 @@
+apiVersion: v1
+data:
+  multicloud.json: "{\r\n  \"annotations\": {\r\n    \"list\": [\r\n      {\r\n        \"builtIn\":
+    1,\r\n        \"datasource\": { \"type\": \"grafana\", \"uid\": \"-- Grafana --\"
+    },\r\n        \"enable\": true,\r\n        \"hide\": true,\r\n        \"iconColor\":
+    \"rgba(0, 211, 255, 1)\",\r\n        \"name\": \"Annotations & Alerts\",\r\n        \"type\":
+    \"dashboard\"\r\n      }\r\n    ]\r\n  },\r\n  \"editable\": true,\r\n  \"fiscalYearStartMonth\":
+    0,\r\n  \"graphTooltip\": 1,\r\n  \"id\": null,\r\n  \"links\": [],\r\n  \"panels\":
+    [\r\n    {\r\n      \"title\": \"Throughput por servicio (Hotel scrape)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\":
+    0, \"y\": 0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_http_throughput_rps\",\r\n
+    \         \"legendFormat\": \"hotel-api\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Latencia p95 Hotel (ms)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\":
+    8, \"y\": 0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_http_p95_ms\",\r\n
+    \         \"legendFormat\": \"hotel p95\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Error rate 5xx Hotel\",\r\n      \"type\":
+    \"timeseries\",\r\n      \"gridPos\": { \"h\": 8, \"w\": 8, \"x\": 16, \"y\":
+    0 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"rate(hotel_http_errors_5xx_total[1m])\",\r\n
+    \         \"legendFormat\": \"5xx/s\",\r\n          \"refId\": \"A\"\r\n        }\r\n
+    \     ]\r\n    },\r\n    {\r\n      \"title\": \"Estado experimento (chaos / resilience)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    0, \"y\": 8 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_chaos_active\",\r\n
+    \         \"legendFormat\": \"chaos_active\",\r\n          \"refId\": \"A\"\r\n
+    \       },\r\n        {\r\n          \"expr\": \"hotel_resilience_protected\",\r\n
+    \         \"legendFormat\": \"protected\",\r\n          \"refId\": \"B\"\r\n        },\r\n
+    \       {\r\n          \"expr\": \"hotel_chaos_503_total\",\r\n          \"legendFormat\":
+    \"chaos_503_total\",\r\n          \"refId\": \"C\"\r\n        }\r\n      ]\r\n
+    \   },\r\n    {\r\n      \"title\": \"Bulkhead / fail-fast\",\r\n      \"type\":
+    \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\": 12, \"y\":
+    8 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\": \"prometheus\"
+    },\r\n      \"targets\": [\r\n        {\r\n          \"expr\": \"hotel_db_bulkhead_rejections_total\",\r\n
+    \         \"legendFormat\": \"bulkhead_rej\",\r\n          \"refId\": \"A\"\r\n
+    \       },\r\n        {\r\n          \"expr\": \"hotel_db_failfast_timeouts_total\",\r\n
+    \         \"legendFormat\": \"failfast\",\r\n          \"refId\": \"B\"\r\n        },\r\n
+    \       {\r\n          \"expr\": \"hotel_db_inflight\",\r\n          \"legendFormat\":
+    \"inflight\",\r\n          \"refId\": \"C\"\r\n        }\r\n      ]\r\n    },\r\n
+    \   {\r\n      \"title\": \"OTLP metrics recibidas (collector ??? Prometheus)\",\r\n
+    \     \"type\": \"timeseries\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    0, \"y\": 15 },\r\n      \"datasource\": { \"type\": \"prometheus\", \"uid\":
+    \"prometheus\" },\r\n      \"targets\": [\r\n        {\r\n          \"expr\":
+    \"count({job=\\\"otel-collector\\\"}) or vector(0)\",\r\n          \"legendFormat\":
+    \"series otel-collector\",\r\n          \"refId\": \"A\"\r\n        }\r\n      ]\r\n
+    \   },\r\n    {\r\n      \"title\": \"Comparaci??n R0 vs R1 (anotar ventanas)\",\r\n
+    \     \"type\": \"text\",\r\n      \"gridPos\": { \"h\": 7, \"w\": 12, \"x\":
+    12, \"y\": 15 },\r\n      \"options\": {\r\n        \"mode\": \"markdown\",\r\n
+    \       \"content\": \"## R0 / R1\\nUsar **Annotations** de Grafana para marcar:\\n-
+    Baseline\\n- **R0** unprotected + fallo\\n- **R1** protected + mismo fallo\\n\\nHotel
+    (LOCAL):\\n- A 503: R0=R1=100% error\\n- B MySQL: p95??? success???\\n- C bulkhead:
+    aislamiento s??, success???\\n\\nSports/Cine: paneles OTLP se llenan cuando exporten
+    con `service.name` correcto.\"\r\n      }\r\n    },\r\n    {\r\n      \"title\":
+    \"Buscar traza (Tempo) ??? pegar Trace ID OTel\",\r\n      \"type\": \"traces\",\r\n
+    \     \"gridPos\": { \"h\": 10, \"w\": 24, \"x\": 0, \"y\": 22 },\r\n      \"datasource\":
+    { \"type\": \"tempo\", \"uid\": \"tempo\" },\r\n      \"targets\": [\r\n        {\r\n
+    \         \"queryType\": \"traceqlSearch\",\r\n          \"refId\": \"A\",\r\n
+    \         \"filters\": [\r\n            {\r\n              \"id\": \"service-name\",\r\n
+    \             \"tag\": \"service.name\",\r\n              \"operator\": \"=\",\r\n
+    \             \"scope\": \"resource\",\r\n              \"value\": [\"hotel-api\",
+    \"sports-api\", \"cine-api\"],\r\n              \"valueType\": \"string\"\r\n
+    \           }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"title\":
+    \"Servicios esperados\",\r\n      \"type\": \"text\",\r\n      \"gridPos\": {
+    \"h\": 4, \"w\": 24, \"x\": 0, \"y\": 32 },\r\n      \"options\": {\r\n        \"mode\":
+    \"markdown\",\r\n        \"content\": \"| service.name | Cloud | Estado |\\n|---|---|---|\\n|
+    `hotel-api` | OCI | exporta OTLP + scrape Prometheus |\\n| `sports-api` | AWS
+    | pendiente env??o Jarrison |\\n| `cine-api` | GCP | pendiente env??o Daniel |\\n\\nCorrelaci??n
+    negocio: header `x-trace-id`. Correlaci??n OTel: `traceparent` / Trace ID en Tempo.\"\r\n
+    \     }\r\n    }\r\n  ],\r\n  \"schemaVersion\": 39,\r\n  \"tags\": [\"seguimiento-4\",
+    \"hotel\", \"sports\", \"cine\", \"otel\"],\r\n  \"templating\": { \"list\": []
+    },\r\n  \"time\": { \"from\": \"now-30m\", \"to\": \"now\" },\r\n  \"timezone\":
+    \"browser\",\r\n  \"title\": \"Seguimiento #4 ??? Multicloud Observability\",\r\n
+    \ \"uid\": \"seguimiento-4-multicloud\",\r\n  \"version\": 1\r\n}\r\n"
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: observability
+  labels:
+    app: grafana

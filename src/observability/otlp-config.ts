@@ -1,4 +1,4 @@
-function valor(nombre: string): string {
+﻿function valor(nombre: string): string {
   return process.env[nombre]?.trim() ?? '';
 }
 

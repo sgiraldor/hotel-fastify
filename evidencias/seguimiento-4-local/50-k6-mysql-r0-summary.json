@@ -1,0 +1,74 @@
+{
+  "experiment": "B_MYSQL_DEGRADE_COMPLEMENTARY",
+  "round": "r0",
+  "profile": "LOCAL_MYSQL_DEGRADE_K6_V8_60S",
+  "hypothesis": "R1 protected acota p95 y activa fail-fast/bulkhead bajo latencia MySQL 2500ms; R0 unprotected sirve 200 con p95 alto",
+  "stages": [
+    {"duration":"10s","target":8},
+    {"duration":"40s","target":8},
+    {"duration":"10s","target":0}
+  ],
+  "concurrency_peak_vus": 8,
+  "duration_total": "60s",
+  "metrics": {
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 150,
+        "rate": 2.494328951895978
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 2514.0529500000002,
+        "max": 7572.8217,
+        "p(90)": 2548.8044400000003,
+        "p(95)": 2578.124444999999,
+        "avg": 2742.8140286666676,
+        "min": 2454.3892
+      }
+    },
+    "hotel_error_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 150
+      }
+    },
+    "hotel_success_rate": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 150,
+        "fails": 0
+      }
+    },
+    "hotel_latency_ms": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "p(95)": 2578.124444999999,
+        "avg": 2742.8140286666676,
+        "min": 2454.3892,
+        "med": 2514.0529500000002,
+        "max": 7572.8217,
+        "p(90)": 2548.8044400000003
+      }
+    },
+    "hotel_status_200": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 150,
+        "rate": 2.494328951895978
+      }
+    }
+  },
+  "captured_at": "2026-11-17T01:40:52.469Z"
+}

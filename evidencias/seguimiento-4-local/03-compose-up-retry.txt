@@ -1,0 +1,14 @@
+﻿docker :  Container hotel-api Creating 
+En C:\Users\SamuelPortatil\AppData\Local\Temp\ps-script-f03fe64e-aa4c-42d2-a158-65b64627e520.ps1: 108 Carácter: 202
++ ... $env:RESILIENCE_MODE = 'protected'; docker compose up -d 2>&1 | Out-F ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container hotel-api Creating :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container hotel-api Created 
+ Container hotel-mysql Starting 
+ Container hotel-mysql Started 
+ Container hotel-mysql Waiting 
+ Container hotel-mysql Healthy 
+ Container hotel-api Starting 
+ Container hotel-api Started 

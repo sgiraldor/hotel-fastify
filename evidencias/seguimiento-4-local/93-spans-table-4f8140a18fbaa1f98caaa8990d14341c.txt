@@ -1,0 +1,14 @@
+
+service    kind               name                                                  spanId           parent             durMs startNs            
+-------    ----               ----                                                  ------           ------             ----- -------            
+sports-api SPAN_KIND_SERVER   GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId 23c4b3b33ca12a2e                  278,492 1794890277000000000
+sports-api SPAN_KIND_INTERNAL flujo.multicloud                                      58bf19b252b1460e 23c4b3b33ca12a2e 275,031 1794890277001000000
+sports-api SPAN_KIND_INTERNAL hotel.get_habitacion                                  8fbf1d0b8aa938af 58bf19b252b1460e   0,329 1794890277008000000
+sports-api SPAN_KIND_CLIENT   GET /api/v2/habitacion/:id                            ee9f09d7a04a1788 8fbf1d0b8aa938af 177,688 1794890277027000000
+hotel-api  SPAN_KIND_SERVER   GET                                                   2c3cb8f686787eca ee9f09d7a04a1788   1,659 1794890277155000000
+sports-api SPAN_KIND_INTERNAL cine.get_pelicula                                     1125c6bf3314fb04 58bf19b252b1460e  68,407 1794890277208000000
+sports-api SPAN_KIND_CLIENT   GET /api/v2/peliculas/:id                             bc21953c3ab7f36b 1125c6bf3314fb04  66,908 1794890277209000000
+cine-api   SPAN_KIND_SERVER   GET                                                   b76594a36c80eebc bc21953c3ab7f36b  18,422 1794890277246000000
+
+
+

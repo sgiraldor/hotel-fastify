@@ -1,0 +1,10 @@
+﻿{
+    "resilience_mode":  "protected",
+    "db":  {
+               "mode":  "protected",
+               "poolLimit":  10,
+               "queryTimeoutMs":  2000
+           },
+    "p95":  3.64,
+    "note":  "API levantada con RESILIENCE_MODE=protected. Para comparar unprotected se recreara el contenedor api."
+}

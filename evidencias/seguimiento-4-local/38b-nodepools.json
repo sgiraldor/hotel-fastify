@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "cluster-id": "ocid1.cluster.oc1.sa-bogota-1.aaaaaaaaood7kuwfxge5e7mk5elbu5fdkmsiukl7tc2slchajcc3levwtx6a",
+      "compartment-id": "ocid1.tenancy.oc1..aaaaaaaakqavfbhlo43yjikc5rqrbb7v2apnznrszsdajxy56tty7ywlai5q",
+      "defined-tags": {
+        "Oracle-Tags": {
+          "CreatedBy": "default/samuelgiraldoroldan51@gmail.com",
+          "CreatedOn": "2026-11-17T00:29:45.967Z"
+        }
+      },
+      "freeform-tags": {},
+      "id": "ocid1.nodepool.oc1.sa-bogota-1.aaaaaaaatandoxo3qm7nzq7w4wjhgia6oc6fgfetqfag4cqsdnsg4y2tsuja",
+      "initial-node-labels": [
+        {
+          "key": "lab",
+          "value": "hotel-seguimiento-4"
+        }
+      ],
+      "kubernetes-version": "v1.36.1",
+      "lifecycle-details": null,
+      "lifecycle-state": "ACTIVE",
+      "name": "hotel-np-a1",
+      "network-launch-type": null,
+      "node-config-details": {
+        "compute-cluster-id": null,
+        "defined-tags": {},
+        "freeform-tags": {},
+        "is-pv-encryption-in-transit-enabled": null,
+        "kms-key-id": null,
+        "node-pool-pod-network-option-details": {
+          "cni-type": "FLANNEL_OVERLAY"
+        },
+        "nsg-ids": null,
+        "placement-configs": [
+          {
+            "availability-domain": "IASl:SA-BOGOTA-1-AD-1",
+            "capacity-reservation-id": null,
+            "fault-domains": null,
+            "host-group-id": null,
+            "preemptible-node-config": null,
+            "subnet-id": "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaauejjhmvnfzfus72wywnvnctxveaxfyjcwdqydnibkxoxvvdatdwq"
+          }
+        ],
+        "size": 1
+      },
+      "node-eviction-node-pool-settings": null,
+      "node-image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+      "node-image-name": "Oracle-Linux-8.10-aarch64-2026.06.15-0-OKE-1.36.1-1505",
+      "node-pool-cycling-details": null,
+      "node-shape": "VM.Standard.A1.Flex",
+      "node-shape-config": {
+        "memory-in-gbs": 12.0,
+        "ocpus": 2.0
+      },
+      "node-source": {
+        "image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+        "source-name": "Oracle-Linux-8.10-aarch64-2026.06.15-0-OKE-1.36.1-1505",
+        "source-type": "IMAGE"
+      },
+      "node-source-details": {
+        "boot-volume-size-in-gbs": 50,
+        "image-id": "ocid1.image.oc1.sa-bogota-1.aaaaaaaagwkrrolaqikzx5lij7hur4knkia6bmqocwzy7qhxain3r3mfujaa",
+        "source-type": "IMAGE"
+      },
+      "primary-vnic": null,
+      "quantity-per-subnet": 0,
+      "secondary-vnics": null,
+      "ssh-public-key": null,
+      "subnet-ids": [
+        "ocid1.subnet.oc1.sa-bogota-1.aaaaaaaauejjhmvnfzfus72wywnvnctxveaxfyjcwdqydnibkxoxvvdatdwq"
+      ],
+      "system-tags": {}
+    }
+  ]
+}

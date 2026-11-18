@@ -1,0 +1,39 @@
+# Stack local gratuito: Prometheus + Grafana (sin costo cloud).
+# Uso: docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d prometheus grafana
+services:
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: hotel-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=24h
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - hotel_prometheus_data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    container_name: hotel-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_USERS_DEFAULT_THEME: light
+    volumes:
+      - ./observability/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+      - ./observability/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./observability/grafana-dashboard-hotel.json:/var/lib/grafana/dashboards/hotel.json:ro
+      - hotel_grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  hotel_prometheus_data:
+  hotel_grafana_data:

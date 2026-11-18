@@ -1,0 +1,18 @@
+﻿{
+    "captured_at":  "2026-11-17T01:18:56.0129792Z",
+    "scope":  "LOCAL",
+    "prometheus_target":  {
+                              "health":  "up",
+                              "job":  "hotel-api"
+                          },
+    "hotel_http_requests_total":  "659",
+    "hotel_http_errors_5xx_total":  "82",
+    "hotel_http_p95_ms":  "1.24",
+    "hotel_http_throughput_rps":  "0.1317",
+    "hotel_chaos_active":  "0",
+    "hotel_chaos_503_total":  "82",
+    "hotel_resilience_protected":  "1",
+    "error_rate_approx":  12.4431,
+    "grafana_url":  "http://127.0.0.1:3001/d/hotel-seguimiento-4/hotel-api-seguimiento-4-samuel",
+    "note":  "Métricas scrapeadas tras ventana de inyección local (~20s) + recuperación. Sin Tempo/Jaeger local (OTLP desactivado en compose para simplicidad); x-trace-id validado en HTTP."
+}

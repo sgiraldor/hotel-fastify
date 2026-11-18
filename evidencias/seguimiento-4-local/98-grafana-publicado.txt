@@ -1,0 +1,26 @@
+Publicación del dashboard experimento-a-503. Solo lectura después del apply. No se reinició Grafana.
+
+ConfigMap grafana-dashboards, namespace observability.
+Antes: una clave, multicloud.json, uid seguimiento-4-multicloud.
+Después: esa misma clave, byte a byte, más experimento-a.json.
+Pod grafana-f8684887f-bzmc2 siguió Ready y con 0 reinicios.
+El archivo apareció en /var/lib/grafana/dashboards sin cambiar el Deployment.
+
+GET http://127.0.0.1:3001/api/health = 200
+GET /api/dashboards/uid/seguimiento-4-multicloud = 200, provisioned, version 1
+GET /api/dashboards/uid/experimento-a-503 = 200, provisioned
+URL /d/experimento-a-503/experimento-a-e28094-http-503-hotel
+Rango mostrado: 2026-11-17 00:40:00 a 01:20:00 -05
+
+Prometheus, a través de Grafana, a las 2026-11-17T06:16:00Z:
+hotel_chaos_503_total glg2z=420 tmqlg=202
+Tempo, a través de Grafana:
+GET /api/traces/68adbcf21b960acf374c54886c56d681 = 200, 10912 bytes
+
+Capturas del dashboard publicado:
+98-grafana-experimento-a-k6.png
+98-grafana-experimento-a-series.png
+98-grafana-experimento-a-contador.png
+
+Reversión: kubectl apply -f k8s/observability/grafana-dashboards-backup.yaml
+Ese archivo conserva solo multicloud.json. No borra el pod.

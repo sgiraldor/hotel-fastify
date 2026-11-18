@@ -1,0 +1,66 @@
+[
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/flujo/:torneoId/:habitacionId/:peliculaId",
+        "spanId":  "354377a4a5339766",
+        "parent":  "",
+        "durMs":  263.746,
+        "kind":  "SPAN_KIND_SERVER"
+    },
+    {
+        "service":  "sports-api",
+        "name":  "flujo.multicloud",
+        "spanId":  "a3662262da704531",
+        "parent":  "354377a4a5339766",
+        "durMs":  260.42,
+        "kind":  "SPAN_KIND_INTERNAL"
+    },
+    {
+        "service":  "sports-api",
+        "name":  "hotel.get_habitacion",
+        "spanId":  "7685601f53c663fe",
+        "parent":  "a3662262da704531",
+        "durMs":  0.37,
+        "kind":  "SPAN_KIND_INTERNAL"
+    },
+    {
+        "service":  "sports-api",
+        "name":  "cine.get_pelicula",
+        "spanId":  "5a8d105f3a55e302",
+        "parent":  "a3662262da704531",
+        "durMs":  53.538,
+        "kind":  "SPAN_KIND_INTERNAL"
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/habitacion/:id",
+        "spanId":  "94ea6363e185864d",
+        "parent":  "7685601f53c663fe",
+        "durMs":  177.515,
+        "kind":  "SPAN_KIND_CLIENT"
+    },
+    {
+        "service":  "sports-api",
+        "name":  "GET /api/v2/peliculas/:id",
+        "spanId":  "800397c11f35954a",
+        "parent":  "5a8d105f3a55e302",
+        "durMs":  51.937,
+        "kind":  "SPAN_KIND_CLIENT"
+    },
+    {
+        "service":  "hotel-api",
+        "name":  "GET",
+        "spanId":  "e77d5727d1c5ee55",
+        "parent":  "94ea6363e185864d",
+        "durMs":  2.337,
+        "kind":  "SPAN_KIND_SERVER"
+    },
+    {
+        "service":  "hotel-api",
+        "name":  "GET",
+        "spanId":  "0fa56a52a474ed08",
+        "parent":  "94ea6363e185864d",
+        "durMs":  1.689,
+        "kind":  "SPAN_KIND_SERVER"
+    }
+]

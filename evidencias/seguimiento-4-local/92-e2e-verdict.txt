@@ -1,0 +1,26 @@
+traceId=ad97747b16a40a3c738b6591e1f59309
+x_trace_id=otel-oci-live-20261116230837-flujo-1
+sports_root_span=354377a4a5339766
+
+trace_found=YES
+sports_in_trace=YES
+hotel_server_span_from_original_flujo=NO
+hotel_server_span_after_manual_traceparent_probe=YES (parent=94ea6363e185864d, ~2ms; NOT the original ~177ms client call)
+cine_in_trace=NO
+
+sports_internal_parent_child=YES
+sequence_sports_hotel_then_cine_client_spans=YES
+# flujo.multicloud -> hotel.get_habitacion -> CLIENT GET habitacion (177ms)
+# flujo.multicloud -> cine.get_pelicula -> CLIENT GET peliculas (52ms) [starts after hotel client ends]
+
+e2e_w3c_complete_three_apis=NO
+
+prometheus_service_name_labels=cine-api,hotel-api,sports-api
+prometheus_three_apis=YES
+
+diagnosis=
+- Tempo contiene la traza W3C con spans sports-api (server+internal+client).
+- Sports crea CLIENT spans hacia Hotel y Cine, pero NO hay SERVER span hotel-api/cine-api de esa llamada original en la misma traza.
+- Hotel SI une W3C cuando recibe traceparent (probado con probe manual; logs otelTraceId=ad97747b...).
+- Causa mas probable: Sports no inyecta traceparent (o no llega) en el HTTP real a Hotel/Cine; Cine tampoco aporta SERVER span a esta traza.
+- No es fallo del collector Tempo: la traza existe; faltan spans remotos del flujo original.

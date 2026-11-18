@@ -1,0 +1,83 @@
+Paquete original verificado el 2026-11-17.
+ZIP evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip
+SHA-256 f7d2479fec03a9898120c0f66ec56afd2e25cb3cacd67d45b8e5046eab96b84a
+El manifiesto lista 29 archivos, no 28, y los 29 hashes coincidieron. No se hallaron credenciales.
+Los JSON de k6 confirman Baseline 273 completas y p95 360,13458 ms, R0 113 completas y p95 1230,3478 ms, R1 273 parciales, 0 completas y p95 624,49512 ms.
+La nota de Jarrison dice que no hay timestamps absolutos de inicio y fin de k6.
+
+Verificación de solo lectura del experimento de latencia intercloud de Sports.
+RUN_ID aws-intercloud-live-20261117191113.
+Fuente: Tempo y Prometheus del namespace observability, el 2026-11-18.
+No se repitió k6 ni se activó caos. No se consultó el repositorio de Sports desde este entorno.
+
+Ventana consultada: 2026-11-18 00:10:00Z a 00:22:00Z.
+En hora de Colombia, UTC-5: 2026-11-17 19:10:00 a 19:22:00.
+
+Horarios informados, UTC y Colombia:
+R0 activación pod 1: 00:15:02.758Z / 19:15:02.758 -05
+R0 activación pod 2: 00:15:02.877Z / 19:15:02.877 -05
+R0 primer TTL: 00:17:02.758Z / 19:17:02.758 -05
+R0 generatedAt de k6: 00:16:20.821Z / 19:16:20.821 -05
+R1 activación pod 1: 00:17:31.683Z / 19:17:31.683 -05
+R1 activación pod 2: 00:17:31.809Z / 19:17:31.809 -05
+R1 primer TTL: 00:19:31.683Z / 19:19:31.683 -05
+R1 generatedAt de k6: 00:18:48.153Z / 19:18:48.153 -05
+generatedAt no es el fin medido de todas las solicitudes.
+
+Tempo, operaciones POST /chaos/hotel-latency, HTTP 200:
+00:15:02.753Z server 10.42.0.64, traza 2e895db7cf3bdba5d09c4062308e485e, 5 ms
+00:15:02.872Z server 10.42.0.63, traza fca5099062e558bd171393128a7863ff, 6 ms
+00:17:31.680Z server 10.42.0.65, traza b3046a0f130a06d7a859e2100c86e16f, 4 ms
+00:17:31.806Z server 10.42.0.66, traza 1cc70f0704fc8ac7d3e1f3970aea0dbb, 5 ms
+R0 y R1 no pegaron en la misma pareja de direcciones. Estas direcciones son el server.address del span, no una confirmación de que las réplicas siguieran vivas al final.
+Esas cuatro horas coinciden con las activaciones informadas. El cuerpo del POST no está en el span, así que Tempo no muestra el valor 800 ms en esa llamada.
+DELETE /chaos/hotel-latency, visto en la búsqueda de Tempo y no guardado como archivo: 00:16:26.800Z en R0 y 00:18:54.271Z en R1. El TTL de dos minutos no fue el cierre observado.
+
+Cobertura de k6: PENDIENTE.
+Las trazas de flujo muestreadas caen entre el POST y el DELETE, pero la búsqueda devolvió 20 por ventana, no las 273 ni las 113. Sin el inicio y el último request de k6 no se puede afirmar que los 800 ms cubrieron toda la ronda.
+
+Trazas de flujo guardadas:
+Baseline 31c934e8c61dc822800b74e4d3cf9d2
+  00:13:29.870Z, 288 ms
+  sports.trace_id aws-intercloud-live-20261117191113-baseline-3-79
+  flujo.status=success, hotel_via=upstream, cine_origen=database
+  Sports, Hotel y Cine. Hotel HTTP 200. Cine HTTP 200.
+  La llamada a Hotel empieza 2 ms después del flujo.
+
+R0 3617b94d09302cf5574dccd00b3e48aa
+  00:15:19.089Z, 1068 ms
+  sports.trace_id aws-intercloud-live-20261117191113-r0-1-4
+  flujo.status=success, hotel_via=upstream, degraded=none, HTTP del flujo 200
+  Sports espera 802 ms y después llama a Hotel. El cliente HTTP dura 86 ms y Hotel responde 200 en 1 ms. Cine responde 200.
+  La espera de 802 ms está en el cliente saliente de Sports, antes de que la petición salga. No es el p95 de k6.
+
+R1 con espera 12f64a93a8ea7bccc0047efbe43cc91
+  00:17:51.519Z, 429 ms
+  sports.trace_id aws-intercloud-live-20261117191113-r1-1-17
+  flujo.status=partial, degraded=hotel, hotel_via=fallback, resilience.enabled=true
+  No hay span HTTP hacia Hotel ni span de hotel-api. A los 400 ms Sports llama a Cine y Cine responde 200.
+  El flujo HTTP de Sports queda en 200.
+
+R1 corta 830ef89f28c3c50597409478b999240
+  00:18:30.424Z, 30 ms
+  sports.trace_id aws-intercloud-live-20261117191113-r1-2-70
+  flujo.status=partial, degraded=hotel, hotel_via=fallback
+  Tampoco llama a Hotel. Cine responde 200 en 6 ms.
+  En la muestra de 20 trazas de R1 hay duraciones de unos 430 ms y otras de unos 30 ms.
+  No hay atributo ni métrica de circuit breaker. No se afirma que el breaker haya abierto.
+
+Prometheus, nombres reales. No hay serie de circuit breaker, timeout ni fallback.
+hotel_chaos_active está en 0 en las dos réplicas de Hotel. Esa serie es el interruptor 503 de Hotel, no la latencia de Sports.
+El histograma otel_http_server_request_duration_seconds de sports-api sube en la ventana, pero sus cubetas no reproducen el p95 de k6. No se usa como p95 del experimento.
+Las cifras 273, 113, 360,13 ms, 1230,35 ms y 624,50 ms salen del reporte de Jarrison. Este repositorio no tiene esos JSON.
+
+Aritmética sobre esas cifras, no sobre Prometheus:
+624,50 / 1230,35 = 50,8 % del p95 de R0, por debajo del umbral de 70 %.
+Reducción: (1230,35 - 624,50) / 1230,35 = 49,2 %.
+Disponibilidad informada de R1: 100 % de parciales, por encima del 90 %.
+R0 informa 113/113 completas. La traza r0-1-4 es una completa con Hotel real.
+R1 informa 273/273 parciales. Las dos trazas r1 guardadas son parciales por fallback, sin llamada registrada a Hotel.
+
+El estado final de Sports que reportó Jarrison no se volvió a leer desde AWS.
+
+Propuesta, sin publicar en Grafana: un tablero aparte, con la espera previa a Hotel tomada de las trazas y el texto archivado de k6. No reutiliza el dashboard del 503.

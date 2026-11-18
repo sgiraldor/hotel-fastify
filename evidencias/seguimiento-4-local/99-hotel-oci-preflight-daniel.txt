@@ -1,0 +1,21 @@
+Preflight de solo lectura antes de autorizar Chaos Toolkit en Cine.
+Contexto: context-hotel-oke-cc3levwtx6a
+Inicio UTC: 2026-11-18T01:21:11.2859985Z
+Cierre UTC: 2026-11-18T01:21:51.4060536Z
+HOTEL LISTO: SI
+
+Deployment hotel-api: deseadas 2, ready 2, available 2, updated 2.
+hotel-api-5c4b965cf6-glg2z Running Ready restarts=0 started=2026-11-17T02:43:04Z ip=10.244.0.23
+hotel-api-5c4b965cf6-tmqlg Running Ready restarts=0 started=2026-11-17T02:43:16Z ip=10.244.0.24
+No hay pods en espera ni en error. El Service hotel-api apunta a esas dos IPs.
+
+Estado del interruptor, GET interno por replica:
+glg2z control=200 envDown=false temporalActivo=false activo=false until=null habitacion=200 live=200
+tmqlg control=200 envDown=false temporalActivo=false activo=false until=null habitacion=200 live=200
+Los contadores historicos no estan activos: glg2z activations=4 injections=420; tmqlg activations=4 injections=202.
+
+NLB http://149.130.165.30
+/live status=200
+/api/v2/habitacion/1 status=200
+
+No se activo caos ni se llamo a Sports o Cine.

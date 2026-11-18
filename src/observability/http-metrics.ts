@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+﻿import { FastifyInstance } from 'fastify';
 import { metrics, ValueType } from '@opentelemetry/api';
 
 export const METRIC_HTTP_REQUEST_COUNT = 'http.server.request.count';

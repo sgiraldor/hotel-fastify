@@ -1,0 +1,7 @@
+﻿Ôùç injected env (0) from .env // tip: Ôùê encrypted .env [www.dotenvx.com]
+Base de datos conectada
+{"level":30,"time":1794873266523,"pid":1,"hostname":"7e25cac48469","msg":"Server listening at http://127.0.0.1:3000"}
+Servidor ejecut├índose en el puerto 3000
+{"level":30,"time":1794873266524,"pid":1,"hostname":"7e25cac48469","msg":"Server listening at http://172.19.0.3:3000"}
+{"level":30,"time":1794873270268,"pid":1,"hostname":"7e25cac48469","reqId":"req-1","otelTraceId":"c8162397669e05ec115ee77f025fbaeb","otelSpanId":"5b56d30f58cddac9","req":{"method":"GET","url":"/live","host":"127.0.0.1:3000","remoteAddress":"127.0.0.1","remotePort":39030},"msg":"incoming request"}
+{"level":30,"time":1794873270287,"pid":1,"hostname":"7e25cac48469","reqId":"req-1","otelTraceId":"c8162397669e05ec115ee77f025fbaeb","otelSpanId":"5b56d30f58cddac9","res":{"statusCode":200},"responseTime":15.269588000000113,"msg":"request completed"}

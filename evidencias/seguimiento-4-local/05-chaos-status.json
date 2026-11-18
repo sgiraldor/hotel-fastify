@@ -1,0 +1,10 @@
+﻿{
+    "name":  "05-chaos-status",
+    "url":  "http://127.0.0.1:3000/api/v2/chaos/dependency",
+    "status":  200,
+    "headers":  {
+                    "x-trace-id":  "df35d085-53c0-4248-8ca2-ecac73c5ec82",
+                    "content-type":  "application/json; charset=utf-8"
+                },
+    "body":  "{\"service\":\"hotel-api\",\"chaos\":{\"envDown\":false,\"temporalActivo\":true,\"activo\":true,\"until\":1794873341287,\"activations\":1,\"injections\":1}}"
+}
