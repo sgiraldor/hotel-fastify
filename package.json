@@ -1,6 +1,6 @@
 {
   "name": "hotel",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "API REST para sistema de gestion hotelera",
   "main": "dist/server.js",
   "scripts": {

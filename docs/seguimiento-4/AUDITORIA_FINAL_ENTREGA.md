@@ -45,7 +45,7 @@ La guía original del profesor no está en este repositorio. No hay PDF ni docum
 | Panel en vivo de Grafana idéntico al archivo | NO VERIFICADO en esta pasada | `/api/health` respondió 200. El texto del dashboard no se releyó y el ConfigMap no se volvió a aplicar |
 | Chaos gate negativo y positivo | CUMPLE | Roja 44189190442 y verde 44189597682, con rollback y `compose_down=0` |
 | README, resultados, sustentación e informe | CUMPLE | `docs/seguimiento-4/README.md`, `RESULTADOS_EXPERIMENTOS.md`, `SUSTENTACION.md`, `INFORME_SAMUEL_6P.md` |
-| Tag nuevo y release de la entrega | NO CUMPLE | Sigue pendiente a propósito. `v1.1.0` no se mueve |
+| Tag nuevo y release de la entrega | CUMPLE | Tag `v1.2.0` y GitHub Release. `v1.1.0` permanece en `b66c2f5` |
 
 ## Resultados que quedan cerrados
 
@@ -55,12 +55,12 @@ Sports: 273 completas y 360,13 ms; 113 completas y 1230,35 ms; 273 parciales y 6
 
 Cine, serie de 75 s: 264, 186 y 186 completas, con p95 481,74, 715,09 y 696,51 ms. La baja de 2,6 % no demuestra los patrones. GKE v2 es otra serie: 78,33, 29,97 y 27,87 RPS exitosos. R1 queda por debajo de R0.
 
-## Bloqueos antes de la clase
+## Pendientes de sustentación (no bloquean el release)
 
-1. Crear un tag nuevo, distinto de `v1.1.0`, y el release desde ese tag. Todavía no se crean.
-2. En sustentación, mostrar el journal `oci-replicas-journal-20261117-214843.json` (o repetir solo con nueva autorización). No uses `chaos run` contra el NLB para afirmar las dos réplicas.
-3. No decir que el journal corto de Cine saturó tráfico. `appliedCount=0` en la activación.
-4. No decir que el circuit breaker de Sports quedó medido.
+1. Mostrar el journal `oci-replicas-journal-20261117-214843.json` (o repetir solo con nueva autorización). No uses `chaos run` contra el NLB para afirmar las dos réplicas.
+2. No decir que el journal corto de Cine saturó tráfico. `appliedCount=0` en la activación.
+3. No decir que el circuit breaker de Sports quedó medido.
+4. Si Grafana en vivo conserva texto viejo del baseline, corregir en voz con la ruta del JSON archivado.
 
 ## Grafana
 

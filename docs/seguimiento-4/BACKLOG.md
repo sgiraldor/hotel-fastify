@@ -20,7 +20,7 @@
 
 ## Pendiente de Samuel
 
-1. **Release.** `v1.1.0` queda donde está: apunta a un commit anterior a R0 y R1. Hace falta un tag nuevo y el release creado desde ese tag. Todavía no se crean.
+1. ~~**Release.**~~ Cerrado con tag `v1.2.0` (SemVer superior a `v1.1.0`, que permanece intacto).
 2. ~~**Ejecución real del experimento declarativo OCI.**~~ Cerrado: segunda corrida `2026-11-18T02:48:43Z`, journal `oci-replicas-journal-20261117-214843.json`, `verify-active` OK en ambas réplicas, recuperación 2/2.
 
 ## Pendiente de coordinar
@@ -30,4 +30,4 @@
 
 ## Fuera de este cierre
 
-No repetir el 503 de OCI. No mover `v1.1.0`. El release y el tag nuevo siguen sin crearse. La rama `feat/seguimiento-4-chaos` ya está publicada; `main` no se tocó.
+No repetir el 503 de OCI. No mover `v1.1.0`. Las limitaciones de Sports (timestamps absolutos de k6 y métrica del circuit breaker) y de Cine (pico de inflight en la serie 75 s; comentario stale del wrapper) quedan documentadas y no bloquean el release de Hotel.

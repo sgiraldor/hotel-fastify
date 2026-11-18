@@ -34,7 +34,9 @@ El 100 % de R1 no significa que Hotel se haya recuperado. Las dos réplicas sigu
 
 ## Índice
 
-- [AUDITORIA_FINAL_ENTREGA.md](./AUDITORIA_FINAL_ENTREGA.md) — matriz de la entrega y lo que falta antes del release
+- Release SemVer de la entrega: `v1.2.0` (el tag `v1.1.0` permanece intacto).
+- Journal declarativo OCI: `evidencias/seguimiento-4-local/oci-replicas-journal-20261117-214843.json`
+- [AUDITORIA_FINAL_ENTREGA.md](./AUDITORIA_FINAL_ENTREGA.md) — matriz de la entrega
 - [RUNBOOK_SUSTENTACION_FINAL.md](./RUNBOOK_SUSTENTACION_FINAL.md) — demostración en PowerShell, con la inyección separada de la lectura
 - [RESULTADOS_EXPERIMENTOS.md](./RESULTADOS_EXPERIMENTOS.md) — A (obligatorio) + B/C (complementarios)
 - [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo + limitaciones reales
