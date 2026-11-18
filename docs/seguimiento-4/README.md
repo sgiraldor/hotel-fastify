@@ -8,7 +8,7 @@ Cliente/k6 -> Sports (AWS) -> Hotel (OCI) -> Sports -> Cine (GCP) -> Sports -> C
 
 | Persona | API | Cloud | Fallo asignado | Verificado en este repo |
 |---|---|---|---|---|
-| Jarrison | Sports (coordinador) | AWS/K8s | Latencia intercloud | Parcial. Tempo tiene el RUN_ID `aws-intercloud-live-20261117191113`. La cobertura completa de k6 sigue pendiente |
+| Jarrison | Sports (coordinador) | AWS/K8s | Latencia intercloud | Sí, paquete original en `evidencias/seguimiento-4-intercloud/`. Es otro experimento: no es el HTTP 503 de Hotel |
 | Samuel | Hotel | OCI/K8s | HTTP 503 | Sí. R0 y R1 definitiva, evidencias `94-*` y `96-*` |
 | Daniel | Cine | GCP/K8s | Agotamiento de recursos | No. Hay series de `cine-api` en Prometheus, no el experimento |
 

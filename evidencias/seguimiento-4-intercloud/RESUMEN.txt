@@ -1,3 +1,10 @@
+Paquete original verificado el 2026-11-17.
+ZIP evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip
+SHA-256 f7d2479fec03a9898120c0f66ec56afd2e25cb3cacd67d45b8e5046eab96b84a
+El manifiesto lista 29 archivos, no 28, y los 29 hashes coincidieron. No se hallaron credenciales.
+Los JSON de k6 confirman Baseline 273 completas y p95 360,13458 ms, R0 113 completas y p95 1230,3478 ms, R1 273 parciales, 0 completas y p95 624,49512 ms.
+La nota de Jarrison dice que no hay timestamps absolutos de inicio y fin de k6.
+
 Verificación de solo lectura del experimento de latencia intercloud de Sports.
 RUN_ID aws-intercloud-live-20261117191113.
 Fuente: Tempo y Prometheus del namespace observability, el 2026-11-18.

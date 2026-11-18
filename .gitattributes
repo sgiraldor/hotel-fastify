@@ -1,1 +1,3 @@
 evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json -text
+evidencias/seguimiento-4-intercloud/*.zip binary
+evidencias/seguimiento-4-intercloud/paquete/** -text

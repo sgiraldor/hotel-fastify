@@ -24,7 +24,7 @@
       "gridPos": { "h": 9, "w": 14, "x": 0, "y": 0 },
       "options": {
         "mode": "markdown",
-        "content": "Archivo de k6. Estos tres resultados **no son series de Prometheus**. El JSON del baseline no está en el repositorio.\n\n| Ronda | Resultado | Disponibilidad | p95 |\n|---|---|---|---|\n| Baseline | 289/289 completas | 100 % completa | 312,02 ms |\n| R0 | 320/320 fallidas | 0 % | 224,13 ms |\n| R1 definitiva | 349/349 parciales y 0 fallidas | 100 % degradada | 234,60 ms |\n\nEl 100 % de R1 son respuestas parciales con fallback de Sports. Hotel no volvió a 200 durante esa carga.\n\nFuentes: `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `96-r1-retry-cobertura.txt`. La primera R1 está en `95-r1-cobertura.txt` y no entra en la tabla."
+        "content": "Archivo de k6. Estos tres resultados **no son series de Prometheus**. El JSON del baseline de este 503 está en `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`.\n\n| Ronda | Resultado | Disponibilidad | p95 |\n|---|---|---|---|\n| Baseline | 289/289 completas | 100 % completa | 312,02 ms |\n| R0 | 320/320 fallidas | 0 % | 224,13 ms |\n| R1 definitiva | 349/349 parciales y 0 fallidas | 100 % degradada | 234,60 ms |\n\nEl 100 % de R1 son respuestas parciales con fallback de Sports. Hotel no volvió a 200 durante esa carga.\n\nFuentes: `evidencias/seguimiento-4-local/94-r0-retry-cobertura.txt` y `96-r1-retry-cobertura.txt`. La primera R1 está en `95-r1-cobertura.txt` y no entra en la tabla."
       }
     },
     {

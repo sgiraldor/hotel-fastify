@@ -107,7 +107,25 @@ OCI: Tempo y Prometheus en el namespace `observability`. El dashboard `experimen
 | Integrante | Fallo | Métrica verificada aquí | Patrón verificado aquí |
 |---|---|---|---|
 | Samuel | HTTP 503 de Hotel en OCI | Cobertura del 503, p95 y clasificación de k6 en `94-*` y `96-*` | Fail-fast y bulkhead, solo en los experimentos locales B y C |
-| Jarrison | Latencia intercloud | Trazas del RUN_ID `aws-intercloud-live-20261117191113` en `evidencias/seguimiento-4-intercloud/`. R0 espera unos 800 ms y llama a Hotel. R1 marca fallback y no registra la llamada a Hotel. La cobertura de todo k6 no está confirmada | El circuit breaker no tiene métrica ni atributo en estas trazas |
+| Jarrison | Latencia intercloud de 800 ms, no el 503 de Hotel | JSON original: Baseline 273 completas y p95 360,13 ms; R0 113 completas y p95 1230,35 ms; R1 273 parciales, 0 completas y p95 624,50 ms. Reducción de p95 49,24 %. ZIP `evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip` | Timeout de 400 ms y `hotel_via=fallback` en R1. No hay evidencia directa de una transición del circuit breaker |
 | Daniel | Agotamiento de recursos en Cine | No hay resultado de ese fallo en este repo | No hay patrón de Cine medido en este repo |
 
 La telemetría de `cine-api` en Prometheus demuestra que el servicio exporta series. No demuestra el experimento de agotamiento.
+
+## Latencia intercloud de Sports
+
+Este bloque no es el HTTP 503 de Hotel. El paquete original está en `evidencias/seguimiento-4-intercloud/evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip`. SHA-256 `f7d2479fec03a9898120c0f66ec56afd2e25cb3cacd67d45b8e5046eab96b84a`. El manifiesto trae 29 archivos y los 29 hashes coincidieron. No había credenciales.
+
+RUN_ID `aws-intercloud-live-20261117191113`. Perfil de 75 s. Los JSON están en `evidencias/seguimiento-4-intercloud/paquete/load/results/`.
+
+| Ronda | Resultado | p95 del JSON | Configuración leída |
+|---|---|---:|---|
+| Baseline | 273/273 completas, 0 parciales, 0 fallidas | 360,13458 ms | Resiliencia encendida, fallo no armado |
+| R0 | 113/113 completas, 0 parciales, 0 fallidas | 1230,3478 ms | Resiliencia y fallback apagados. 800 ms en las dos réplicas |
+| R1 | 0 completas, 273/273 parciales, 0 fallidas | 624,49512 ms | Resiliencia y fallback encendidos. Timeout 400 ms. 800 ms en las dos réplicas nuevas |
+
+La tabla redondea esos p95 a 360,13 ms, 1230,35 ms y 624,50 ms. La reducción `(1230,3478 − 624,49512) / 1230,3478` es 49,24 %. `comparison.json` trae `p95DeltaPct` −49,24 y dice que el parcial no es una completa. El 100 % de R1 es disponibilidad degradada.
+
+Las activaciones del paquete coinciden con los POST de Tempo ya archivados en el commit `3c2b1e0`: R0 a las 00:15:02.758Z y 00:15:02.877Z; R1 a las 00:17:31.683Z y 00:17:31.809Z. La traza `3617b94d09302cf5574dccd00b3e48aa` es `r0-1-4`, espera 802 ms y luego Hotel responde 200. La traza `12f64a93a8ea7bccc0047efbe43cc91` es `r1-1-17`, `hotel_via=fallback`, sin span HTTP hacia Hotel, y Cine empieza unos 400 ms después. El desarme quedó en 00:16:24.108Z y 00:18:51.219Z, con `enabled=false` y `latencyMs=0`. La restauración está en 00:20:05.146Z, `reason=success`.
+
+`NOTAS-AUDITORIA.txt` dice que no hay timestamps absolutos de inicio y fin de k6. `generatedAt` es solo una cota. Prometheus no tiene una serie de circuit breaker. La hipótesis del paquete nombra ese patrón, pero ninguna traza ni métrica muestra su transición.

@@ -11,7 +11,8 @@
 - [x] Informe, resultados y sustentación alineados con Baseline, R0 y R1
 - [x] Dashboard `experimento-a-503` publicado en Grafana de OKE por el ConfigMap `grafana-dashboards`. URL local `http://127.0.0.1:3001/d/experimento-a-503`. Capturas `98-grafana-experimento-a-k6.png`, `98-grafana-experimento-a-series.png` y `98-grafana-experimento-a-contador.png`. El uid `seguimiento-4-multicloud` siguió en HTTP 200.
 - [x] Chaos gate en el runner, sin OCI. Negativa roja: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189190442. Positiva verde: https://github.com/sgiraldor/hotel-fastify/actions/runs/44189597682. Los artefactos revisados están en `evidencias/chaos-gate/44189190442` y `evidencias/chaos-gate/44189597682`.
-- [x] JSON original del baseline: `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`, RUN_ID `hotel503-baseline-20261117-003033`. SHA-256 `c4e89fbcb981aecb40505f4a18e98f94695edb080fea933730c9a05f9391756c`. 289/289 completas, 0 parciales, 0 fallidas, p95 312,02064 ms.
+- [x] JSON original del baseline del HTTP 503: `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`, RUN_ID `hotel503-baseline-20261117-003033`. SHA-256 `c4e89fbcb981aecb40505f4a18e98f94695edb080fea933730c9a05f9391756c`. 289/289 completas, 0 parciales, 0 fallidas, p95 312,02064 ms.
+- [x] Paquete original de la latencia intercloud de Sports, RUN_ID `aws-intercloud-live-20261117191113`. ZIP SHA-256 `f7d2479fec03a9898120c0f66ec56afd2e25cb3cacd67d45b8e5046eab96b84a`. Los 29 archivos del manifiesto coinciden. No es el experimento 503.
 
 ## Pendiente de Samuel
 
@@ -19,7 +20,7 @@
 
 ## Pendiente de coordinar
 
-2. **Jarrison.** Falta el JSON de k6 con el inicio y el fin reales de Baseline, R0 y R1, y una métrica o span del circuit breaker. Tempo ya muestra el RUN_ID `aws-intercloud-live-20261117191113`: R0 espera unos 800 ms y llega a Hotel; R1 usa `hotel_via=fallback` sin span HTTP de Hotel. Eso no confirma que los 800 ms cubrieran todas las solicitudes. El detalle está en `evidencias/seguimiento-4-intercloud/RESUMEN.txt`.
+2. **Jarrison.** El paquete ya está archivado. Sigue sin timestamps absolutos de inicio y fin de k6, como dice su propia nota, y sin una métrica o span que pruebe la transición del circuit breaker.
 3. **Daniel.** Evidencia del agotamiento de recursos en Cine y de sus dos patrones. Las series `cine-api` en Prometheus no cubren ese experimento.
 
 ## Fuera de este cierre

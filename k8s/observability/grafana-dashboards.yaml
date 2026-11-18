@@ -10,7 +10,7 @@ data:
     \"text\",\r\n      \"title\": \"Comparación archivada de k6\",\r\n      \"gridPos\":
     { \"h\": 9, \"w\": 14, \"x\": 0, \"y\": 0 },\r\n      \"options\": {\r\n        \"mode\":
     \"markdown\",\r\n        \"content\": \"Archivo de k6. Estos tres resultados **no
-    son series de Prometheus**. El JSON del baseline no está en el repositorio.\\n\\n|
+    son series de Prometheus**. El JSON del baseline de este 503 está en evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json.\\n\\n|
     Ronda | Resultado | Disponibilidad | p95 |\\n|---|---|---|---|\\n| Baseline |
     289/289 completas | 100 % completa | 312,02 ms |\\n| R0 | 320/320 fallidas | 0
     % | 224,13 ms |\\n| R1 definitiva | 349/349 parciales y 0 fallidas | 100 % degradada

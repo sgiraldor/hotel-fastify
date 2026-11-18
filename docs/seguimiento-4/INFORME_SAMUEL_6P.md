@@ -66,7 +66,7 @@ El 503 sostenido sí tumba el flujo cuando Sports no se protege, y el mismo fall
 
 ## 10. Backlog
 
-El chaos gate ya corrió en el runner. La corrida 44189190442 quedó roja porque `habitacion_503_rate=0`, y la 44189597682 quedó verde. El dashboard `experimento-a-503` está publicado en Grafana de OKE: `http://127.0.0.1:3001/d/experimento-a-503`. Las cifras de k6 van como archivo y las ventanas salen de Prometheus. Siguen pendientes la latencia de Jarrison, el agotamiento de Daniel y el release. `v1.1.0` no se mueve.
+El chaos gate ya corrió en el runner. La corrida 44189190442 quedó roja porque `habitacion_503_rate=0`, y la 44189597682 quedó verde. El dashboard `experimento-a-503` está publicado en Grafana de OKE: `http://127.0.0.1:3001/d/experimento-a-503`. Las cifras de k6 van como archivo y las ventanas salen de Prometheus. La latencia intercloud de Sports quedó archivada aparte y no forma parte de este 503. Siguen pendientes el agotamiento de Daniel y el release. `v1.1.0` no se mueve.
 
 ## Uso de IA
 
