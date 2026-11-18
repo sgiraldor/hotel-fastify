@@ -14,6 +14,8 @@
 - [x] JSON original del baseline del HTTP 503: `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`, RUN_ID `hotel503-baseline-20261117-003033`. SHA-256 `c4e89fbcb981aecb40505f4a18e98f94695edb080fea933730c9a05f9391756c`. 289/289 completas, 0 parciales, 0 fallidas, p95 312,02064 ms.
 - [x] Paquete original de la latencia intercloud de Sports, RUN_ID `aws-intercloud-live-20261117191113`. ZIP SHA-256 `f7d2479fec03a9898120c0f66ec56afd2e25cb3cacd67d45b8e5046eab96b84a`. Los 29 archivos del manifiesto coinciden. No es el experimento 503.
 - [x] Evidencias de Cine del release `v5.1.0`, commit `d9c41a3fbc68b77223495d3ecb602229a3345e03`, y del Chaos Gate en `main` `b79ef990ebcf2492f95f86d0f832a3448e017a3c`. Copias en `evidencias/seguimiento-4-cine/`.
+- [x] Preflight de Hotel antes de la corrida real de Cine: `evidencias/seguimiento-4-local/99-hotel-oci-preflight-daniel.txt`, cierre `2026-11-18T01:21:51.406Z`. Las dos réplicas estaban Ready y con el interruptor apagado.
+- [x] Auditoría final y runbook de sustentación: `docs/seguimiento-4/AUDITORIA_FINAL_ENTREGA.md` y `docs/seguimiento-4/RUNBOOK_SUSTENTACION_FINAL.md`.
 
 ## Pendiente de Samuel
 

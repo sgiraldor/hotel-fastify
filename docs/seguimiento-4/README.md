@@ -34,6 +34,8 @@ El 100 % de R1 no significa que Hotel se haya recuperado. Las dos réplicas sigu
 
 ## Índice
 
+- [AUDITORIA_FINAL_ENTREGA.md](./AUDITORIA_FINAL_ENTREGA.md) — matriz de la entrega y lo que falta antes del release
+- [RUNBOOK_SUSTENTACION_FINAL.md](./RUNBOOK_SUSTENTACION_FINAL.md) — demostración en PowerShell, con la inyección separada de la lectura
 - [RESULTADOS_EXPERIMENTOS.md](./RESULTADOS_EXPERIMENTOS.md) — A (obligatorio) + B/C (complementarios)
 - [SUSTENTACION.md](./SUSTENTACION.md) — guía breve de demo + limitaciones reales
 - [GUIA_INTEGRACION_JARRISON.md](./GUIA_INTEGRACION_JARRISON.md) — integración inmediata Sports→Hotel
