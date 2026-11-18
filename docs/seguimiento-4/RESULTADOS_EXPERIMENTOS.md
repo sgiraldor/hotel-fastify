@@ -108,9 +108,57 @@ OCI: Tempo y Prometheus en el namespace `observability`. El dashboard `experimen
 |---|---|---|---|
 | Samuel | HTTP 503 de Hotel en OCI | Cobertura del 503, p95 y clasificación de k6 en `94-*` y `96-*` | Fail-fast y bulkhead, solo en los experimentos locales B y C |
 | Jarrison | Latencia intercloud de 800 ms, no el 503 de Hotel | JSON original: Baseline 273 completas y p95 360,13 ms; R0 113 completas y p95 1230,35 ms; R1 273 parciales, 0 completas y p95 624,50 ms. Reducción de p95 49,24 %. ZIP `evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip` | Timeout de 400 ms y `hotel_via=fallback` en R1. No hay evidencia directa de una transición del circuit breaker |
-| Daniel | Agotamiento de recursos en Cine | No hay resultado de ese fallo en este repo | No hay patrón de Cine medido en este repo |
+| Daniel | Saturación de concurrencia en Cine GCP, una réplica | Serie 75 s: Baseline 264/264, p95 481,74 ms; R0 186/186, p95 715,09 ms; R1 186/186, p95 696,51 ms. Serie distinta GKE v2: 78,33 / 29,97 / 27,87 RPS exitosos | Bulkhead: 108 HTTP 503 `bulkhead_timeout` de 200. Admission: 9 HTTP 503 `inflight_limit` de 80. Ninguna de las dos series demuestra mejora causal de R1 |
 
-La telemetría de `cine-api` en Prometheus demuestra que el servicio exporta series. No demuestra el experimento de agotamiento.
+La serie multicloud de 75 s no es la serie k6 directa de GKE v2. Las sondas de patrones no son ninguna de esas rondas.
+
+## Saturación de Cine
+
+Este bloque no es el HTTP 503 de Hotel ni la latencia intercloud de Sports. Las copias están en `evidencias/seguimiento-4-cine/`. El release `v5.1.0` apunta a `d9c41a3fbc68b77223495d3ecb602229a3345e03`. El Chaos Gate [44207033513](https://github.com/Danielg2004/cine_dvps/actions/runs/44207033513) terminó en éxito sobre `main` `b79ef990ebcf2492f95f86d0f832a3448e017a3c`. Ese workflow evalúa los JSON del repositorio. No inyecta el fallo en GKE.
+
+El fallo publicado es retención de concurrencia: `holdMs=250`, `maxInflight=8`, `maxQueueWaitMs=200`, `durationSec=90`, una réplica. No es agotamiento de CPU ni de memoria.
+
+### Serie multicloud de 75 s
+
+Sports ejecutó el flujo. Cine registró la saturación en Cloud Logging.
+
+| Ronda | RUN_ID | Resultado | p95 | Tasa |
+|---|---|---|---:|---:|
+| Baseline | `cine-baseline-20261117-164725` | 264/264 | 481,74 ms | 3,50/s |
+| R0 | `cine-r0-20261117-170417` | 186/186 | 715,09 ms | 2,46/s |
+| R1 | `cine-r1-20261117-171742` | 186/186 | 696,51 ms | 2,47/s |
+
+R0 y R1 tienen 0 HTTP 429 y 0 HTTP 503. `appliedCount` es 186 en ambas. La reducción de p95 es 18,58 ms, 2,6 %. El propio cierre dice que esa diferencia no prueba bulkhead ni admission: con 4 VU el techo plausible queda por debajo de 8 cupos, y el pico de concurrencia no se midió. El archivo no trae la ventana UTC del baseline. La saturación de R0 va de `2026-11-17T22:05:49.671Z` a `22:07:19.673Z`, y la de R1 de `22:17:46.975Z` a `22:19:16.977Z`. Las dos pararon por timeout de 90 s.
+
+### Serie GKE v2
+
+k6 directo a `GET /api/v2/peliculas/1`, 80 llegadas por segundo durante 30 s, una réplica. Es otra carga.
+
+| Ronda | RPS exitosos | p95 de éxitos | HTTP 503 |
+|---|---:|---:|---:|
+| Baseline | 78,33 | 872,05 ms | 0 |
+| R0 | 29,97 | 860,65 ms | 1460 |
+| R1 | 27,87 | 988,80 ms | 1504 |
+
+R1 queda 7,0 % por debajo de R0. `offered_load_comparable` es true. `finished_at`: baseline `2026-11-17T01:56:06.009Z`, R0 `01:57:24.629Z`, R1 `01:58:52.798Z`. Los 503 de esta serie no traen el motivo por patrón.
+
+### Patrones, en sondas aparte
+
+Bulkhead: 200 solicitudes, 108 HTTP 503 con `bulkhead_timeout` y 92 HTTP 200. Admission: 80 solicitudes entre `2026-11-17T22:38:25.637Z` y `22:39:22.254Z`, 9 HTTP 503 con `inflight_limit`, 66 HTTP 200 y 5 errores de cliente. Esa sonda usó admisión 2, bulkhead 8 y otra saturación (`holdMs=1000`, `maxInflight=2`). No es la serie de 75 s ni la GKE v2.
+
+### Declarativo
+
+`chaos/experiments/cine-resource-exhaustion.json` es un experimento de Chaos Toolkit: steady state, arranque y rollback. No hay journal de `chaos run`. Los valores por defecto son 200 ms, 4 cupos y 30 s, sin `maxQueueWaitMs`. `experiment.yaml` deja los umbrales en `PENDING_MEASUREMENT`. El estado es **parcial**.
+
+### Observabilidad leída el 2026-11-18
+
+Prometheus todavía tenía `otel_cine_experiment_saturation_active`. En R0 valía 1 a las 22:06:30Z y a las 22:07:19Z, con `experiment_round=r0`. En R1 la serie aparece en 1 desde 22:18:40Z hasta 22:19:25Z y pasa a 0 a las 22:19:40Z. No hay muestra de esa serie entre el inicio registrado, 22:17:46Z, y 22:18:40Z. El gauge de inflight no mostró un pico: el scrape puede perder una retención de 250 ms. El `increase` del contador no reproduce los 186 de k6, así que no sustituye esa cifra.
+
+Tempo, con límite 20, devolvió trazas del flujo en ambas ventanas. La muestra `bda652d597e4cf8a087c9e45acb0746` y la `6867dce73e10d5f662f862685b2e520` tienen Sports, Hotel y Cine en HTTP 200. Son muestras, no las 186 solicitudes.
+
+### Recuperación
+
+`gke-admission-probe-recovery.json`: `2026-11-17T22:40:56.610Z`, saturación apagada, 2/2 Ready, ronda `baseline`, resiliencia apagada, healthz, readyz y película en 200, SQL `up`, flujo de Sports en 200. A esa hora el gauge de R1 también estaba en 0. `gke-v2-final-state.txt` muestra el Deployment 2/2 y el ConfigMap en baseline. La nota de la serie de 75 s describe el mismo estado restaurado, sin otro timestamp.
 
 ## Latencia intercloud de Sports
 

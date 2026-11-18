@@ -1,0 +1,18 @@
+Consulta de solo lectura hecha desde Grafana en 127.0.0.1:3001 el 2026-11-18.
+No se modificó Grafana, Prometheus ni Tempo. No se repitió el experimento.
+
+Prometheus, otel_cine_experiment_saturation_active:
+- 2026-11-17T22:06:30Z experiment_round=r0 valor 1
+- 2026-11-17T22:07:19Z experiment_round=r0 valor 1
+- 2026-11-17T22:18:30Z solo estaba la serie r0 en 0
+- serie r1: 22:18:40=1, 22:18:55=1, 22:19:10=1, 22:19:25=1, 22:19:40=0, 22:19:55=0, 22:20:10=0
+- 2026-11-17T22:40:56Z experiment_round=r1 valor 0
+
+La serie r1 no tiene muestras entre 22:17:46Z y 22:18:40Z.
+max_over_time del gauge inflight en 3 minutos dio 0. Eso no mide el pico de una retención de 250 ms.
+increase de otel_cine_experiment_requests_successful_total en 3 minutos: cerca de 21 en r0 y cerca de 53 en r1. No reemplaza los 186 del archivo de k6.
+
+Tempo, búsqueda con límite 20, resource.service.name=cine-api:
+- Ventana R0: al menos 20 trazas. Muestra bda652d597e4cf8a087c9e45acb0746, flujo Sports, Hotel 200, Cine 200.
+- Ventana R1: al menos 20 trazas. Muestra 6867dce73e10d5f662f862685b2e520, flujo Sports, Hotel 200, Cine 200.
+No se descargó el lote completo. Estas dos trazas no representan las 186 solicitudes.
