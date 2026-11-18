@@ -1,0 +1,57 @@
+#cloud-config
+# Exp4 — preparación de host SIN secretos OCI/OKE y SIN auto-despliegue del lab.
+# No incluye API keys, kubeconfig ni contraseñas reales.
+
+package_update: true
+packages:
+  - git
+  - curl
+  - jq
+  - python3
+  - python3-pip
+
+users:
+  - default
+  - name: exp4op
+    groups: [wheel]
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: true
+
+write_files:
+  - path: /etc/exp4/README
+    permissions: "0644"
+    content: |
+      seguridad-caos-exp4 host bootstrap
+      1) Instalar Docker Engine + Compose plugin (manual o script post-login).
+      2) Copiar SOLO entrega-grupal/experimento-4-resiliencia-datos/
+      3) ./scripts/prepare-linux-perms.sh
+      4) ./scripts/preflight.sh --check-docker-config
+      5) Smoke OCI (sin R0/R1 hasta autorización)
+      PROHIBIDO: kubeconfig hotel-oke, credenciales OCI en esta VM, docker.sock en contenedores.
+  - path: /usr/local/bin/exp4-install-docker.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+      # Instalación idempotente orientativa para Oracle Linux / RHEL-like.
+      # NO se ejecuta automáticamente en cloud-init (evitar fallos silenciosos / cargos extra).
+      if command -v docker >/dev/null 2>&1; then
+        docker version
+        exit 0
+      fi
+      echo "Instale Docker Engine según documentación oficial de su distro,"
+      echo "luego: sudo usermod -aG docker exp4op && newgrp docker"
+      exit 1
+
+runcmd:
+  - mkdir -p /opt/exp4 /var/lib/exp4/{events,backups,evidence}
+  - chown -R exp4op:exp4op /opt/exp4 /var/lib/exp4 || true
+  - chmod 0750 /var/lib/exp4/events /var/lib/exp4/backups /var/lib/exp4/evidence || true
+  - timedatectl set-timezone UTC || true
+  - echo "exp4 bootstrap complete $(date -u +%Y-%m-%dT%H:%M:%SZ)" > /var/log/exp4-bootstrap.txt
+
+final_message: |
+  Exp4 cloud-init finished. Docker NOT auto-installed. Lab NOT auto-started.
+  Architecture expected: ${architecture_note}
+  access_mode=${access_mode}

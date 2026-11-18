@@ -1,0 +1,36 @@
+# Copiar a terraform.tfvars SOLO en máquina del operador (gitignored).
+# enable_exp4_oci debe permanecer false hasta autorización escrita.
+
+enable_exp4_oci = false
+region          = "sa-bogota-1"
+
+# Rellenar antes de un apply autorizado:
+compartment_ocid = "ocid1.compartment.oc1..REPLACE_OR_TENANCY"
+
+# Preferido: bastion (Bastion gratis). Alternativa: restricted_public
+access_mode         = "bastion"
+ssh_authorized_cidr = "203.0.113.10/32" # IP/CIDR REAL del operador — nunca 0.0.0.0/0
+ssh_public_key      = "ssh-rsa AAAA... operator@exp4"
+
+shape         = "VM.Standard.A1.Flex"
+ocpus         = 1
+memory_in_gbs = 6
+
+# Imagen verificada sa-bogota-1 (lectura OCI 2026-11-18) — A1/aarch64
+image_ocid = "ocid1.image.oc1.sa-bogota-1.aaaaaaaalv7qc7lpqwo7aahpcg2bq7eqllb6yfbj32m37o6tjgqs4ssuzl2a"
+
+# Alternativa E4/amd64 (solo si A1 sin capacidad — selección MANUAL):
+# shape     = "VM.Standard.E4.Flex"
+# image_ocid = "ocid1.image.oc1.sa-bogota-1.aaaaaaaadcmzxqwkwmbodtnlkkh6lnh46uyb4jrwqgbt2qn5yhfpsubelhna"
+
+boot_volume_size_in_gbs = 50
+vcn_cidr                = "10.31.0.0/16"
+private_subnet_cidr     = "10.31.1.0/24"
+public_subnet_cidr      = "10.31.2.0/24"
+
+# Vida OCI (sustentación): mínimo 9h, plan 12h. NO auto-destroy.
+# El TTL de R0/R1 es MaxMinutes / MAX_EXPERIMENT_MINUTES (Compose), no estas variables.
+oci_min_availability_hours     = 9
+oci_planned_availability_hours = 12
+# 0 = presupuesto no certificado (recalcular el día D; no asumir USD 5)
+budget_note_usd = 0

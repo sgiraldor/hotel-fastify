@@ -1,0 +1,11 @@
+# State aislado Exp4 — nunca compartir con Hotel / DevOps
+.terraform/
+# .terraform.lock.hcl SE VERSIONA (reproducibilidad de provider)
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+crash.log
+override.tf
+*_override.tf
+*.tfplan

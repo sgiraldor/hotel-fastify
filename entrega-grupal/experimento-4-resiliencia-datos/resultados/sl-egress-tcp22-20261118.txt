@@ -1,0 +1,11 @@
+Corrección aplicada solo a oci_core_security_list.private.
+Inicio UTC: 2026-11-18T20:52:31Z
+Fin UTC: 2026-11-18T20:52:33Z
+Plan SHA256: 4c04b3eb9796f2ceea9ffacd33282b86b56bf45ffaed4b81d8482bf2da0a320b
+Apply exit: 0
+Resultado: 0 added, 1 changed, 0 destroyed.
+Regla confirmada en OCI: egreso TCP/22 stateful hacia 10.31.1.229/32, descripción "SSH Bastion Exp4 hacia VM Exp4".
+Las reglas previas de ingreso y egreso siguen presentes.
+VM sin IP pública. Bastion ACTIVE. No se reemplazó la VM.
+SSH en ese momento: el banner OpenSSH_9.9 de 10.31.1.229 llegó. StrictHostKeyChecking rechazó la host key desconocida SHA256:xbBQD+74VVxYKTl80F4ExSXi/39MMaD5mQihfEtjY4s. No se guardó en known_hosts. opc no llegó a autenticarse.
+Resolución posterior, distinta de este apply: TOFU controlado de esa misma host key y sesión CONNECTED como opc. R0/R1 se midieron después. Ver resultados/ESTADO-2026-11-18.md.

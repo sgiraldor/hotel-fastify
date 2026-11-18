@@ -1,0 +1,23 @@
+# Runtime local (no publicar)
+runtime/
+!runtime/events/.gitkeep
+!runtime/backups/.gitkeep
+!runtime/evidence/.gitkeep
+
+# Secretos locales
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Respaldos / ruido
+*.bak-*
+*.log
+.DS_Store
+Thumbs.db
+
+# Evidencias locales crudas (publicar solo evidencias-publicas sanitizadas)
+evidencias/

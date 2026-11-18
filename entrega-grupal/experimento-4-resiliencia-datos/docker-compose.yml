@@ -1,0 +1,216 @@
+name: seguridad-caos-exp4
+
+# Laboratorio aislado de resiliencia de datos (RPO/RTO).
+# NO publica MySQL al host. NO usa Hotel OKE / Hotel MySQL / cloud.
+
+services:
+  mysql:
+    # Official multi-arch tag; ARM64 runtime not claimed until OCI smoke rebuild/pull.
+    image: mysql:8.4
+    container_name: seguridad-caos-exp4-mysql
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: mysql-sintetico
+    environment:
+      MYSQL_DATABASE: lab_resilience_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-lab-exp4-root-not-real}
+      MYSQL_USER: lab_resilience_app
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-lab-exp4-app-not-real}
+    volumes:
+      - exp4_mysql_data:/var/lib/mysql
+      - ./lab/mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks:
+      lab_data:
+        ipv4_address: 172.31.10.10
+    # Sin mapeo de puertos al host.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-uroot",
+          "-plab-exp4-root-not-real",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: "no"
+
+  generator:
+    build:
+      context: ./lab
+      dockerfile: generator/Dockerfile
+    container_name: seguridad-caos-exp4-generator
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: generator
+    environment:
+      MYSQL_HOST: 172.31.10.10
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: lab_resilience_db
+      MYSQL_USER: lab_resilience_app
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-lab-exp4-app-not-real}
+      EVENTS_DIR: /events
+      EVIDENCE_DIR: /evidence
+    volumes:
+      - ./runtime/events:/events
+      - ./runtime/evidence:/evidence
+    networks:
+      lab_data:
+        ipv4_address: 172.31.10.20
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    profiles: ["tools"]
+
+  backup:
+    build:
+      context: ./lab
+      dockerfile: backup/Dockerfile
+    container_name: seguridad-caos-exp4-backup
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: backup
+    environment:
+      MYSQL_HOST: 172.31.10.10
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: lab_resilience_db
+      MYSQL_USER: lab_resilience_app
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-lab-exp4-app-not-real}
+      BACKUPS_DIR: /backups
+      EVENTS_DIR: /events
+      BACKUP_INTERVAL_SEC: ${BACKUP_INTERVAL_SEC:-300}
+      BACKUP_RETENTION: ${BACKUP_RETENTION:-20}
+    volumes:
+      - ./runtime/backups:/backups
+      - ./runtime/events:/events
+    networks:
+      lab_data:
+        ipv4_address: 172.31.10.30
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    profiles: ["tools"]
+
+  restore:
+    build:
+      context: ./lab
+      dockerfile: restore/Dockerfile
+    container_name: seguridad-caos-exp4-restore
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: restore
+    environment:
+      MYSQL_HOST: 172.31.10.10
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: lab_resilience_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-lab-exp4-root-not-real}
+      BACKUPS_DIR: /backups
+      EVENTS_DIR: /events
+      EVIDENCE_DIR: /evidence
+    volumes:
+      - ./runtime/backups:/backups:ro
+      - ./runtime/events:/events
+      - ./runtime/evidence:/evidence
+    networks:
+      lab_data:
+        ipv4_address: 172.31.10.40
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    profiles: ["tools"]
+
+  probe:
+    build:
+      context: ./lab
+      dockerfile: probe/Dockerfile
+    container_name: seguridad-caos-exp4-probe
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: probe
+    environment:
+      MYSQL_HOST: 172.31.10.10
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: lab_resilience_db
+      MYSQL_USER: lab_resilience_app
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-lab-exp4-app-not-real}
+      EVENTS_DIR: /events
+      EVIDENCE_DIR: /evidence
+    volumes:
+      - ./runtime/events:/events
+      - ./runtime/evidence:/evidence
+    networks:
+      lab_data:
+        ipv4_address: 172.31.10.50
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    profiles: ["tools"]
+
+  monitor:
+    build:
+      context: ./lab
+      dockerfile: monitor/Dockerfile
+    container_name: seguridad-caos-exp4-monitor
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: monitor
+    environment:
+      EVENTS_DIR: /events
+      ALERTS_PATH: /events/alerts.jsonl
+    volumes:
+      - ./runtime/events:/events
+    networks:
+      lab_ops:
+        ipv4_address: 172.31.20.50
+    restart: "no"
+
+  watchdog:
+    build:
+      context: ./lab
+      dockerfile: watchdog/Dockerfile
+    container_name: seguridad-caos-exp4-watchdog
+    labels:
+      experimento: seguridad-caos-exp4
+      rol: watchdog-ttl
+    environment:
+      EVENTS_DIR: /events
+      DEADLINE_PATH: /events/experiment_deadline.json
+      STOP_PATH: /events/STOP
+      AUDIT_PATH: /events/watchdog.jsonl
+      HEARTBEAT_PATH: /events/watchdog_heartbeat.json
+      WATCHDOG_ID: seguridad-caos-exp4-watchdog
+    volumes:
+      - ./runtime/events:/events
+    # Sin montaje de socket Docker. Sin modo privilegiado. Sin trafico externo.
+    networks:
+      lab_ops:
+        ipv4_address: 172.31.20.60
+    restart: "no"
+
+networks:
+  lab_data:
+    name: seguridad-caos-exp4_lab_data
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.31.10.0/24
+  lab_ops:
+    name: seguridad-caos-exp4_lab_ops
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.31.20.0/24
+
+volumes:
+  exp4_mysql_data:
+    name: seguridad-caos-exp4_mysql_data
