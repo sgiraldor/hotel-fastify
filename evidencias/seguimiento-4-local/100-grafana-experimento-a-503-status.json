@@ -1,0 +1,19 @@
+{
+  "dashboard_uid": "experimento-a-503",
+  "dashboard_title": "Experimento A \u2014 HTTP 503 Hotel",
+  "default_time": {
+    "from": "2026-11-17T05:40:00.000Z",
+    "to": "2026-11-17T06:20:00.000Z"
+  },
+  "k6_panel_title": "Comparaci\u00f3n archivada de k6",
+  "k6_table_mentions_baseline_289": true,
+  "k6_table_mentions_r0_320": true,
+  "k6_table_mentions_r1_349": true,
+  "panel_titles": [
+    "Comparaci\u00f3n archivada de k6",
+    "Ventanas de inyecci\u00f3n y trazas",
+    "HTTP 503 activo por r\u00e9plica",
+    "Contador de 503 por r\u00e9plica",
+    "Peticiones OTLP actuales por API"
+  ]
+}

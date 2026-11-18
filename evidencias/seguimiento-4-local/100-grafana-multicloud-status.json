@@ -1,0 +1,19 @@
+{
+  "dashboard_uid": "seguimiento-4-multicloud",
+  "dashboard_title": "Seguimiento #4 ??? Multicloud Observability",
+  "default_time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panel_titles": [
+    "Throughput por servicio (Hotel scrape)",
+    "Latencia p95 Hotel (ms)",
+    "Error rate 5xx Hotel",
+    "Estado experimento (chaos / resilience)",
+    "Bulkhead / fail-fast",
+    "OTLP metrics recibidas (collector ??? Prometheus)",
+    "Comparaci??n R0 vs R1 (anotar ventanas)",
+    "Buscar traza (Tempo) ??? pegar Trace ID OTel",
+    "Servicios esperados"
+  ]
+}

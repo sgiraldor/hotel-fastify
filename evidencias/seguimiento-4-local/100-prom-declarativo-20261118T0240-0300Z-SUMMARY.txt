@@ -1,0 +1,19 @@
+Experimento DECLARATIVO OCI (no mezclar con Baseline/R0/R1 k6)
+Ventana UTC: 2026-11-18T02:40:00Z .. 2026-11-18T03:00:00Z
+Ventana Colombia: 2026-11-17 21:40 .. 22:00 (UTC-5)
+Consultado: 2026-11-18T21:40:16.376013+00:00
+Retencion Prometheus: 1d
+Fuente cruda: 100-prom-declarativo-20261118T0240-0300Z.json
+
+## hotel_chaos_active
+Demostrado por PromQL (query_range step 15s): ambas réplicas tienen exactamente
+una muestra = 1.0 en 2026-11-18T02:49:00Z. El resto del intervalo está en 0.
+En la captura Grafana las barras se solapan en el mismo timestamp; no interpretar
+la PNG sola como "solo una réplica".
+- pod=hotel-api-5c4b965cf6-glg2z points=81 first=0.0 last=0.0 min=0.0 max=1.0 active_at=2026-11-18T02:49:00Z
+- pod=hotel-api-5c4b965cf6-tmqlg points=81 first=0.0 last=0.0 min=0.0 max=1.0 active_at=2026-11-18T02:49:00Z
+
+## hotel_chaos_503_total
+Incrementos confirmados en el mismo instante (~02:49Z):
+- pod=hotel-api-5c4b965cf6-glg2z points=81 first=420.0 last=422.0 (420 -> 421 @02:49:00Z, 421 -> 422 @02:49:15Z)
+- pod=hotel-api-5c4b965cf6-tmqlg points=81 first=202.0 last=204.0 (202 -> 203 @02:49:00Z, 203 -> 204 @02:49:15Z)
