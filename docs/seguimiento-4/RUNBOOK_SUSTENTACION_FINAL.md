@@ -95,7 +95,7 @@ powershell -NoProfile -File .\chaos\run-oci-replicas-experiment.ps1
 
 Resultado esperado: `chaos validate` en verde y `chaos run --dry activities` sin llamar al interruptor.
 
-Intento real autorizado del `2026-11-18T02:35:02Z`: **no exitoso**. Chaos Toolkit arrancó, pero la tolerancia regex del steady-state chocó con el `dict` que devuelve el provider `process` en chaostoolkit-lib 1.45.1. El enable no corrió. Evidencia: `evidencias/seguimiento-4-local/oci-replicas-run-20261117-213502.txt` y `oci-replicas-run-20261117-213502-VERIFICACION.md`. La tolerancia del manifiesto quedó corregida a `0` (exit code). No repetir sin nueva autorización.
+Corrida real válida: `2026-11-18T02:48:43Z`. Journal `evidencias/seguimiento-4-local/oci-replicas-journal-20261117-214843.json`. Enable + `verify-active` (503 en ambas con `/live` 200) + disable + recovery. Verificación `oci-replicas-run-20261117-214843-VERIFICACION.md`. El primer intento `213502` falló antes del enable y no cuenta como inyección.
 
 El Chaos Gate del runner también es Chaos Toolkit, contra `127.0.0.1` dentro de GitHub Actions, no contra OCI:
 

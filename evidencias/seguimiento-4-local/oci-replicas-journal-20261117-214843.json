@@ -1,0 +1,303 @@
+{
+  "chaoslib-version": "1.45.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "node": "DESKTOP-E7S56H6",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "Hotel OCI — HTTP 503 en las dos réplicas (declarativo)",
+    "description": "Chaos Toolkit orquesta el interruptor por pod vía oci_replicas_provider.py → replicas-toolkit.ps1 → chaos-replicas.ps1. No usa el NLB para activar ni para comprobar cobertura. Enable exige CHAOS_OCI_CONFIRM=YES. TTL por defecto 60 s (máximo de la API 300 s). El provider Python lanza ActivityFailed si el script sale distinto de 0. validate o dry-run no demuestran ejecución real en OCI.",
+    "tags": [
+      "hotel",
+      "oci",
+      "replicas",
+      "seguimiento-4",
+      "declarative"
+    ],
+    "configuration": {
+      "observation_window_seconds": {
+        "type": "env",
+        "key": "CHAOS_OCI_OBSERVE_SEC",
+        "default": "5"
+      }
+    },
+    "steady-state-hypothesis": {
+      "title": "Las dos réplicas Ready responden habitación 200 y /live 200",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "both-replicas-healthy",
+          "tolerance": true,
+          "provider": {
+            "type": "python",
+            "module": "oci_replicas_provider",
+            "func": "status",
+            "arguments": {
+              "timeout": 90
+            }
+          }
+        }
+      ]
+    },
+    "method": [
+      {
+        "type": "action",
+        "name": "enable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "enable",
+          "arguments": {
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "type": "probe",
+        "name": "both-replicas-return-503",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "verify_active",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      {
+        "type": "action",
+        "name": "wait-observation-window",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "const s=Number(process.env.CHAOS_OCI_OBSERVE_SEC||5); setTimeout(()=>{}, Math.max(1,s)*1000)"
+          ],
+          "timeout": 60
+        }
+      },
+      {
+        "type": "action",
+        "name": "disable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "disable",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      {
+        "type": "probe",
+        "name": "both-replicas-recovered",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "status",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      }
+    ],
+    "rollbacks": [
+      {
+        "type": "action",
+        "name": "emergency-disable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "disable",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      }
+    ],
+    "dry": null
+  },
+  "start": "2026-11-18T02:48:43.850397+00:00",
+  "status": "completed",
+  "deviated": false,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "both-replicas-healthy",
+            "tolerance": true,
+            "provider": {
+              "type": "python",
+              "module": "oci_replicas_provider",
+              "func": "status",
+              "arguments": {
+                "timeout": 90
+              }
+            }
+          },
+          "output": true,
+          "start": "2026-11-18T02:48:43.851275+00:00",
+          "status": "succeeded",
+          "end": "2026-11-18T02:48:48.364406+00:00",
+          "duration": 4.513131,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "both-replicas-healthy",
+            "tolerance": true,
+            "provider": {
+              "type": "python",
+              "module": "oci_replicas_provider",
+              "func": "status",
+              "arguments": {
+                "timeout": 90
+              }
+            }
+          },
+          "output": true,
+          "start": "2026-11-18T02:49:13.151746+00:00",
+          "status": "succeeded",
+          "end": "2026-11-18T02:49:18.618723+00:00",
+          "duration": 5.466977,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "enable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "enable",
+          "arguments": {
+            "timeout": 120
+          }
+        }
+      },
+      "output": true,
+      "start": "2026-11-18T02:48:48.364967+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:48:53.041629+00:00",
+      "duration": 4.676662
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "both-replicas-return-503",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "verify_active",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      "output": true,
+      "start": "2026-11-18T02:48:53.041871+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:48:57.551017+00:00",
+      "duration": 4.509146
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "wait-observation-window",
+        "provider": {
+          "type": "process",
+          "path": "node",
+          "arguments": [
+            "-e",
+            "const s=Number(process.env.CHAOS_OCI_OBSERVE_SEC||5); setTimeout(()=>{}, Math.max(1,s)*1000)"
+          ],
+          "timeout": 60
+        }
+      },
+      "output": {
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "start": "2026-11-18T02:48:57.551406+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:49:02.609658+00:00",
+      "duration": 5.058252
+    },
+    {
+      "activity": {
+        "type": "action",
+        "name": "disable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "disable",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      "output": true,
+      "start": "2026-11-18T02:49:02.609915+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:49:07.035145+00:00",
+      "duration": 4.42523
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "both-replicas-recovered",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "status",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      "output": true,
+      "start": "2026-11-18T02:49:07.035414+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:49:13.151244+00:00",
+      "duration": 6.11583
+    }
+  ],
+  "rollbacks": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "emergency-disable-both-replicas",
+        "provider": {
+          "type": "python",
+          "module": "oci_replicas_provider",
+          "func": "disable",
+          "arguments": {
+            "timeout": 90
+          }
+        }
+      },
+      "output": true,
+      "start": "2026-11-18T02:49:18.619550+00:00",
+      "status": "succeeded",
+      "end": "2026-11-18T02:49:23.130617+00:00",
+      "duration": 4.511067
+    }
+  ],
+  "end": "2026-11-18T02:49:23.130790+00:00",
+  "duration": 39.28041672706604
+}

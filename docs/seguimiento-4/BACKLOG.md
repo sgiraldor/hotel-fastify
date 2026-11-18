@@ -16,12 +16,12 @@
 - [x] Evidencias de Cine del release `v5.1.0`, commit `d9c41a3fbc68b77223495d3ecb602229a3345e03`, y del Chaos Gate en `main` `b79ef990ebcf2492f95f86d0f832a3448e017a3c`. Copias en `evidencias/seguimiento-4-cine/`.
 - [x] Preflight de Hotel antes de la corrida real de Cine: `evidencias/seguimiento-4-local/99-hotel-oci-preflight-daniel.txt`, cierre `2026-11-18T01:21:51.406Z`. Las dos réplicas estaban Ready y con el interruptor apagado.
 - [x] Auditoría final y runbook de sustentación: `docs/seguimiento-4/AUDITORIA_FINAL_ENTREGA.md` y `docs/seguimiento-4/RUNBOOK_SUSTENTACION_FINAL.md`.
-- [x] Experimento declarativo OCI de las dos réplicas: `chaos/experiment-hotel-oci-replicas.json` orquesta `replicas-toolkit.ps1` → `chaos-replicas.ps1`. Dry-run y `chaos validate` listos. Ejecución real pendiente de autorización.
+- [x] Experimento declarativo OCI de las dos réplicas: journal real `oci-replicas-journal-20261117-214843.json` (segunda corrida). Provider `oci_replicas_provider.py` + `ActivityFailed`. Primer intento `213502` falló antes del enable.
 
 ## Pendiente de Samuel
 
 1. **Release.** `v1.1.0` queda donde está: apunta a un commit anterior a R0 y R1. Hace falta un tag nuevo y el release creado desde ese tag. Todavía no se crean.
-2. **Ejecución real del experimento declarativo OCI.** El intento autorizado del `2026-11-18T02:35:02Z` falló en el steady-state (`TypeError` regex vs dict del process provider). Enable no se ejecutó. Hotel quedó recuperado. La tolerancia del JSON ya se corrigió a `0` (exit code). Hace falta una nueva autorización para una segunda corrida y archivar el journal.
+2. ~~**Ejecución real del experimento declarativo OCI.**~~ Cerrado: segunda corrida `2026-11-18T02:48:43Z`, journal `oci-replicas-journal-20261117-214843.json`, `verify-active` OK en ambas réplicas, recuperación 2/2.
 
 ## Pendiente de coordinar
 

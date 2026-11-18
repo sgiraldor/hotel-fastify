@@ -27,7 +27,7 @@ La guía original del profesor no está en este repositorio. No hay PDF ni docum
 | Tres fallos distintos | CUMPLE | 503 de Hotel, latencia de Sports, saturación de Cine. Carpetas `evidencias/seguimiento-4-local/`, `evidencias/seguimiento-4-intercloud/` y `evidencias/seguimiento-4-cine/` |
 | Experimento declarativo de Hotel versionado | CUMPLE | Local: `chaos/experiment-hotel-dependency.json`. OCI dos réplicas: `chaos/experiment-hotel-oci-replicas.json` |
 | Ese experimento preparado para las dos réplicas de OCI | CUMPLE como artefacto | Chaos Toolkit orquesta `replicas-toolkit.ps1` → `chaos-replicas.ps1`. Validado con `chaos validate` y dry-run |
-| Ese experimento ejecutado de verdad contra las dos réplicas de OCI | NO CUMPLE | Intento autorizado `2026-11-18T02:35:02Z`: falló en steady-state por tolerancia regex vs dict del process provider. Enable no corrió. Log `oci-replicas-run-20261117-213502.txt`. Sin journal. Hotel quedó sano. No se repitió |
+| Ese experimento ejecutado de verdad contra las dos réplicas de OCI | CUMPLE | Segunda corrida `2026-11-18T02:48:43Z` journal `oci-replicas-journal-20261117-214843.json`: `completed`, no dry-run, enable + `verify-active` + disable + recovery. Activations 4→5 en ambas. Primer intento `213502` falló antes del enable |
 | Chaos Toolkit real en el runner | CUMPLE | Corridas 44189190442 y 44189597682. Artefactos en `evidencias/chaos-gate/` |
 | Interruptor propio | CUMPLE | `src/plugins/chaos-dependency.plugin.ts`, ruta `GET/POST /api/v2/chaos/dependency` |
 | Estado estable, hipótesis, métrica, blast radius y rollback del archivo declarativo | CUMPLE | `chaos/experiment-hotel-oci-replicas.json` + `chaos/README.md`. Steady-state y recovery por pod, no por NLB |
@@ -58,7 +58,7 @@ Cine, serie de 75 s: 264, 186 y 186 completas, con p95 481,74, 715,09 y 696,51 m
 ## Bloqueos antes de la clase
 
 1. Crear un tag nuevo, distinto de `v1.1.0`, y el release desde ese tag. Todavía no se crean.
-2. Autorizar y ejecutar una sola vez `run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment` si el profesor pide inyección declarativa en vivo. Hasta entonces, dry-run o evidencias históricas. No uses `chaos run` contra el NLB para afirmar las dos réplicas.
+2. En sustentación, mostrar el journal `oci-replicas-journal-20261117-214843.json` (o repetir solo con nueva autorización). No uses `chaos run` contra el NLB para afirmar las dos réplicas.
 3. No decir que el journal corto de Cine saturó tráfico. `appliedCount=0` en la activación.
 4. No decir que el circuit breaker de Sports quedó medido.
 
