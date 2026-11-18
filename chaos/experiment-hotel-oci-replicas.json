@@ -16,10 +16,7 @@
       {
         "type": "probe",
         "name": "both-replicas-healthy",
-        "tolerance": {
-          "type": "regex",
-          "pattern": "ok action=status"
-        },
+        "tolerance": 0,
         "provider": {
           "type": "process",
           "path": "powershell",

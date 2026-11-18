@@ -21,7 +21,7 @@
 ## Pendiente de Samuel
 
 1. **Release.** `v1.1.0` queda donde está: apunta a un commit anterior a R0 y R1. Hace falta un tag nuevo y el release creado desde ese tag. Todavía no se crean.
-2. **Ejecución real del experimento declarativo OCI.** El artefacto y el dry-run ya están. Falta una autorización explícita para correr `run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment` y archivar el journal.
+2. **Ejecución real del experimento declarativo OCI.** El intento autorizado del `2026-11-18T02:35:02Z` falló en el steady-state (`TypeError` regex vs dict del process provider). Enable no se ejecutó. Hotel quedó recuperado. La tolerancia del JSON ya se corrigió a `0` (exit code). Hace falta una nueva autorización para una segunda corrida y archivar el journal.
 
 ## Pendiente de coordinar
 

@@ -57,6 +57,10 @@ Validado con Chaos Toolkit y k6 contra Hotel local. Evidencias `40-chaostoolkit-
 
 R1 no mejora el éxito frente a R0. Fail-fast y bulkhead no pueden fabricar una habitación cuando el interruptor responde 503 en toda la ventana. El journal local (`40-chaostoolkit-journal.json`) pasa de 200 a 503, deja `/live` en 200 y vuelve a 200 al desactivar.
 
+### Intento declarativo OCI (dos réplicas)
+
+Corrida autorizada `2026-11-18T02:35:02Z` con `run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment -DurationSeconds 60`. Chaos Toolkit 1.21.4 arrancó el experimento `experiment-hotel-oci-replicas.json` y falló en el steady-state: la tolerancia regex no acepta el `dict` que devuelve el provider `process` en chaostoolkit-lib 1.45.1. El enable **no se ejecutó**. No hay journal. Log y verificación: `oci-replicas-run-20261117-213502.txt` y `oci-replicas-run-20261117-213502-VERIFICACION.md`. Post-check: ambas réplicas `activo=false`, habitación 200, `/live` 200, Deployment 2/2. No se repitió.
+
 ---
 
 ## B. MySQL degradada (solo local)

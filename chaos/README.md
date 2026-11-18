@@ -64,7 +64,7 @@ El temporizador es por proceso. El NLB no alcanza los dos pods. Chaos Toolkit or
 
 | Paso | Qué hace |
 |---|---|
-| Steady-state | `status` en las dos: habitación 200 y `/live` 200 |
+| Steady-state | `status` en las dos: habitación 200 y `/live` 200. Tolerancia `0` = exit code del process provider (dict `{status,stdout,stderr}` en chaostoolkit-lib 1.45.1) |
 | Method enable | Exige `CHAOS_OCI_CONFIRM=YES`, TTL 1–300 s |
 | verify-active | GET en cada pod: 503 + `/live` 200 |
 | disable + recovery | Apaga las dos y vuelve a exigir 200 |
