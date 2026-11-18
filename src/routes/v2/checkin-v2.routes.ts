@@ -10,6 +10,7 @@ interface CheckInBody {
   pagoTotalHabitacion: number;
   pagoRealizado: number;
   estadoPago: string;
+  estado: string;
 }
 
 interface ActualizarCheckInBody {
