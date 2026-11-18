@@ -107,7 +107,7 @@ OCI: Tempo y Prometheus en el namespace `observability`. El dashboard `experimen
 | Integrante | Fallo | Métrica verificada aquí | Patrón verificado aquí |
 |---|---|---|---|
 | Samuel | HTTP 503 de Hotel en OCI | Cobertura del 503, p95 y clasificación de k6 en `94-*` y `96-*` | Fail-fast y bulkhead, solo en los experimentos locales B y C |
-| Jarrison | Latencia intercloud | No hay resultado de ese fallo en este repo | El fallback se observa en la traza `68adbcf2…`. El circuit breaker no tiene métrica aquí |
+| Jarrison | Latencia intercloud | Trazas del RUN_ID `aws-intercloud-live-20261117191113` en `evidencias/seguimiento-4-intercloud/`. R0 espera unos 800 ms y llama a Hotel. R1 marca fallback y no registra la llamada a Hotel. La cobertura de todo k6 no está confirmada | El circuit breaker no tiene métrica ni atributo en estas trazas |
 | Daniel | Agotamiento de recursos en Cine | No hay resultado de ese fallo en este repo | No hay patrón de Cine medido en este repo |
 
 La telemetría de `cine-api` en Prometheus demuestra que el servicio exporta series. No demuestra el experimento de agotamiento.

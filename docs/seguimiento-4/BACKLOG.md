@@ -19,7 +19,7 @@
 
 ## Pendiente de coordinar
 
-2. **Jarrison.** Evidencia del experimento de latencia intercloud. Código y métrica del circuit breaker. El fallback ya se ve en la traza `68adbcf21b960acf374c54886c56d681`, así que esa parte no se le pide de nuevo como si no existiera.
+2. **Jarrison.** Falta el JSON de k6 con el inicio y el fin reales de Baseline, R0 y R1, y una métrica o span del circuit breaker. Tempo ya muestra el RUN_ID `aws-intercloud-live-20261117191113`: R0 espera unos 800 ms y llega a Hotel; R1 usa `hotel_via=fallback` sin span HTTP de Hotel. Eso no confirma que los 800 ms cubrieran todas las solicitudes. El detalle está en `evidencias/seguimiento-4-intercloud/RESUMEN.txt`.
 3. **Daniel.** Evidencia del agotamiento de recursos en Cine y de sus dos patrones. Las series `cine-api` en Prometheus no cubren ese experimento.
 
 ## Fuera de este cierre
