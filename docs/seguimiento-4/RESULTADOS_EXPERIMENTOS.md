@@ -108,7 +108,7 @@ OCI: Tempo y Prometheus en el namespace `observability`. El dashboard `experimen
 |---|---|---|---|
 | Samuel | HTTP 503 de Hotel en OCI | Cobertura del 503, p95 y clasificación de k6 en `94-*` y `96-*` | Fail-fast y bulkhead, solo en los experimentos locales B y C |
 | Jarrison | Latencia intercloud de 800 ms, no el 503 de Hotel | JSON original: Baseline 273 completas y p95 360,13 ms; R0 113 completas y p95 1230,35 ms; R1 273 parciales, 0 completas y p95 624,50 ms. Reducción de p95 49,24 %. ZIP `evidencias-intercloud-aws-intercloud-live-20261117191113-20261117-194416.zip` | Timeout de 400 ms y `hotel_via=fallback` en R1. No hay evidencia directa de una transición del circuit breaker |
-| Daniel | Saturación de concurrencia en Cine GCP, una réplica | Serie 75 s: Baseline 264/264, p95 481,74 ms; R0 186/186, p95 715,09 ms; R1 186/186, p95 696,51 ms. Serie distinta GKE v2: 78,33 / 29,97 / 27,87 RPS exitosos | Bulkhead: 108 HTTP 503 `bulkhead_timeout` de 200. Admission: 9 HTTP 503 `inflight_limit` de 80. Ninguna de las dos series demuestra mejora causal de R1 |
+| Daniel | Saturación de concurrencia en Cine GCP, una réplica | Serie 75 s: Baseline 264/264, p95 481,74 ms; R0 186/186, p95 715,09 ms; R1 186/186, p95 696,51 ms. Serie distinta GKE v2: 78,33 / 29,97 / 27,87 RPS exitosos | Bulkhead: 108 HTTP 503 `bulkhead_timeout` de 200. Admission: 9 HTTP 503 `inflight_limit` de 80. El journal real de Chaos Toolkit activa y revierte el interruptor; al activar, `appliedCount=0` |
 
 La serie multicloud de 75 s no es la serie k6 directa de GKE v2. Las sondas de patrones no son ninguna de esas rondas.
 
@@ -148,9 +148,15 @@ Bulkhead: 200 solicitudes, 108 HTTP 503 con `bulkhead_timeout` y 92 HTTP 200. Ad
 
 ### Declarativo
 
-El experimento declarativo quedó implementado y validado en local con el commit `b8a93bc03c6edffcd069a6e72dd7523d9ccd5d04`. Los valores por defecto son `holdMs=250`, `maxInflight=8`, `maxQueueWaitMs=200` y `durationSec=90`. `experiment.yaml` separa `observed_gke_v2` de `acceptance_thresholds` y deja `throughput_r1_gt_r0` en false. El journal `chaos-toolkit-dry-run-journal.json` es un dry-run: `dry=activities`, estado `completed`, duración 0,002 s y salidas nulas. No es una inyección en GKE. El wrapper usa `--rollback-strategy always` y, en una corrida real, llama a stop dentro de `finally`. Esa corrida real no se hizo.
+La saturación bajo carga sigue siendo la de las series históricas: 75 s y GKE v2. No cambia con esta corrida.
 
-Sigue una inconsistencia documental. `CHAOS_TOOLKIT_VALIDACION.md` dice que la duración por defecto es 20 s, pero el JSON, el YAML y el journal usan 90 s. El comentario de uso de `run-chaos-toolkit.ps1` todavía muestra 200 ms, 4 cupos y 20 s. El cuerpo del script, si no hay variables, fija 250, 8, 200 y 90.
+La ejecución declarativa real está en el merge `e30fee7e5fe0696441a5eba0a970ed92a9511174`. `chaos-toolkit-journal.json` tiene `dry=null`, `status=completed` y `deviated=false`. Empieza a las `2026-11-18T01:33:50.315Z` y termina a las `01:33:55.919Z`, en 5,6 s. El start respondió HTTP 202 con `active=true` y la configuración `holdMs=250`, `maxInflight=8`, `durationSec=90`, `maxQueueWaitMs=200`. En esa respuesta y en la sonda siguiente, `appliedCount=0`. El rollback respondió HTTP 200, `active=false`, y healthz quedó en 200. El cuerpo del stop trae `appliedCount=1`. Esa cuenta no es una serie de carga y el journal no tiene HTTP 503. Esta corrida demuestra el interruptor y el rollback, no la saturación de solicitudes.
+
+El intento anterior, `chaos-toolkit-journal-run1-empty-body.json`, también dice `completed`, pero el start fue HTTP 400 por cuerpo vacío y la sonda quedó en `active=false`. No es la inyección válida.
+
+`chaos-toolkit-preflight-state.json` a las `01:26:44.912Z` y `chaos-toolkit-recovery-state.json` a las `01:35:30Z` muestran 2/2 Ready, saturación apagada, healthz 200, readyz ready y SQL `up`. La recuperación añade película 200 y el flujo `http://3.21.120.51:30080/api/v2/flujo/1/1/1` en HTTP 200, `success`, `degraded=false`, Hotel `upstream` y Cine `database`. El relato dice que hubo una escala temporal a 1 réplica. Esos dos archivos siguen en 2/2.
+
+El comentario de uso de `run-chaos-toolkit.ps1` todavía muestra 200 ms, 4 cupos y 20 s. El cuerpo del script y el journal válido usan 250, 8, 200 y 90.
 
 ### Observabilidad leída el 2026-11-18
 

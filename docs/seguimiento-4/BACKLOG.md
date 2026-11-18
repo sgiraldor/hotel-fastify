@@ -22,7 +22,7 @@
 ## Pendiente de coordinar
 
 2. **Jarrison.** El paquete ya está archivado. Sigue sin timestamps absolutos de inicio y fin de k6, como dice su propia nota, y sin una métrica o span que pruebe la transición del circuit breaker.
-3. **Daniel.** El experimento declarativo ya está alineado y el dry-run local quedó en `completed`. Falta el `chaos run` real en GKE, en una ventana coordinada. La nota de 20 s en `CHAOS_TOOLKIT_VALIDACION.md` y en el comentario del wrapper no coincide con los 90 s del JSON. La serie de 75 s no midió el pico de cupos.
+3. **Daniel.** La corrida real de Chaos Toolkit ya está archivada. El journal válido activó y revirtió el interruptor. No saturó una carga: `appliedCount=0` al activar. Sigue sin medirse el pico de los 8 cupos en la serie de 75 s. El comentario del wrapper todavía muestra 20 s.
 
 ## Fuera de este cierre
 

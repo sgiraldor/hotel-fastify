@@ -26,6 +26,19 @@ PR https://github.com/Danielg2004/cine_dvps/pull/5. El último commit de conteni
 - `run-chaos-toolkit.ps1` SHA-256 `9f568bdd7bc5fe9a072285e2c5c5930f0dcca30a312af32cfcd8487abb155293`
 - `CHAOS_TOOLKIT_VALIDACION.md` SHA-256 `a7ba3defebf8abaec811a2f196682ae38a9212f1788f91d04656d85e6104e3f7`
 - `chaos-toolkit-dry-run-journal.json` SHA-256 `51e8e824f06e39d3775d1c8fa3dc53a88e977a9eb803e7d0101f414d7fbfce1e`
+
+## Corrida real posterior
+
+PR https://github.com/Danielg2004/cine_dvps/pull/6. Merge commit `e30fee7e5fe0696441a5eba0a970ed92a9511174` (`2026-11-18T01:39:49Z`), un solo padre `9f8620e`. Los journals traen `x-chaos-token` como `***REDACTED***`. Los JSON de k6 no se tocaron. `cine-resource-exhaustion.json`, `run-chaos-toolkit.ps1` y `CHAOS_TOOLKIT_VALIDACION.md` reemplazan las copias del PR #5.
+
+- `CHAOS_TOOLKIT_REAL_RUN.md` SHA-256 `a2716643b57aae4efc0ac989ffdb6b3ca2d2f072b0ee4ba9cf733c920274be52`
+- `chaos-toolkit-journal.json` SHA-256 `a0fbf6567a4243bd3037389b1491a1e4fba1eaabdd10123853d08d97b0621f4f`
+- `chaos-toolkit-journal-run1-empty-body.json` SHA-256 `1939af9eb7e5e87dbaec460473b06fa6277deaa06770ca60210fb950d99005c4`
+- `chaos-toolkit-preflight-state.json` SHA-256 `44b62f24e8ab17ee8e3bc160440949ff7e6ad315077645acfbd84b98a8c94bc1`
+- `chaos-toolkit-recovery-state.json` SHA-256 `249770acaa709267f7fef4a01084391e19a8f5afaa4cfd6a54606e213d4f1a31`
+- `cine-resource-exhaustion.json` SHA-256 `47e88c9c7bbbd19cfc7dc47544d43840ea9ec9e77ba85480f391180121770a7d`
+- `run-chaos-toolkit.ps1` SHA-256 `5fc9f169a60588e435539105f9f333ff974d85215f54e3263162f78d13d5bab7`
+- `CHAOS_TOOLKIT_VALIDACION.md` SHA-256 `c89a53f4ce8f2a7c3eec6f955b2e8cf9212d8548390ed650d1e8ffd434ca7426`
 - `multicloud-75s-series.json` commit `b79ef990ebcf2492f95f86d0f832a3448e017a3c` SHA-256 `25821d63b32ad820b5563a610e85bf6df36b422702e235fdc07774b79c1d38f4`
 - `gke-v2-reject-probe.json` commit `b79ef990ebcf2492f95f86d0f832a3448e017a3c` SHA-256 `7281ff58f8bfad7f3487d4add13a6b926a468f31355bf20913827b4d82b1a798`
 - `gke-admission-reject-probe.json` commit `b79ef990ebcf2492f95f86d0f832a3448e017a3c` SHA-256 `11295f50d703adb5fe4e58f7c26c487ec8a8bb98a9f7ffac534b4ccc38ebb401`

@@ -26,7 +26,7 @@ En R0 el enable de `glg2z` y `tmqlg` es anterior al inicio, el disable es poster
 | Fail-fast y bulkhead | Aíslan MySQL en local. B baja el p95 y también el éxito. C rechaza 190454 veces. No causan el parcial de R1 |
 | Circuit breaker | Compatible con 18 llegadas frente a 349 solicitudes. Falta la métrica de Sports |
 | Latencia de Sports | Experimento distinto del 503 y del de Cine. Baseline 273 completas, R0 113 completas, R1 273 parciales. El 100 % de R1 es degradado, no completo. El paquete original no trae el inicio ni el fin exactos de k6. No afirmar el circuit breaker |
-| Cine | Saturación de concurrencia, no CPU ni memoria. Serie 75 s: 264, 186 y 186 completas; p95 481,74 / 715,09 / 696,51 ms. La baja de 2,6 % no se atribuye a los patrones. GKE v2 baja el RPS de 29,97 a 27,87. Bulkhead y admission solo en sondas aparte. Chaos Toolkit validado en dry-run local; sin ejecución remota |
+| Cine | Saturación de concurrencia, no CPU ni memoria. Serie 75 s: 264, 186 y 186 completas; p95 481,74 / 715,09 / 696,51 ms. La baja de 2,6 % no se atribuye a los patrones. GKE v2 baja el RPS de 29,97 a 27,87. Bulkhead y admission solo en sondas aparte. Chaos Toolkit real: journal `completed`, start 202 y rollback 200. `appliedCount=0` en la activación; no es la prueba de carga |
 | Chaos gate | Corrió en el runner. La negativa 44189190442 quedó roja y la positiva 44189597682 quedó verde. Los artefactos revisados están en `evidencias/chaos-gate/` |
 | Grafana | `http://127.0.0.1:3001/d/experimento-a-503`, ventana 00:40 a 01:20 -05. Capturas `98-grafana-experimento-a-*.png`. k6 está marcado como archivo |
 | Baseline 289 | JSON original `baseline-hotel503-baseline-20261117-003033.json`: 289/289, 0 parciales, 0 fallidas, p95 312,02064 ms |
