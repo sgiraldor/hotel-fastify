@@ -21,13 +21,13 @@ Perfil: `load/k6/flujo-profile-shared.js`. Hotel normal en el baseline. En R0 y 
 
 | Ronda | RUN_ID | Completas | Parciales | Fallidas | Disponibilidad | p95 |
 |---|---|---:|---:|---:|---|---:|
-| Baseline | medición definitiva del grupo | 289 | 0 | 0 | 100 % completa | 312,02 ms |
+| Baseline | `hotel503-baseline-20261117-003033` | 289 | 0 | 0 | 100 % completa | 312,02 ms |
 | R0 | `hotel503-r0-retry-20261117-004150` | 0 | 0 | 320 | 0 % | 224,13 ms |
 | R1 | `hotel503-r1-retry-20261117-011303` | 0 | 349 | 0 | 100 % degradada | 234,60 ms |
 
 El 100 % de R1 son respuestas parciales con fallback. Hotel siguió en 503 durante toda la carga y no hubo ninguna solicitud completa. El p95 de R1 es 4,7 % mayor que el de R0.
 
-El JSON de k6 del baseline no está en el repositorio. Una medición anterior, del `RUN_ID` `hotel-503-prueba-01`, reportó 302 completas y p95 313,39 ms. Esa corrida no es la tabla definitiva.
+El JSON original del baseline está en `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`. Trae 289 solicitudes, 289 completas, 0 parciales, 0 fallidas, disponibilidad 100 % y p95 312,02064 ms. El perfil suma 75 s: 15 s a 2 VU, 45 s a 4 VU y 15 s a 0. La tabla redondea ese p95 a 312,02 ms. Una medición anterior, del `RUN_ID` `hotel-503-prueba-01`, reportó 302 completas y p95 313,39 ms. Esa corrida no es la tabla definitiva. `k6-baseline-summary.json` tampoco lo es: tiene 71158 peticiones de un perfil local distinto.
 
 ### Cobertura y trazas
 

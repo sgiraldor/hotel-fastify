@@ -67,7 +67,7 @@ El JSON de `load/results/<ROUND>-hotel-503-prueba-01.json` separa:
 | Recuperación | segundos desde `disable` hasta hábito 200 en las dos réplicas, y hasta un flujo Sports full |
 | Trazas | `x-trace-id` de una respuesta y un Trace ID W3C con `sports-api`, `hotel-api` y `cine-api` |
 
-La parcial no entra en `full`. El baseline definitivo del grupo es 289 completas, 0 fallidas y p95 312,02 ms. Su JSON de k6 todavía no está archivado. Una medición anterior del `RUN_ID` `hotel-503-prueba-01` reportó 302 completas y p95 313,39 ms, y no entra en la tabla final.
+La parcial no entra en `full`. El baseline definitivo del grupo es el RUN_ID `hotel503-baseline-20261117-003033`: 289 completas, 0 parciales, 0 fallidas y p95 312,02064 ms, archivado en `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`. La tabla redondea el p95 a 312,02 ms. Una medición anterior del `RUN_ID` `hotel-503-prueba-01` reportó 302 completas y p95 313,39 ms, y no entra en la tabla final.
 
 ## Comandos
 

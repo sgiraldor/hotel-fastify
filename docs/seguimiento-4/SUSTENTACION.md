@@ -28,7 +28,7 @@ En R0 el enable de `glg2z` y `tmqlg` es anterior al inicio, el disable es poster
 | Latencia de Sports y agotamiento de Cine | No están evidenciados en este repo |
 | Chaos gate | Corrió en el runner. La negativa 44189190442 quedó roja y la positiva 44189597682 quedó verde. Los artefactos revisados están en `evidencias/chaos-gate/` |
 | Grafana | `http://127.0.0.1:3001/d/experimento-a-503`, ventana 00:40 a 01:20 -05. Capturas `98-grafana-experimento-a-*.png`. k6 está marcado como archivo |
-| Baseline 289 | Es la cifra definitiva del grupo. Su JSON de k6 no está archivado |
+| Baseline 289 | JSON original `baseline-hotel503-baseline-20261117-003033.json`: 289/289, 0 parciales, 0 fallidas, p95 312,02064 ms |
 
 ## Comandos de lectura
 

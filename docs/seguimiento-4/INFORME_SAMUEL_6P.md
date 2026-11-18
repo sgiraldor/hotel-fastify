@@ -6,7 +6,7 @@ Aporte al informe grupal del Seguimiento #4. Hotel es la dependencia síncrona d
 
 Hotel corre en OKE con dos réplicas (`hotel-api-5c4b965cf6-glg2z` y `hotel-api-5c4b965cf6-tmqlg`), MySQL, probes `/live` y `/ready`, y el NLB `http://149.130.165.30`. El estado estable del interruptor es `activo=false`, habitación HTTP 200 y `/live` HTTP 200.
 
-El flujo compartido usa `load/k6/flujo-profile-shared.js`: 15 s a 2 VU, 45 s a 4 VU, 15 s a 0 y una pausa de 0,3 s. En el baseline, con Hotel normal y la resiliencia de Sports activa, k6 registró 289 solicitudes completas, disponibilidad 100 % y p95 de 312,02 ms. El JSON de esa corrida no está archivado en el repositorio; el número se usa porque es el baseline definitivo del grupo, y el archivo queda pendiente.
+El flujo compartido usa `load/k6/flujo-profile-shared.js`: 15 s a 2 VU, 45 s a 4 VU, 15 s a 0 y una pausa de 0,3 s. En el baseline, con Hotel normal y la resiliencia de Sports activa, k6 registró 289 solicitudes completas, disponibilidad 100 % y p95 de 312,02 ms. El JSON original es `evidencias/seguimiento-4-local/baseline-hotel503-baseline-20261117-003033.json`: 289/289 completas, 0 parciales, 0 fallidas y p95 312,02064 ms.
 
 ## 2. Hipótesis
 
@@ -66,7 +66,7 @@ El 503 sostenido sí tumba el flujo cuando Sports no se protege, y el mismo fall
 
 ## 10. Backlog
 
-El chaos gate ya corrió en el runner. La corrida 44189190442 quedó roja porque `habitacion_503_rate=0`, y la 44189597682 quedó verde. El dashboard `experimento-a-503` está publicado en Grafana de OKE: `http://127.0.0.1:3001/d/experimento-a-503`. Las cifras de k6 van como archivo y las ventanas salen de Prometheus. Siguen pendientes el JSON del baseline, la latencia de Jarrison, el agotamiento de Daniel y el release. `v1.1.0` no se mueve.
+El chaos gate ya corrió en el runner. La corrida 44189190442 quedó roja porque `habitacion_503_rate=0`, y la 44189597682 quedó verde. El dashboard `experimento-a-503` está publicado en Grafana de OKE: `http://127.0.0.1:3001/d/experimento-a-503`. Las cifras de k6 van como archivo y las ventanas salen de Prometheus. Siguen pendientes la latencia de Jarrison, el agotamiento de Daniel y el release. `v1.1.0` no se mueve.
 
 ## Uso de IA
 
