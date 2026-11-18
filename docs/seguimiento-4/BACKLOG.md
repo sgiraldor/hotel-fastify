@@ -22,7 +22,7 @@
 ## Pendiente de coordinar
 
 2. **Jarrison.** El paquete ya está archivado. Sigue sin timestamps absolutos de inicio y fin de k6, como dice su propia nota, y sin una métrica o span que pruebe la transición del circuit breaker.
-3. **Daniel.** Falta el journal de `chaos run` con la intensidad publicada (hold 250 ms, 8 cupos, cola 200 ms, 90 s). El JSON declarativo usa otros valores por defecto y `experiment.yaml` sigue en `PENDING_MEASUREMENT`. La serie de 75 s no midió el pico de cupos.
+3. **Daniel.** El experimento declarativo ya está alineado y el dry-run local quedó en `completed`. Falta el `chaos run` real en GKE, en una ventana coordinada. La nota de 20 s en `CHAOS_TOOLKIT_VALIDACION.md` y en el comentario del wrapper no coincide con los 90 s del JSON. La serie de 75 s no midió el pico de cupos.
 
 ## Fuera de este cierre
 

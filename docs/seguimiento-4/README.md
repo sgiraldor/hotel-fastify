@@ -10,7 +10,7 @@ Cliente/k6 -> Sports (AWS) -> Hotel (OCI) -> Sports -> Cine (GCP) -> Sports -> C
 |---|---|---|---|---|
 | Jarrison | Sports (coordinador) | AWS/K8s | Latencia intercloud | Sí, paquete original en `evidencias/seguimiento-4-intercloud/`. Es otro experimento: no es el HTTP 503 de Hotel |
 | Samuel | Hotel | OCI/K8s | HTTP 503 | Sí. R0 y R1 definitiva, evidencias `94-*` y `96-*` |
-| Daniel | Cine | GCP/K8s | Saturación de concurrencia | Sí, copias en `evidencias/seguimiento-4-cine/`. No es el HTTP 503 de Hotel ni la latencia de Sports |
+| Daniel | Cine | GCP/K8s | Saturación de concurrencia | Sí, copias en `evidencias/seguimiento-4-cine/`. El Chaos Toolkit quedó validado en dry-run local, sin run remoto. No es el HTTP 503 de Hotel ni la latencia de Sports |
 
 Hotel no es coordinador y no llama a Cine. La métrica de Samuel en el flujo es la cobertura del 503, más la clasificación de k6. Sus patrones son fail-fast y bulkhead, medidos en local. El fallback y el circuit breaker son de Sports: el primero se ve en Tempo y el segundo no tiene métrica en este repositorio.
 

@@ -148,7 +148,9 @@ Bulkhead: 200 solicitudes, 108 HTTP 503 con `bulkhead_timeout` y 92 HTTP 200. Ad
 
 ### Declarativo
 
-`chaos/experiments/cine-resource-exhaustion.json` es un experimento de Chaos Toolkit: steady state, arranque y rollback. No hay journal de `chaos run`. Los valores por defecto son 200 ms, 4 cupos y 30 s, sin `maxQueueWaitMs`. `experiment.yaml` deja los umbrales en `PENDING_MEASUREMENT`. El estado es **parcial**.
+El experimento declarativo quedó implementado y validado en local con el commit `b8a93bc03c6edffcd069a6e72dd7523d9ccd5d04`. Los valores por defecto son `holdMs=250`, `maxInflight=8`, `maxQueueWaitMs=200` y `durationSec=90`. `experiment.yaml` separa `observed_gke_v2` de `acceptance_thresholds` y deja `throughput_r1_gt_r0` en false. El journal `chaos-toolkit-dry-run-journal.json` es un dry-run: `dry=activities`, estado `completed`, duración 0,002 s y salidas nulas. No es una inyección en GKE. El wrapper usa `--rollback-strategy always` y, en una corrida real, llama a stop dentro de `finally`. Esa corrida real no se hizo.
+
+Sigue una inconsistencia documental. `CHAOS_TOOLKIT_VALIDACION.md` dice que la duración por defecto es 20 s, pero el JSON, el YAML y el journal usan 90 s. El comentario de uso de `run-chaos-toolkit.ps1` todavía muestra 200 ms, 4 cupos y 20 s. El cuerpo del script, si no hay variables, fija 250, 8, 200 y 90.
 
 ### Observabilidad leída el 2026-11-18
 
