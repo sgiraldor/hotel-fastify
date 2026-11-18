@@ -56,15 +56,34 @@ curl -X POST "$HOTEL_BASE_URL/api/v2/chaos/dependency" \
   -d "{\"action\":\"disable\"}"
 ```
 
-## Dos réplicas en OCI
+## Dos réplicas en OCI (declarativo)
 
-El temporizador es por proceso. El NLB no alcanza los dos pods. Procedimiento, métricas y reversión con caducidad: [`docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](../docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
+El temporizador es por proceso. El NLB no alcanza los dos pods. Chaos Toolkit orquesta el mismo mecanismo por pod, sin duplicar la inyección:
+
+`experiment-hotel-oci-replicas.json` → `replicas-toolkit.ps1` → `chaos-replicas.ps1` → `pod-switch.js` dentro de cada réplica.
+
+| Paso | Qué hace |
+|---|---|
+| Steady-state | `status` en las dos: habitación 200 y `/live` 200 |
+| Method enable | Exige `CHAOS_OCI_CONFIRM=YES`, TTL 1–300 s |
+| verify-active | GET en cada pod: 503 + `/live` 200 |
+| disable + recovery | Apaga las dos y vuelve a exigir 200 |
+| rollbacks | Vuelve a llamar `disable` en ambas |
 
 ```powershell
-./chaos/chaos-replicas.ps1 -Action status
-./chaos/chaos-replicas.ps1 -Action enable -DurationSeconds 120 -ConfirmExperiment
-./chaos/chaos-replicas.ps1 -Action disable
+# Solo lectura / dry-run. NO activa el 503. No demuestra ejecución real en OCI.
+powershell -NoProfile -File .\chaos\run-oci-replicas-experiment.ps1
+
+# Ejecución real (solo con autorización). NO correr hasta que se autorice.
+# powershell -NoProfile -File .\chaos\run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment -DurationSeconds 60
+
+# Parada de emergencia
+powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action disable
 ```
+
+El experimento local `experiment-hotel-dependency.json` sigue siendo de un solo proceso (`127.0.0.1` o NLB). No lo uses para afirmar cobertura de las dos réplicas.
+
+Procedimiento histórico de Baseline/R0/R1: [`docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md`](../docs/seguimiento-4/RUNBOOK_EXPERIMENTO_A_OCI_SPORTS.md).
 
 ## Chaos gate en GitHub Actions
 

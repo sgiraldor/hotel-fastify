@@ -29,7 +29,7 @@ El 100 % de R1 no significa que Hotel se haya recuperado. Las dos réplicas sigu
 - CRUD legacy + contrato `GET /api/v2/habitacion/:id` para Sports.
 - Trazabilidad `x-trace-id` + OpenTelemetry.
 - Despliegue en OKE con dos réplicas, MySQL y NLB. Los manifiestos están en `k8s/`.
-- Interruptor propio + experimento Chaos Toolkit.
+- Interruptor propio + Chaos Toolkit local (`experiment-hotel-dependency.json`) y declarativo OCI de dos réplicas (`experiment-hotel-oci-replicas.json`).
 - Fail-fast + bulkhead (`RESILIENCE_MODE`).
 
 ## Índice

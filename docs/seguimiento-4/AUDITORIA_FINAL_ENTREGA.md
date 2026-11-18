@@ -25,13 +25,14 @@ La guía original del profesor no está en este repositorio. No hay PDF ni docum
 | Flujo Sports → Hotel → Cine | CUMPLE | Traza sana `evidencias/seguimiento-4-local/93-tempo-4f8140a18fbaa1f98caaa8990d14341c.json`. Hotel no llama a Cine |
 | Trace ID extremo a extremo | CUMPLE | La misma traza y `docs/seguimiento-4/FLUJO_MULTICLOUD.md` |
 | Tres fallos distintos | CUMPLE | 503 de Hotel, latencia de Sports, saturación de Cine. Carpetas `evidencias/seguimiento-4-local/`, `evidencias/seguimiento-4-intercloud/` y `evidencias/seguimiento-4-cine/` |
-| Experimento declarativo de Hotel versionado | CUMPLE | `chaos/experiment-hotel-dependency.json` |
-| Ese experimento ejecutado contra las dos réplicas de OCI | NO CUMPLE | El journal `40-chaostoolkit-journal.json` es local. En OCI se usó `chaos/chaos-replicas.ps1`, porque un POST al NLB cambia un solo proceso |
+| Experimento declarativo de Hotel versionado | CUMPLE | Local: `chaos/experiment-hotel-dependency.json`. OCI dos réplicas: `chaos/experiment-hotel-oci-replicas.json` |
+| Ese experimento preparado para las dos réplicas de OCI | CUMPLE como artefacto | Chaos Toolkit orquesta `replicas-toolkit.ps1` → `chaos-replicas.ps1`. Validado con `chaos validate` y dry-run. La ejecución real en OCI aún no se autorizó ni se corrió |
+| Ese experimento ejecutado de verdad contra las dos réplicas de OCI | NO CUMPLE todavía | Pendiente de autorización. El journal histórico `40-chaostoolkit-journal.json` sigue siendo local de un solo proceso. R0/R1 usaron el script directo |
 | Chaos Toolkit real en el runner | CUMPLE | Corridas 44189190442 y 44189597682. Artefactos en `evidencias/chaos-gate/` |
 | Interruptor propio | CUMPLE | `src/plugins/chaos-dependency.plugin.ts`, ruta `GET/POST /api/v2/chaos/dependency` |
-| Estado estable, hipótesis, métrica, blast radius y rollback del archivo declarativo | CUMPLE | `chaos/experiment-hotel-dependency.json` y `chaos/README.md` |
-| Aborto explícito dentro del JSON de Chaos Toolkit | PARCIAL | No hay bloque `controls`. El aborto está en el script: sin `-ConfirmExperiment` no enciende, y si una réplica no queda en 503 apaga las dos. El TTL de la API es de 300 s como máximo |
-| Rollback de las dos réplicas | CUMPLE por el script | `chaos/chaos-replicas.ps1 -Action disable`. El rollback del JSON solo alcanza el proceso que recibió el POST |
+| Estado estable, hipótesis, métrica, blast radius y rollback del archivo declarativo | CUMPLE | `chaos/experiment-hotel-oci-replicas.json` + `chaos/README.md`. Steady-state y recovery por pod, no por NLB |
+| Aborto explícito dentro del JSON de Chaos Toolkit | PARCIAL | No hay bloque `controls`. Enable exige `CHAOS_OCI_CONFIRM=YES` y `-ConfirmExperiment`. Si una réplica falla al encender, `Disable-All` apaga las dos. TTL máximo 300 s. Rollback con `--rollback-strategy always` |
+| Rollback de las dos réplicas | CUMPLE | Method `disable`, rollbacks del JSON y `finally` del wrapper llaman `chaos-replicas.ps1 -Action disable` |
 | Dos patrones de Hotel implementados y medidos | CUMPLE en local | Fail-fast `50-*` y bulkhead `60-*`. No explican el parcial de R1 |
 | Patrón que explica R1 del 503 | PARCIAL | El fallback de Sports se ve en `96-tempo-68adbcf21b960acf374c54886c56d681.json`. El circuit breaker no tiene métrica |
 | Baseline, R0 y R1 de Hotel con k6 original | CUMPLE | Baseline JSON `baseline-hotel503-baseline-20261117-003033.json`. R0 `94-r0-retry-cobertura.txt`. R1 definitiva `96-r1-retry-cobertura.txt`. La primera R1 está en `95-r1-cobertura.txt` y no entra |
@@ -57,7 +58,7 @@ Cine, serie de 75 s: 264, 186 y 186 completas, con p95 481,74, 715,09 y 696,51 m
 ## Bloqueos antes de la clase
 
 1. Crear un tag nuevo, distinto de `v1.1.0`, y el release desde ese tag. Todavía no se crean.
-2. En la sustentación, no presentar `chaos run` contra el NLB como cobertura de las dos réplicas. Para las dos réplicas el comando es `chaos/chaos-replicas.ps1`.
+2. Autorizar y ejecutar una sola vez `run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment` si el profesor pide inyección declarativa en vivo. Hasta entonces, dry-run o evidencias históricas. No uses `chaos run` contra el NLB para afirmar las dos réplicas.
 3. No decir que el journal corto de Cine saturó tráfico. `appliedCount=0` en la activación.
 4. No decir que el circuit breaker de Sports quedó medido.
 

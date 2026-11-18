@@ -3,7 +3,7 @@
 # Enable exige -ConfirmExperiment. La duracion maxima de la API es 300 s y
 # cada proceso vuelve solo a 200 aunque se pierda esta sesion.
 param(
-  [ValidateSet('enable', 'disable', 'status')]
+  [ValidateSet('enable', 'disable', 'status', 'verify-active')]
   [string]$Action = 'status',
   [int]$DurationSeconds = 120,
   [int]$ExpectedReplicas = 2,
@@ -11,7 +11,10 @@ param(
   [string]$Selector = 'app=hotel-api',
   [string]$Container = 'hotel-api',
   [string]$HabitacionId = '1',
-  [switch]$ConfirmExperiment
+  [switch]$ConfirmExperiment,
+  # La demo declarativa puede usar un TTL corto. Sin este switch, enable
+  # exige ventana restante >= 80 s para no autorizar k6 a medias.
+  [switch]$SkipK6WindowGate
 )
 
 $ErrorActionPreference = 'Stop'
@@ -105,7 +108,7 @@ function Test-Expected {
     return $false
   }
 
-  if ($Action -eq 'enable') {
+  if ($Action -eq 'enable' -or $Action -eq 'verify-active') {
     return $Result.chaos.temporalActivo -and
       $Result.habitacionStatus -eq 503 -and
       $Result.habitacionCode -eq 'CHAOS_DEPENDENCY_DOWN' -and
@@ -169,19 +172,26 @@ if ($Action -eq 'enable') {
   if ($null -ne $earliest) {
     $remaining = $earliest - $nowMs
   }
-  if ($null -eq $earliest -or $remaining -lt $k6BudgetMs) {
+  if (-not $SkipK6WindowGate -and ($null -eq $earliest -or $remaining -lt $k6BudgetMs)) {
     Write-Warning "ventana restante ${remaining} ms no cubre los 80 s de k6; no iniciar la ronda"
     Write-Output 'k6_permitido=no'
     Disable-All -PodNames $pods
     exit 1
   }
 
-  $startBefore = [DateTimeOffset]::FromUnixTimeMilliseconds($earliest - $k6BudgetMs).ToLocalTime().ToString('o')
-  Write-Output "k6_permitido=si k6_start_before=$startBefore remaining_ms=$remaining"
+  if ($SkipK6WindowGate) {
+    Write-Output "k6_permitido=no motivo=demo_declarativa remaining_ms=$remaining"
+  } else {
+    $startBefore = [DateTimeOffset]::FromUnixTimeMilliseconds($earliest - $k6BudgetMs).ToLocalTime().ToString('o')
+    Write-Output "k6_permitido=si k6_start_before=$startBefore remaining_ms=$remaining"
+  }
 } else {
+  # status, disable y verify-active: el token no sale del pod (pod-switch.js).
+  # verify-active solo hace GET y exige 503 en habitación con /live 200 en las dos.
+  $podAction = if ($Action -eq 'verify-active') { 'status' } else { $Action }
   foreach ($podName in $pods) {
     try {
-      $result = Invoke-PodSwitch -PodName $podName -ActionName $Action
+      $result = Invoke-PodSwitch -PodName $podName -ActionName $podAction
       $results += $result
       Write-Output ($result | ConvertTo-Json -Compress)
       if (-not (Test-Expected $result)) {

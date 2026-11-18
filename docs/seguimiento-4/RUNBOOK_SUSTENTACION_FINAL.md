@@ -80,11 +80,20 @@ Si el port-forward falla, muestra las capturas `evidencias/seguimiento-4-local/9
 
 ## 4. Solo lectura — experimento declarativo
 
-El archivo es `chaos/experiment-hotel-dependency.json`. Tiene estado estable en 200, enciende el interruptor, espera 503, lo apaga y declara un rollback con `action=disable`.
+Hay dos archivos. No los mezcles.
 
-Ese `chaos run` pega a una sola `HOTEL_BASE_URL`. Contra el NLB cambia un solo pod. Por eso la inyección de OCI que cubrió las dos réplicas fue `chaos/chaos-replicas.ps1`, no este JSON. No los presentes como si fueran la misma ejecución.
+| Archivo | Alcance |
+|---|---|
+| `chaos/experiment-hotel-dependency.json` | Un solo proceso (`127.0.0.1` o NLB). Journal histórico `40-chaostoolkit-journal.json` |
+| `chaos/experiment-hotel-oci-replicas.json` | Las dos réplicas OCI. Chaos Toolkit llama a `replicas-toolkit.ps1`, que reutiliza `chaos-replicas.ps1` |
 
-El journal local, ya corrido, es `evidencias/seguimiento-4-local/40-chaostoolkit-journal.json`: 200, luego 503, `/live` en 200 y recuperación.
+Dry-run seguro. No activa el 503. No demuestra ejecución real en OCI:
+
+```powershell
+powershell -NoProfile -File .\chaos\run-oci-replicas-experiment.ps1
+```
+
+Resultado esperado: `chaos validate` en verde y `chaos run --dry activities` sin llamar al interruptor.
 
 El Chaos Gate del runner también es Chaos Toolkit, contra `127.0.0.1` dentro de GitHub Actions, no contra OCI:
 
@@ -95,23 +104,28 @@ Artefactos en `evidencias/chaos-gate/44189190442` y `evidencias/chaos-gate/44189
 
 ## 5. Inyección — solo si se pide en vivo
 
-No la ejecutes al abrir el runbook. Pide confirmación en voz. Duración corta, 60 s, por debajo del máximo de 300 s de la API.
+No la ejecutes al abrir el runbook. Pide confirmación en voz. TTL 60 s, bajo el máximo de 300 s de la API.
 
-Protección: sin `-ConfirmExperiment` el script se niega. Si una réplica no queda en 503 con `/live` en 200, apaga las dos y sale en 1.
+Protección: hace falta `-RealRun` y `-ConfirmExperiment`. El adaptador exige `CHAOS_OCI_CONFIRM=YES`. Si una réplica no queda en 503 con `/live` 200, `chaos-replicas.ps1` apaga las dos y sale en 1. Chaos Toolkit corre con `--rollback-strategy always`. El wrapper vuelve a llamar `disable` en `finally`.
+
+Comando de sustentación. No lo corras hasta que el profesor lo pida:
 
 ```powershell
-powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action enable -DurationSeconds 60 -ConfirmExperiment
+powershell -NoProfile -File .\chaos\run-oci-replicas-experiment.ps1 -RealRun -ConfirmExperiment -DurationSeconds 60
 ```
 
-Resultado esperado: las dos réplicas con `temporalActivo=true`, habitación 503 y `/live` 200.
+Resultado esperado: steady-state 200 en ambas, enable en ambas, `verify-active` con 503 y `/live` 200, disable, recovery 200 en ambas. El journal queda bajo `evidencias/seguimiento-4-local/oci-replicas-journal-*.json`.
 
-Comprueba otra vez, todavía en lectura:
+Alternativa directa, sin Chaos Toolkit, si solo quieren ver el script:
 
 ```powershell
-powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action status
+powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action enable -DurationSeconds 60 -ConfirmExperiment -SkipK6WindowGate
+powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action verify-active
 ```
 
 ## 6. Reversión — obligatoria después de la inyección
+
+Parada de emergencia (siempre válida):
 
 ```powershell
 powershell -NoProfile -File .\chaos\chaos-replicas.ps1 -Action disable
@@ -122,7 +136,7 @@ Resultado esperado: `activo=false` en las dos, habitación 200 y `/live` 200. Re
 
 Si `disable` falla en un pod, no borres el Deployment. El temporizador de esa réplica caduca solo, como máximo a los 60 s de esta demostración y nunca por encima de 300 s. Vuelve a correr `status` hasta ver `activo=false`. Si `kubectl` se cae a mitad de la inyección, espera el TTL y no lances k6.
 
-El rollback del JSON de Chaos Toolkit no reemplaza este disable: solo apaga el proceso que recibió su POST.
+No uses `revert-chaos.ps1` contra el NLB: solo apaga un proceso.
 
 ## 7. Si algo falla
 
