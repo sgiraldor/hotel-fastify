@@ -1,0 +1,82 @@
+{
+    "comparison_utc":  "2026-11-18T05:19:03.3962488Z",
+    "r0_run_id":  "r0-20261118T051339Z",
+    "r1_run_id":  "r1-20261118T051805Z",
+    "rows":  [
+                 {
+                     "metric":  "unauthorized_tcp_connected",
+                     "r1":  true,
+                     "r0":  true
+                 },
+                 {
+                     "metric":  "unauthorized_mysql_greeting_received",
+                     "r1":  false,
+                     "r0":  true
+                 },
+                 {
+                     "metric":  "unauthorized_access_blocked",
+                     "r1":  true,
+                     "r0":  false
+                 },
+                 {
+                     "metric":  "unauthorized_denied_event",
+                     "r1":  true,
+                     "r0":  false
+                 },
+                 {
+                     "metric":  "detection_coverage",
+                     "r1":  true,
+                     "r0":  false
+                 },
+                 {
+                     "metric":  "false_positives_legitimate_alerted",
+                     "r1":  false,
+                     "r0":  false
+                 },
+                 {
+                     "metric":  "mttd_ms",
+                     "r1":  20.0,
+                     "r0":  null
+                 },
+                 {
+                     "metric":  "mttc_ms_preventive_block_from_t0",
+                     "r1":  5.0,
+                     "r0":  null
+                 },
+                 {
+                     "metric":  "containment_class",
+                     "r1":  "preventive",
+                     "r0":  "not_observed"
+                 },
+                 {
+                     "metric":  "containment_reactive",
+                     "r1":  false,
+                     "r0":  false
+                 },
+                 {
+                     "metric":  "legitimate_mysql_greeting_received",
+                     "r1":  true,
+                     "r0":  true
+                 },
+                 {
+                     "metric":  "t0",
+                     "r1":  "2026-11-18T05:18:21.270Z",
+                     "r0":  "2026-11-18T05:13:54.802Z"
+                 },
+                 {
+                     "metric":  "t1",
+                     "r1":  "2026-11-18T05:18:21.290Z",
+                     "r0":  null
+                 },
+                 {
+                     "metric":  "t2",
+                     "r1":  "2026-11-18T05:18:21.275Z",
+                     "r0":  null
+                 }
+             ],
+    "r1_notes":  [
+                     "t2 (2026-11-18T05:18:21.275Z) occurred BEFORE t1 (2026-11-18T05:18:21.290Z)",
+                     "MTTC here is preventive proxy deny latency from t0, NOT reactive remediation after detection",
+                     "MTTD is detector alert latency from t0"
+                 ]
+}

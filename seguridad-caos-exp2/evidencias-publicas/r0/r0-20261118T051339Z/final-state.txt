@@ -1,0 +1,9 @@
+﻿lab_running=
+policy_active_head=policy_id: seguridad-caos-exp2-r0-permissive | version: "1.1.0" | mode: permissive
+non_lab_containers=hotel-api,hotel-toxiproxy,hotel-grafana,hotel-prometheus,hotel-mysql
+hotel_nets=hotel-fastify-1_default,hotel-fastify_default
+smoke_preserved=True
+phase4_preserved=True
+git_head=0ce0e41d81b2d7ae9d6357f00585f2a44a528ce1
+branch=feat/defensa-profundidad-oci
+completed_utc=2026-11-18T05:14:32.7293309Z

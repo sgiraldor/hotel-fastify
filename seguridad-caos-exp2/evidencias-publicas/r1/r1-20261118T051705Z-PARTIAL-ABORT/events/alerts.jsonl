@@ -1,0 +1,1 @@
+{"detector_id": "seguridad-caos-exp2-detector", "timestamp_utc": "2026-11-18T05:17:17.120Z", "run_id": "r1-20261118T051705Z", "scenario": "r1", "policy_id": "seguridad-caos-exp2-r1-restrictive", "alert_id": "detector-boot-1794979037", "alert_type": "detector_started", "rule_id": "seguridad-caos-exp2-unauthorized-deny-v1", "severity": "info"}

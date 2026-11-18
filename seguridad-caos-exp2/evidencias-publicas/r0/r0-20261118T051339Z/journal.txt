@@ -1,0 +1,11 @@
+R0_JOURNAL
+run_id=r0-20261118T051339Z
+scenario=r0
+policy_id=seguridad-caos-exp2-r0-permissive
+started_utc=2026-11-18T05:13:39.6477904Z
+unauthorized_probe_utc=2026-11-18T05:13:54.794Z
+legitimate_probe_utc=2026-11-18T05:13:58.650Z
+rollback_utc=2026-11-18T05:14:05.2698991Z
+attempts_unauthorized=1
+attempts_legitimate=1
+r1_executed=false

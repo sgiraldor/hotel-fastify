@@ -1,0 +1,18 @@
+{
+  "event_id": "evt-fixture-negative",
+  "event_type": "connection_allowed",
+  "correlated_attempt_id": "evt-fixture-legit-attempt",
+  "src_ip": "172.30.30.30",
+  "src_port": 45679,
+  "dst_host": "172.30.10.10",
+  "dst_port": 3306,
+  "action": "allow",
+  "reason": "explicit_allow",
+  "policy_id": "seguridad-caos-exp2-r1-restrictive",
+  "run_id": "fixture-r1",
+  "scenario": "r1",
+  "layer": "proxy_l4_access_control",
+  "tcp_handshake_with_gateway": true,
+  "pre_handshake_packet_drop": false,
+  "timestamp_utc": "2026-11-17T12:00:02.000Z"
+}

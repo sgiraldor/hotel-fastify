@@ -1,0 +1,10 @@
+policy_id: seguridad-caos-exp2-r0-permissive
+version: "1.1.0"
+mode: permissive
+default_action: allow
+allowed_sources:
+  - 172.30.30.30
+denied_sources: []
+description: >
+  R0 — política permisiva del proxy L4. El origen no autorizado 172.30.20.40
+  no está denegado; se mide exposición TCP/MySQL vía gateway (baseline).

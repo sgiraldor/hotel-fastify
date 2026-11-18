@@ -1,0 +1,19 @@
+{
+    "positive_case":  {
+                          "description":  "connection_denied from 172.30.20.40",
+                          "alert_id":  "alert-evt-1c56c6253b97-52264-deny",
+                          "alert_correlated_event_id":  "evt-1c56c6253b97-52264-deny",
+                          "result":  "PASS",
+                          "event_id":  "evt-1c56c6253b97-52264-deny",
+                          "expected_alert":  true
+                      },
+    "negative_case":  {
+                          "event_id":  "evt-0f8de1917f04-33410-allow",
+                          "expected_alert":  false,
+                          "description":  "connection_allowed from legitimate 172.30.30.30",
+                          "result":  "PASS",
+                          "illegitimate_alert_on_legit":  false
+                      },
+    "note":  "detector_started is NOT an attack detection",
+    "detector_started_alert_id":  "detector-boot-1794979097"
+}

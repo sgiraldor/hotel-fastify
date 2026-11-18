@@ -1,0 +1,1 @@
+{"watchdog_id": "seguridad-caos-exp2-watchdog", "timestamp_utc": "2026-11-18T05:18:30.485Z", "state": "armed_waiting", "healthy": true, "deadline_path": "/events/experiment_deadline.json", "active_experiment": true, "run_id": "r1-20261118T051805Z", "deadline_utc": "2026-11-18T05:48:09.4983960Z", "heartbeat_max_age_hint_sec": 5.0}

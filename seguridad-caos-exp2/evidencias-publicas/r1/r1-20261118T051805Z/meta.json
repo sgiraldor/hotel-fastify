@@ -1,0 +1,8 @@
+{
+    "captured_utc":  "2026-11-18T05:18:30.4302146Z",
+    "label":  "r1",
+    "project":  "seguridad-caos-exp2",
+    "stop_flag_present":  false,
+    "note":  "Evidencia estructural; MTTD/MTTC solo desde compute-metrics con run_id",
+    "run_id":  "r1-20261118T051805Z"
+}

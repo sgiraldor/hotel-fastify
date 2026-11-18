@@ -1,0 +1,1 @@
+note=First R1 attempt aborted by runner treating probe exit=1 as compose failure after successful unauthorized block. Full R1 re-run follows with Invoke-LabProbe fix.

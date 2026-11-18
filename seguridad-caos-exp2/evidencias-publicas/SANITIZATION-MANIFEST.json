@@ -1,0 +1,509 @@
+{
+    "generated_utc":  "2026-11-18T05:38:45.9415660Z",
+    "purpose":  "Paquete publico sanitizado. Originales en evidencias/ intactos localmente; excluidos por .gitignore.",
+    "private_path_marker":  "\u003cREPO_ROOT\u003e",
+    "note_mttc_ms":  "En metrics.json R1, mttc_ms=5.0 = bloqueo preventivo (t2-t0). MTTC reactivo no aplica. Cobertura R0=0/1, R1=1/1, n=1.",
+    "note_hash_diffs":  "Algunos hashes difieren por redaccion de rutas de host, relativizacion de evidence_path, o eliminacion de BOM UTF-8 sin cambio de contenido experimental.",
+    "files":  [
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/ABORT_PROBES.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/ABORT_PROBES.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "2f7cf73eb865aaa64054f98ce4d90deb97b54ea2bc75e75f69d6ca10910701b9",
+                      "sha256_published":  "2f7cf73eb865aaa64054f98ce4d90deb97b54ea2bc75e75f69d6ca10910701b9",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/active-policy.yaml",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/active-policy.yaml",
+                      "path_sanitized":  false,
+                      "sha256_original":  "860fa6831216add8205b2bfeb198f1e4d0bd98a5335a1ca3477783052d172c17",
+                      "sha256_published":  "860fa6831216add8205b2bfeb198f1e4d0bd98a5335a1ca3477783052d172c17",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/alerts.jsonl",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/alerts.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "02bfb960e4d789a6365102bf34ca33c0e7d0c4593e56496a8845e08b709ec29c",
+                      "sha256_published":  "02bfb960e4d789a6365102bf34ca33c0e7d0c4593e56496a8845e08b709ec29c",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/compose-config.yml",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/compose-config.yml",
+                      "path_sanitized":  true,
+                      "sha256_original":  "9fe4bb25a4fcbf57f25da37e8ad8f50a9652da0723fb6dad64cea1a36dc75112",
+                      "sha256_published":  "fcc29bc3f472672a9845e15f13f3f07e48712a0f14f191fa9c64bb8be03beb64",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "absolute_host_path_redacted"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/events.jsonl",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/events.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "020b999b3386d7bb768f0a5e55cb8ed02eb18729275e1695306f753b89530026",
+                      "sha256_published":  "020b999b3386d7bb768f0a5e55cb8ed02eb18729275e1695306f753b89530026",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/experiment_deadline.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/experiment_deadline.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "96b0248e80d70a3c6d1f1b000765158f69c5632993aa22cadc81a3e065acd8a3",
+                      "sha256_published":  "96b0248e80d70a3c6d1f1b000765158f69c5632993aa22cadc81a3e065acd8a3",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/final-state.txt",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/final-state.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "7ef6055f1ec1a18cae1ea902fb567c643d6df2181d0b270acbe69694243d9913",
+                      "sha256_published":  "41b7a2f0e00bfe0db8ff16a76529d88a4b61b55b19a641f9123844db03a34db3",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "encoding_or_newline_normalization_content_equivalent"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/hypothesis-params.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/hypothesis-params.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "edfd327c7adf0feb2b9757fca7ce3e3f6f3418865499b92c1b8b8f5ea9fe8cc5",
+                      "sha256_published":  "edfd327c7adf0feb2b9757fca7ce3e3f6f3418865499b92c1b8b8f5ea9fe8cc5",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/journal.txt",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/journal.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "f4550430aeb46f6f853ad6d2fc0a309a5ff91ff3045da5d2c55da78fac952cc8",
+                      "sha256_published":  "e5e3ed1a364dbaf5b4a55e3d4586d1dfaa6ccda71223681f1388c1890d1d6c66",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/meta.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/meta.json",
+                      "path_sanitized":  true,
+                      "sha256_original":  "a6715f6c298137f493b45d26d42344c9faafe7eee1902ee62ab8529a7eff67d9",
+                      "sha256_published":  "1f111036b329765f2bcc6d6a676620d0180ac235209b7a6ebc00a4babf5a5918",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/metrics.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/metrics.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "6bd0cd162db3eebe7b6f10b0966891fdd5e0ca6195f9b80f1a1121d07a7f9552",
+                      "sha256_published":  "6bd0cd162db3eebe7b6f10b0966891fdd5e0ca6195f9b80f1a1121d07a7f9552",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/preflight-checks.txt",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/preflight-checks.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "6346ac4c37c4c00c42becba9fc41bfa0b2f81a6f16c068cde7528f4f9677e36d",
+                      "sha256_published":  "df6dd2970103c3a9637a1615b86619eb3b9e2a6ed1722d6cd1daaefc96749887",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "encoding_or_newline_normalization_content_equivalent"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/R0-SUMMARY.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/R0-SUMMARY.json",
+                      "path_sanitized":  true,
+                      "sha256_original":  "426966cb49bea1a70149dec974fbc7fd4e3f328c7a6bcf97c45a159a09bbeab3",
+                      "sha256_published":  "5b0da6c74a7786f7971b47cad94446255bcba19bb68617081a3186f308bfedf8",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "absolute_host_path_redacted"
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/run_context.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/run_context.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "f9053a60f63e26b71c0f6be1ceade6ec8d8df24155bd4ed784498fd5d0410fbc",
+                      "sha256_published":  "f9053a60f63e26b71c0f6be1ceade6ec8d8df24155bd4ed784498fd5d0410fbc",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/STOP.txt",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/STOP.txt",
+                      "path_sanitized":  false,
+                      "sha256_original":  "e0c83e4fea07a23da8bf89cfb4d8fa88fb95b80a872118d6dfc76fc1b345534c",
+                      "sha256_published":  "e0c83e4fea07a23da8bf89cfb4d8fa88fb95b80a872118d6dfc76fc1b345534c",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/watchdog.jsonl",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/watchdog.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "4dcff13c67d44f6e989fd9024a59c8a1fe32e8dea8c7cd9cc578fdc672eeb242",
+                      "sha256_published":  "4dcff13c67d44f6e989fd9024a59c8a1fe32e8dea8c7cd9cc578fdc672eeb242",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/watchdog_heartbeat.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/watchdog_heartbeat.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "9aa127d6da8463a05e4ad2f5fb7710162950372297149a16d2ea082a2a25ab8d",
+                      "sha256_published":  "9aa127d6da8463a05e4ad2f5fb7710162950372297149a16d2ea082a2a25ab8d",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/probes/probe-legitimate-r0-2026-11-18T051358-650Z.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/probes/probe-legitimate-r0-2026-11-18T051358-650Z.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "f8b608993dcb32f2ba1a07bc70a418e1406d60e66a1601f5d769aa31adf0f9ae",
+                      "sha256_published":  "f8b608993dcb32f2ba1a07bc70a418e1406d60e66a1601f5d769aa31adf0f9ae",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r0/r0-20261118T051339Z/probes/probe-unauthorized-r0-2026-11-18T051354-794Z.json",
+                      "published":  "evidencias-publicas/r0/r0-20261118T051339Z/probes/probe-unauthorized-r0-2026-11-18T051354-794Z.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "afd9f9b0d89f69635a543fb953068d9400016d624a907ed2853b2b5e00390c2a",
+                      "sha256_published":  "afd9f9b0d89f69635a543fb953068d9400016d624a907ed2853b2b5e00390c2a",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/INCIDENT.txt",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/INCIDENT.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "df1f6c73d5c14d5ef0b124985b6b3094c9f2c7b94dad18e0fb16fa9b3439b036",
+                      "sha256_published":  "e7a4128235bd245c98c92fbb1db6def4c6a5390ec6a469435bc50dafca945499",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/ABORT_PROBES",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/ABORT_PROBES",
+                      "path_sanitized":  false,
+                      "sha256_original":  "543ac4101c54e7146b07a50d1ad558a85b20d1717396287399a6563366ef5aa3",
+                      "sha256_published":  "543ac4101c54e7146b07a50d1ad558a85b20d1717396287399a6563366ef5aa3",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/alerts.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/alerts.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "75a4650e8040272582e778de3bd8bec90b2cdff6adc48d3330eb47ba11a21f44",
+                      "sha256_published":  "75a4650e8040272582e778de3bd8bec90b2cdff6adc48d3330eb47ba11a21f44",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/events.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/events.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "3d87854d921b274a8f679731c23b781b2c0e6c127fa4a29bc5ed5413384ea725",
+                      "sha256_published":  "3d87854d921b274a8f679731c23b781b2c0e6c127fa4a29bc5ed5413384ea725",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/experiment_deadline.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/experiment_deadline.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "c0f086aa17365494dd20cebd762123376e1f3667ee7f3674ad5ba655facc968f",
+                      "sha256_published":  "c0f086aa17365494dd20cebd762123376e1f3667ee7f3674ad5ba655facc968f",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/run_context.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/run_context.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "a0b9a11c0eb5f3989038426ccc90c80e8e40f2d373748aa31b5e5425247d7ff0",
+                      "sha256_published":  "a0b9a11c0eb5f3989038426ccc90c80e8e40f2d373748aa31b5e5425247d7ff0",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/STOP",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/STOP",
+                      "path_sanitized":  false,
+                      "sha256_original":  "de438516b8c8f527d19c4e325936aa4cfb4421fb06134d822646e0bb73f017cb",
+                      "sha256_published":  "de438516b8c8f527d19c4e325936aa4cfb4421fb06134d822646e0bb73f017cb",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/watchdog.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/watchdog.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "b2cb73ef49e89695ee32b7787f651e8ed1b7dd1e4937bcb0bebb06a79c7ee3dd",
+                      "sha256_published":  "b2cb73ef49e89695ee32b7787f651e8ed1b7dd1e4937bcb0bebb06a79c7ee3dd",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/watchdog_heartbeat.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/events/watchdog_heartbeat.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "4f9da29dac76b684982fb365de4e1692f7a51948066b32263f6b01ec37c9aca2",
+                      "sha256_published":  "4f9da29dac76b684982fb365de4e1692f7a51948066b32263f6b01ec37c9aca2",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051705Z-PARTIAL-ABORT/evidence/probe-unauthorized-r1-2026-11-18T051720-666Z.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051705Z-PARTIAL-ABORT/evidence/probe-unauthorized-r1-2026-11-18T051720-666Z.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "f21517ed86b4d190db1a6c1014df8c74ee80de2eb723d392d1872c77ce064032",
+                      "sha256_published":  "f21517ed86b4d190db1a6c1014df8c74ee80de2eb723d392d1872c77ce064032",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/ABORT_PROBES.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/ABORT_PROBES.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "6859cc5d412d6558d794635031981667909a50bd3d495765a05ff2515552a46c",
+                      "sha256_published":  "6859cc5d412d6558d794635031981667909a50bd3d495765a05ff2515552a46c",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/active-policy.yaml",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/active-policy.yaml",
+                      "path_sanitized":  false,
+                      "sha256_original":  "93ceccc318ca511e962a2d492fe561bcbd7af205c7c31a995cc86df3c073a6fb",
+                      "sha256_published":  "93ceccc318ca511e962a2d492fe561bcbd7af205c7c31a995cc86df3c073a6fb",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/alerts.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/alerts.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "bf67259e0983b484ec9f40751d08d5da2e7a256c518625b343a896c7650bbbfc",
+                      "sha256_published":  "bf67259e0983b484ec9f40751d08d5da2e7a256c518625b343a896c7650bbbfc",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/comparison-r0-r1.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/comparison-r0-r1.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "dcfdaf84c0bb1df75e037d180c8b2bd3068a2af2d2ce804d05c770b58eeb8a56",
+                      "sha256_published":  "dcfdaf84c0bb1df75e037d180c8b2bd3068a2af2d2ce804d05c770b58eeb8a56",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/comparison-r0-r1.md",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/comparison-r0-r1.md",
+                      "path_sanitized":  true,
+                      "sha256_original":  "d138aef83e0bc0f1cab11a5b59901d3391d4509287520d058c6cc05b70c544f1",
+                      "sha256_published":  "f0fbec5a18b6bb001b47ae1552ff3f16ca85e7e8cd9f4081b76018e1559d663a",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/events.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/events.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "387884abadb03c67d441f1803555b09f038e747ec7e57595de6ea82fdd572f23",
+                      "sha256_published":  "387884abadb03c67d441f1803555b09f038e747ec7e57595de6ea82fdd572f23",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/experiment_deadline.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/experiment_deadline.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "afd208f455061ef9aa4bf50715534beafa7f65a45d59adfa0cf1e7d534f32ab7",
+                      "sha256_published":  "afd208f455061ef9aa4bf50715534beafa7f65a45d59adfa0cf1e7d534f32ab7",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/final-state.txt",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/final-state.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "62f5fe33b3719c58c20cce10660798feb69429b5fbc44cb8624276fe1754de70",
+                      "sha256_published":  "dcbd55ff34f339023d962b5794a7322a0f2af74d9e8bf18d5367454f458bf3f3",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "encoding_or_newline_normalization_content_equivalent"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/journal.txt",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/journal.txt",
+                      "path_sanitized":  true,
+                      "sha256_original":  "f92da3ef6e49c2fe068278ed35adf7ff2e575b64faf6a95de6dcce94e8d48bfe",
+                      "sha256_published":  "fb5e99184c4c2539beac269fb016411204bb7ead31b4f1ef889039288e263e7c",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/meta.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/meta.json",
+                      "path_sanitized":  true,
+                      "sha256_original":  "095ee00fca5b6bfe64316812abf69a8d1f741ca60b24ff24b78902baa93dc0aa",
+                      "sha256_published":  "bdb4a012374945d83010116fd6b7da8da9ecfdc313e2a283f21a5112172aaa21",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "utf8_bom_stripped_content_unchanged"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/metrics.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/metrics.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "c52f1846b47a9d4c2a04b1d0da8e5b6172c8e6d2f0eda46c74dc6ec13d6c4214",
+                      "sha256_published":  "c52f1846b47a9d4c2a04b1d0da8e5b6172c8e6d2f0eda46c74dc6ec13d6c4214",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/policy-r1-restrictive.yaml",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/policy-r1-restrictive.yaml",
+                      "path_sanitized":  false,
+                      "sha256_original":  "93ceccc318ca511e962a2d492fe561bcbd7af205c7c31a995cc86df3c073a6fb",
+                      "sha256_published":  "93ceccc318ca511e962a2d492fe561bcbd7af205c7c31a995cc86df3c073a6fb",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/R1-SUMMARY.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/R1-SUMMARY.json",
+                      "path_sanitized":  true,
+                      "sha256_original":  "600fbd17ec8f26beeddff12178fe239eca717694e86268213c2dc125e49cb70e",
+                      "sha256_published":  "f56a9aa54ad09d405dd0164e509b1246509248accca765624334e6d1435e7588",
+                      "hashes_differ":  true,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  "absolute_host_path_redacted"
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/rule-positive-negative.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/rule-positive-negative.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "5244fbf7bde2faf7b277c63f6cb737af8f2486f39abb4389bc7d4ed0b1631162",
+                      "sha256_published":  "5244fbf7bde2faf7b277c63f6cb737af8f2486f39abb4389bc7d4ed0b1631162",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/rule-unauthorized_deny.yaml",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/rule-unauthorized_deny.yaml",
+                      "path_sanitized":  false,
+                      "sha256_original":  "8e8face422810ccb6fe7cd3968bb2ed1f16bceaf1218638b83c9c05208d86ee0",
+                      "sha256_published":  "8e8face422810ccb6fe7cd3968bb2ed1f16bceaf1218638b83c9c05208d86ee0",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/run_context.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/run_context.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "21f51ffea2976b91c218475a01e5657d7fde65e888bdc727edb099474ee97ed8",
+                      "sha256_published":  "21f51ffea2976b91c218475a01e5657d7fde65e888bdc727edb099474ee97ed8",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/STOP.txt",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/STOP.txt",
+                      "path_sanitized":  false,
+                      "sha256_original":  "c621ea09dcc13f8ccdcf8ba35048712e2e2d66d9a6c6ad47fc1764097269bea2",
+                      "sha256_published":  "c621ea09dcc13f8ccdcf8ba35048712e2e2d66d9a6c6ad47fc1764097269bea2",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/watchdog.jsonl",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/watchdog.jsonl",
+                      "path_sanitized":  false,
+                      "sha256_original":  "34290dbb3b761a526f80d3fd8c306d2961bcc46167d3e5439e3a10cd830fb858",
+                      "sha256_published":  "34290dbb3b761a526f80d3fd8c306d2961bcc46167d3e5439e3a10cd830fb858",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/watchdog_heartbeat.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/watchdog_heartbeat.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "76ff931cf9fd180ed9537f553626218e282b2253f4d917f384736098d0cda464",
+                      "sha256_published":  "76ff931cf9fd180ed9537f553626218e282b2253f4d917f384736098d0cda464",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/probes/probe-legitimate-r1-2026-11-18T051825-081Z.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/probes/probe-legitimate-r1-2026-11-18T051825-081Z.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "02505e82c750b0ab12e04ecd1df827795cbf6a0c5217335ff5070f687878c2f1",
+                      "sha256_published":  "02505e82c750b0ab12e04ecd1df827795cbf6a0c5217335ff5070f687878c2f1",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  },
+                  {
+                      "original":  "evidencias/r1/r1-20261118T051805Z/probes/probe-unauthorized-r1-2026-11-18T051821-263Z.json",
+                      "published":  "evidencias-publicas/r1/r1-20261118T051805Z/probes/probe-unauthorized-r1-2026-11-18T051821-263Z.json",
+                      "path_sanitized":  false,
+                      "sha256_original":  "c0f2e0d09b22478991ede1ff1b863ffa843185f9b6c053252dc72d7bf8adb140",
+                      "sha256_published":  "c0f2e0d09b22478991ede1ff1b863ffa843185f9b6c053252dc72d7bf8adb140",
+                      "hashes_differ":  false,
+                      "still_contains_private_user":  false,
+                      "diff_reason":  null
+                  }
+              ]
+}

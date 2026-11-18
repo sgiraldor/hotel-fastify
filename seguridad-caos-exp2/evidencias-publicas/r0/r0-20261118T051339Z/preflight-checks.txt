@@ -1,0 +1,8 @@
+﻿PASS internal
+PASS no host ports
+PASS no sock/privileged
+PASS policy R0 permissive
+PASS STOP/ABORT clear
+PASS no deadline file
+PASS probe targets 172.30.20.20 / 172.30.30.20 (lab RFC1918 only)
+PASS no collision 172.30.x vs 172.17-19

@@ -1,0 +1,21 @@
+# Regla versionada — detección como código (G2)
+rule_id: seguridad-caos-exp2-unauthorized-deny-v1
+version: "1.1.0"
+description: >
+  Alerta cuando el proxy L4 registra connection_denied desde el origen no autorizado.
+  Independiente del exit code de la sonda. No afirma NetworkPolicy ni drop pre-handshake.
+match_event_type: connection_denied
+match_action: deny
+watch_sources:
+  - 172.30.20.40
+alert_type: unauthorized_access_denied
+severity: high
+message: >
+  Intento no autorizado: reenvío a MySQL denegado por proxy L4 del laboratorio
+  seguridad-caos-exp2 (no es NetworkPolicy de OKE; no es drop pre-handshake).
+positive_case:
+  description: Evento connection_denied con src_ip 172.30.20.40
+  expected_alert: true
+negative_case:
+  description: Evento connection_allowed con src_ip 172.30.30.30 (legítimo)
+  expected_alert: false

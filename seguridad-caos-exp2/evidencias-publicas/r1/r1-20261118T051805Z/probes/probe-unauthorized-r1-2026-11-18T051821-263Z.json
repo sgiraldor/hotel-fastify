@@ -1,0 +1,21 @@
+{
+  "client_role": "unauthorized",
+  "target_host": "172.30.20.20",
+  "target_port": 3306,
+  "t0_attempt_utc": "2026-11-18T05:18:21.263Z",
+  "run_id": "r1-20261118T051805Z",
+  "scenario": "r1",
+  "policy_id": "seguridad-caos-exp2-r1-restrictive",
+  "layer_tested": "tcp_plus_mysql_greeting",
+  "auth_tested": false,
+  "data_access_tested": false,
+  "tcp_connected": true,
+  "mysql_greeting_received": false,
+  "access_blocked": true,
+  "pre_handshake_packet_drop_claimed": false,
+  "traffic_attempted": true,
+  "note": "tcp_connected refleja handshake con el gateway/proxy; mysql_greeting_received indica reenvío efectivo hacia MySQL; access_blocked=true si TCP ok sin greeting (deny de proxy post-accept).",
+  "bytes_received": 0,
+  "probe_outcome": "tcp_ok_no_mysql_greeting",
+  "completed_utc": "2026-11-18T05:18:21.277Z"
+}

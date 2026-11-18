@@ -1,0 +1,165 @@
+name: seguridad-caos-exp2
+services:
+  detector:
+    build:
+      context: <REPO_ROOT>\seguridad-caos-exp2\detector
+      dockerfile: Dockerfile
+    container_name: seguridad-caos-exp2-detector
+    depends_on:
+      gateway:
+        condition: service_started
+        required: true
+    environment:
+      ALERTS_PATH: /events/alerts.jsonl
+      DETECTOR_ID: seguridad-caos-exp2-detector
+      EVENTS_PATH: /events/events.jsonl
+      RULES_PATH: /rules/unauthorized_deny.yaml
+      RUN_CONTEXT_PATH: /events/run_context.json
+      STOP_FLAG: /events/STOP
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: deteccion
+    networks:
+      lab_clients:
+        ipv4_address: 172.30.30.50
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\runtime\events
+        target: /events
+        bind: {}
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\detector\rules
+        target: /rules
+        read_only: true
+        bind: {}
+  gateway:
+    build:
+      context: <REPO_ROOT>\seguridad-caos-exp2\gateway
+      dockerfile: Dockerfile
+    container_name: seguridad-caos-exp2-gateway
+    depends_on:
+      mysql:
+        condition: service_healthy
+        required: true
+    environment:
+      EVENTS_PATH: /events/events.jsonl
+      GATEWAY_ID: seguridad-caos-exp2-gateway
+      LISTEN_HOST: 0.0.0.0
+      LISTEN_PORT: "3306"
+      MYSQL_HOST: 172.30.10.10
+      MYSQL_PORT: "3306"
+      POLICY_PATH: /policy/active.yaml
+      RUN_CONTEXT_PATH: /events/run_context.json
+      STOP_FLAG: /events/STOP
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: punto-de-control
+    networks:
+      lab_attacker:
+        ipv4_address: 172.30.20.20
+      lab_clients:
+        ipv4_address: 172.30.30.20
+      lab_data:
+        ipv4_address: 172.30.10.20
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\policy
+        target: /policy
+        read_only: true
+        bind: {}
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\runtime\events
+        target: /events
+        bind: {}
+  mysql:
+    container_name: seguridad-caos-exp2-mysql
+    environment:
+      MYSQL_DATABASE: lab_hotel_db
+      MYSQL_PASSWORD: lab-only-app-not-real
+      MYSQL_ROOT_PASSWORD: lab-only-root-not-real
+      MYSQL_USER: lab_app
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - 127.0.0.1
+        - -uroot
+        - -plab-only-root-not-real
+      timeout: 5s
+      interval: 5s
+      retries: 20
+    image: docker.io/library/mysql:8.4
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: datos-sinteticos
+    networks:
+      lab_data:
+        ipv4_address: 172.30.10.10
+    volumes:
+      - type: volume
+        source: mysql_data
+        target: /var/lib/mysql
+        volume: {}
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\mysql\init.sql
+        target: /docker-entrypoint-initdb.d/01-init.sql
+        read_only: true
+        bind: {}
+  watchdog:
+    build:
+      context: <REPO_ROOT>\seguridad-caos-exp2\watchdog
+      dockerfile: Dockerfile
+    container_name: seguridad-caos-exp2-watchdog
+    environment:
+      ABORT_FLAG: /events/ABORT_PROBES
+      AUDIT_PATH: /events/watchdog.jsonl
+      DEADLINE_PATH: /events/experiment_deadline.json
+      EVENTS_DIR: /events
+      HEARTBEAT_PATH: /events/watchdog_heartbeat.json
+      POLL_SECONDS: "1"
+      STOP_FLAG: /events/STOP
+      WATCHDOG_ID: seguridad-caos-exp2-watchdog
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: watchdog-ttl
+    networks:
+      lab_clients:
+        ipv4_address: 172.30.30.60
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - type: bind
+        source: <REPO_ROOT>\seguridad-caos-exp2\runtime\events
+        target: /events
+        bind: {}
+networks:
+  lab_attacker:
+    name: seguridad-caos-exp2_lab_attacker
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.20.0/24
+    internal: true
+  lab_clients:
+    name: seguridad-caos-exp2_lab_clients
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.30.0/24
+    internal: true
+  lab_data:
+    name: seguridad-caos-exp2_lab_data
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.10.0/24
+    internal: true
+volumes:
+  mysql_data:
+    name: seguridad-caos-exp2_mysql_data

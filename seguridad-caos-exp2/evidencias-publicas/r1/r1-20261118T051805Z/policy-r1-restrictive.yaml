@@ -1,0 +1,13 @@
+policy_id: seguridad-caos-exp2-r1-restrictive
+version: "1.1.0"
+mode: restrictive
+default_action: deny
+allowed_sources:
+  - 172.30.30.30
+denied_sources:
+  - 172.30.20.40
+description: >
+  R1 — política restrictiva del proxy L4. Deniega reenvío a MySQL desde
+  172.30.20.40. El cliente legítimo 172.30.30.30 permanece permitido.
+  Esto es control de acceso por proxy + aislamiento de redes Docker,
+  NO NetworkPolicy en OKE.

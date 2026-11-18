@@ -1,0 +1,1 @@
+{"watchdog_id": "seguridad-caos-exp2-watchdog", "timestamp_utc": "2026-11-18T05:13:42.083Z", "event_type": "watchdog_started", "poll_seconds": 1.0, "deadline_path": "/events/experiment_deadline.json"}

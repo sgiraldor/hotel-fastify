@@ -1,0 +1,200 @@
+# Laboratorio aislado — proyecto Docker exclusivo: seguridad-caos-exp2
+# Redes internal: true → sin egreso a Internet/host durante el experimento.
+# MySQL solo en lab_data (accesible únicamente por gateway).
+# STOP y evidencias vía bind mounts ./runtime/* visibles desde host y contenedores.
+# NO ejecutar `up` hasta autorización expresa.
+
+name: seguridad-caos-exp2
+
+networks:
+  lab_data:
+    name: seguridad-caos-exp2_lab_data
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.10.0/24
+  lab_clients:
+    name: seguridad-caos-exp2_lab_clients
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.30.0/24
+  lab_attacker:
+    name: seguridad-caos-exp2_lab_attacker
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.20.0/24
+
+volumes:
+  mysql_data:
+    name: seguridad-caos-exp2_mysql_data
+
+services:
+  mysql:
+    image: docker.io/library/mysql:8.4
+    container_name: seguridad-caos-exp2-mysql
+    networks:
+      lab_data:
+        ipv4_address: 172.30.10.10
+    # Sin ports: — MySQL no se publica al host ni a redes de clientes.
+    environment:
+      MYSQL_DATABASE: lab_hotel_db
+      MYSQL_ROOT_PASSWORD: lab-only-root-not-real
+      MYSQL_USER: lab_app
+      MYSQL_PASSWORD: lab-only-app-not-real
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-plab-only-root-not-real"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: datos-sinteticos
+
+  gateway:
+    build:
+      context: ./gateway
+    container_name: seguridad-caos-exp2-gateway
+    # Sin user: en compose — entrypoint arranca root, chown de /events y drop a 10001.
+    networks:
+      lab_data:
+        ipv4_address: 172.30.10.20
+      lab_clients:
+        ipv4_address: 172.30.30.20
+      lab_attacker:
+        ipv4_address: 172.30.20.20
+    environment:
+      LISTEN_HOST: 0.0.0.0
+      LISTEN_PORT: "3306"
+      MYSQL_HOST: 172.30.10.10
+      MYSQL_PORT: "3306"
+      POLICY_PATH: /policy/active.yaml
+      EVENTS_PATH: /events/events.jsonl
+      RUN_CONTEXT_PATH: /events/run_context.json
+      STOP_FLAG: /events/STOP
+      GATEWAY_ID: seguridad-caos-exp2-gateway
+    volumes:
+      - ./policy:/policy:ro
+      - ./runtime/events:/events
+    depends_on:
+      mysql:
+        condition: service_healthy
+    # Sin cap_drop:ALL: el entrypoint necesita chown/setuid (gosu) antes del drop a 10001.
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: punto-de-control
+
+  detector:
+    build:
+      context: ./detector
+    container_name: seguridad-caos-exp2-detector
+    # Sin user: en compose — entrypoint arranca root, chown de /events y drop a 10001.
+    networks:
+      lab_clients:
+        ipv4_address: 172.30.30.50
+    environment:
+      EVENTS_PATH: /events/events.jsonl
+      ALERTS_PATH: /events/alerts.jsonl
+      RULES_PATH: /rules/unauthorized_deny.yaml
+      RUN_CONTEXT_PATH: /events/run_context.json
+      STOP_FLAG: /events/STOP
+      DETECTOR_ID: seguridad-caos-exp2-detector
+    volumes:
+      - ./runtime/events:/events
+      - ./detector/rules:/rules:ro
+    depends_on:
+      - gateway
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: deteccion
+
+  watchdog:
+    build:
+      context: ./watchdog
+    container_name: seguridad-caos-exp2-watchdog
+    # Watchdog autónomo: sin Docker socket, sin privileged, solo lab_clients internal.
+    networks:
+      lab_clients:
+        ipv4_address: 172.30.30.60
+    environment:
+      EVENTS_DIR: /events
+      DEADLINE_PATH: /events/experiment_deadline.json
+      STOP_FLAG: /events/STOP
+      ABORT_FLAG: /events/ABORT_PROBES
+      HEARTBEAT_PATH: /events/watchdog_heartbeat.json
+      AUDIT_PATH: /events/watchdog.jsonl
+      POLL_SECONDS: "1"
+      WATCHDOG_ID: seguridad-caos-exp2-watchdog
+    volumes:
+      - ./runtime/events:/events
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: watchdog-ttl
+
+  client-legitimate:
+    build:
+      context: ./clients
+    container_name: seguridad-caos-exp2-client-legitimate
+    # Sin user: entrypoint root→chown /evidence→gosu 10001
+    networks:
+      lab_clients:
+        ipv4_address: 172.30.30.30
+    environment:
+      CLIENT_ROLE: legitimate
+      TARGET_HOST: 172.30.30.20
+      TARGET_PORT: "3306"
+      EVIDENCE_DIR: /evidence
+      STOP_FLAG: /events/STOP
+      ABORT_FLAG: /events/ABORT_PROBES
+      RUN_CONTEXT_PATH: /events/run_context.json
+    volumes:
+      - ./runtime/evidence:/evidence
+      - ./runtime/events:/events:ro
+    depends_on:
+      - gateway
+    profiles: ["manual"]
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: cliente-legitimo
+
+  client-unauthorized:
+    build:
+      context: ./clients
+    container_name: seguridad-caos-exp2-client-unauthorized
+    networks:
+      lab_attacker:
+        ipv4_address: 172.30.20.40
+    environment:
+      CLIENT_ROLE: unauthorized
+      TARGET_HOST: 172.30.20.20
+      TARGET_PORT: "3306"
+      EVIDENCE_DIR: /evidence
+      STOP_FLAG: /events/STOP
+      ABORT_FLAG: /events/ABORT_PROBES
+      RUN_CONTEXT_PATH: /events/run_context.json
+    volumes:
+      - ./runtime/evidence:/evidence
+      - ./runtime/events:/events:ro
+    depends_on:
+      - gateway
+    profiles: ["manual"]
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      experimento: seguridad-caos-exp2
+      rol: cliente-no-autorizado

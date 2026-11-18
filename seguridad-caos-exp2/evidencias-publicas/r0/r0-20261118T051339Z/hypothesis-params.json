@@ -1,0 +1,20 @@
+{
+    "origin":  "172.30.20.40",
+    "r1_authorized":  false,
+    "hypothesis":  "Con politica permisiva, el cliente no autorizado establece path MySQL via gateway (tcp_connected + mysql_greeting). Deteccion/contencion de amenaza no autorizada pueden ser no observadas (MTTD/MTTC null).",
+    "mttd_target":  "baseline R0: esperable no_observed (null) si no hay deny/alerta",
+    "max_minutes":  30,
+    "port":  3306,
+    "adverse_condition":  "client-unauthorized 172.30.20.40 -\u003e gateway 172.30.20.20:3306 -\u003e mysql 172.30.10.10:3306",
+    "same_as_r1_topology":  true,
+    "attempts":  {
+                     "legitimate":  1,
+                     "unauthorized":  1
+                 },
+    "written_utc":  "2026-11-18T05:13:39.4371404Z",
+    "scenario":  "r0",
+    "mttc_target":  "baseline R0: esperable not_observed (null) bajo politica permisiva",
+    "destination_mysql":  "172.30.10.10",
+    "gateway_target":  "172.30.20.20",
+    "policy_id":  "seguridad-caos-exp2-r0-permissive"
+}

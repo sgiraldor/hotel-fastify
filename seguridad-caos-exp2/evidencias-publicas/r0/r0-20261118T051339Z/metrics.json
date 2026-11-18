@@ -1,0 +1,28 @@
+{
+  "run_id": "r0-20261118T051339Z",
+  "scenario": "r0",
+  "policy_id": "seguridad-caos-exp2-r0-permissive",
+  "t0_attempt_utc": "2026-11-18T05:13:54.802Z",
+  "t1_detection_utc": null,
+  "t2_containment_confirmed_utc": null,
+  "mttd_ms": null,
+  "mttc_ms": null,
+  "detection_coverage": false,
+  "false_positives_legitimate_alerted": false,
+  "unauthorized_tcp_connected": true,
+  "unauthorized_mysql_greeting_received": true,
+  "unauthorized_access_blocked": false,
+  "unauthorized_upstream_allowed_event": true,
+  "unauthorized_denied_event": false,
+  "legitimate_tcp_connected": true,
+  "legitimate_mysql_greeting_received": true,
+  "containment_class": "not_observed",
+  "containment_reactive": false,
+  "notes": [
+    "Filtrado estricto por run_id + scenario + policy_id.",
+    "Si t1/t2 son null, no se asigna tiempo ficticio.",
+    "Contención preventiva: deny del proxy post-accept, pre-upstream.",
+    "Contención reactiva: no modelada.",
+    "tcp_connected != mysql_greeting_received != auth != acceso a datos."
+  ]
+}

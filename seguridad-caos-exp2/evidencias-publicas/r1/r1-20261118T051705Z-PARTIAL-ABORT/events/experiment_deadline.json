@@ -1,0 +1,11 @@
+{
+    "run_id":  "r1-20261118T051705Z",
+    "scenario":  "r1",
+    "max_minutes":  30,
+    "created_utc":  "2026-11-18T05:17:09.2892181Z",
+    "deadline_utc":  "2026-11-18T05:47:09.2892181Z",
+    "active":  false,
+    "deactivated_utc":  "2026-11-18T05:17:20.9990141Z",
+    "deactivate_reason":  "runner_cleanup",
+    "project":  "seguridad-caos-exp2"
+}

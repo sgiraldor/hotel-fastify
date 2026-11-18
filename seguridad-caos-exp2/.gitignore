@@ -1,0 +1,24 @@
+# Estado local del laboratorio (no publicar)
+runtime/
+
+# Secretos locales (usar solo .env.example)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Respaldos y snapshots operativos
+*.bak-*
+*.pre-phase4-*
+
+# Evidencias originales locales (pueden contener rutas absolutas de host).
+# El paquete publicable sanitizado vive en evidencias-publicas/
+evidencias/
+
+# Ruido operativo
+*.log
+.DS_Store
+Thumbs.db
